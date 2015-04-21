@@ -1,0 +1,531 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13047C041ACEF37900BD13E8 /* MockHeading.swift */; };
+		132F2C431AC762710071266F /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C421AC762700071266F /* ParserTests.swift */; };
+		132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */; };
+		132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */; };
+		135237621ABA20A000D33887 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237611ABA20A000D33887 /* AppDelegate.swift */; };
+		135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237631ABA20A000D33887 /* NearbyPointsViewController.swift */; };
+		135237671ABA20A000D33887 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 135237651ABA20A000D33887 /* Main.storyboard */; };
+		135237691ABA20A000D33887 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 135237681ABA20A000D33887 /* Images.xcassets */; };
+		1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1352376A1ABA20A000D33887 /* LaunchScreen.xib */; };
+		138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B182E1AC9C10100D54ECE /* MockParser.swift */; };
+		138B18311ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */; };
+		138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18321ACB6BB200D54ECE /* NearbyPoint.swift */; };
+		138B18351ACB6D0900D54ECE /* AltitudeCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */; };
+		138B18361ACB758700D54ECE /* NearbyPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18321ACB6BB200D54ECE /* NearbyPoint.swift */; };
+		138B18371ACB75DE00D54ECE /* AltitudeCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */; };
+		138B18391ACB79B000D54ECE /* NearbyPointClassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */; };
+		138B183B1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B183A1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift */; };
+		139E8BA31ACC907D00C4C7E5 /* NearbyPointsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237631ABA20A000D33887 /* NearbyPointsViewController.swift */; };
+		139E8BA51ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139E8BA41ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift */; };
+		13A3B9721AC5FC2800FF0202 /* GeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */; };
+		13A3B9741AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9731AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift */; };
+		13A3B9771AC6337900FF0202 /* NearbyPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */; };
+		13A3B9791AC633AD00FF0202 /* NearbyPointsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9781AC633AD00FF0202 /* NearbyPointsManagerTests.swift */; };
+		13A3B97C1AC638A100FF0202 /* MockNearbyPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */; };
+		13A3B97F1AC6F5F300FF0202 /* GeoNamesJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */; };
+		13A3B9801AC707BA00FF0202 /* GeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */; };
+		13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */; };
+		13A3B9821AC70A2300FF0202 /* GeoNamesJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */; };
+		13A3B9841AC7102000FF0202 /* NNGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */; };
+		13A3B9861AC7118000FF0202 /* FakeURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */; };
+		13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */; };
+		13C9BF9F1AE2CEF2005EF8D4 /* CaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */; };
+		13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */; };
+		13C9BFD61AE5B111005EF8D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237611ABA20A000D33887 /* AppDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		135237721ABA20A100D33887 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 135237541ABA209E00D33887 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1352375B1ABA209F00D33887;
+			remoteInfo = "what's what";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		13047C041ACEF37900BD13E8 /* MockHeading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHeading.swift; sourceTree = "<group>"; };
+		132F2C421AC762700071266F /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
+		132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeonamesCommunicator.swift; sourceTree = "<group>"; };
+		132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockNearbyPointsManagerDelegate.swift; path = "../what's what/MockNearbyPointsManagerDelegate.swift"; sourceTree = "<group>"; };
+		1352375C1ABA209F00D33887 /* what's what.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "what's what.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		135237601ABA20A000D33887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		135237611ABA20A000D33887 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		135237631ABA20A000D33887 /* NearbyPointsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPointsViewController.swift; sourceTree = "<group>"; };
+		135237661ABA20A000D33887 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		135237681ABA20A000D33887 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1352376B1ABA20A000D33887 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		135237711ABA20A100D33887 /* what's whatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "what's whatTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		135237761ABA20A100D33887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		138B182E1AC9C10100D54ECE /* MockParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockParser.swift; sourceTree = "<group>"; };
+		138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltitudeCommunicatorTests.swift; sourceTree = "<group>"; };
+		138B18321ACB6BB200D54ECE /* NearbyPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPoint.swift; sourceTree = "<group>"; };
+		138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltitudeCommunicator.swift; sourceTree = "<group>"; };
+		138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NearbyPointClassTests.swift; path = "../what's what/NearbyPointClassTests.swift"; sourceTree = "<group>"; };
+		138B183A1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAltitudeCommunicator.swift; sourceTree = "<group>"; };
+		139E8BA41ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NearbyPointsViewControllerTests.swift; path = "what's whatTests/NearbyPointsViewControllerTests.swift"; sourceTree = SOURCE_ROOT; };
+		13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeonamesCommunicator.swift; sourceTree = "<group>"; };
+		13A3B9731AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeonamesCommunicatorTests.swift; sourceTree = "<group>"; };
+		13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPointsManager.swift; sourceTree = "<group>"; };
+		13A3B9781AC633AD00FF0202 /* NearbyPointsManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPointsManagerTests.swift; sourceTree = "<group>"; };
+		13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsManager.swift; sourceTree = "<group>"; };
+		13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoNamesJSONParser.swift; sourceTree = "<group>"; };
+		13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNGeonamesCommunicator.swift; sourceTree = "<group>"; };
+		13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLResponse.swift; sourceTree = "<group>"; };
+		13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSessionManager.swift; sourceTree = "<group>"; };
+		13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		135237591ABA209F00D33887 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1352376E1ABA20A100D33887 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		135237531ABA209E00D33887 = {
+			isa = PBXGroup;
+			children = (
+				1352375E1ABA209F00D33887 /* what's what */,
+				135237741ABA20A100D33887 /* what's whatTests */,
+				1352375D1ABA209F00D33887 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1352375D1ABA209F00D33887 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1352375C1ABA209F00D33887 /* what's what.app */,
+				135237711ABA20A100D33887 /* what's whatTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1352375E1ABA209F00D33887 /* what's what */ = {
+			isa = PBXGroup;
+			children = (
+				135237611ABA20A000D33887 /* AppDelegate.swift */,
+				138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */,
+				13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */,
+				13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */,
+				13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */,
+				138B18321ACB6BB200D54ECE /* NearbyPoint.swift */,
+				13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */,
+				135237631ABA20A000D33887 /* NearbyPointsViewController.swift */,
+				135237651ABA20A000D33887 /* Main.storyboard */,
+				135237681ABA20A000D33887 /* Images.xcassets */,
+				1352376A1ABA20A000D33887 /* LaunchScreen.xib */,
+				1352375F1ABA209F00D33887 /* Supporting Files */,
+			);
+			path = "what's what";
+			sourceTree = "<group>";
+		};
+		1352375F1ABA209F00D33887 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				135237601ABA20A000D33887 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		135237741ABA20A100D33887 /* what's whatTests */ = {
+			isa = PBXGroup;
+			children = (
+				13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */,
+				138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */,
+				13A3B9731AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift */,
+				13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */,
+				13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */,
+				132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */,
+				13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */,
+				132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */,
+				138B182E1AC9C10100D54ECE /* MockParser.swift */,
+				13A3B9781AC633AD00FF0202 /* NearbyPointsManagerTests.swift */,
+				138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */,
+				139E8BA41ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift */,
+				13047C041ACEF37900BD13E8 /* MockHeading.swift */,
+				138B183A1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift */,
+				132F2C421AC762700071266F /* ParserTests.swift */,
+				135237751ABA20A100D33887 /* Supporting Files */,
+			);
+			path = "what's whatTests";
+			sourceTree = "<group>";
+		};
+		135237751ABA20A100D33887 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				135237761ABA20A100D33887 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1352375B1ABA209F00D33887 /* what's what */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1352377B1ABA20A100D33887 /* Build configuration list for PBXNativeTarget "what's what" */;
+			buildPhases = (
+				135237581ABA209F00D33887 /* Sources */,
+				135237591ABA209F00D33887 /* Frameworks */,
+				1352375A1ABA209F00D33887 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "what's what";
+			productName = "what's what";
+			productReference = 1352375C1ABA209F00D33887 /* what's what.app */;
+			productType = "com.apple.product-type.application";
+		};
+		135237701ABA20A100D33887 /* what's whatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1352377E1ABA20A100D33887 /* Build configuration list for PBXNativeTarget "what's whatTests" */;
+			buildPhases = (
+				1352376D1ABA20A100D33887 /* Sources */,
+				1352376E1ABA20A100D33887 /* Frameworks */,
+				1352376F1ABA20A100D33887 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				135237731ABA20A100D33887 /* PBXTargetDependency */,
+			);
+			name = "what's whatTests";
+			productName = "what's whatTests";
+			productReference = 135237711ABA20A100D33887 /* what's whatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		135237541ABA209E00D33887 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = johnnylaw;
+				TargetAttributes = {
+					1352375B1ABA209F00D33887 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 96P47M429U;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
+						};
+					};
+					135237701ABA20A100D33887 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 96P47M429U;
+						TestTargetID = 1352375B1ABA209F00D33887;
+					};
+				};
+			};
+			buildConfigurationList = 135237571ABA209E00D33887 /* Build configuration list for PBXProject "what's what" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 135237531ABA209E00D33887;
+			productRefGroup = 1352375D1ABA209F00D33887 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1352375B1ABA209F00D33887 /* what's what */,
+				135237701ABA20A100D33887 /* what's whatTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1352375A1ABA209F00D33887 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				135237671ABA20A000D33887 /* Main.storyboard in Resources */,
+				1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */,
+				135237691ABA20A000D33887 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1352376F1ABA20A100D33887 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		135237581ABA209F00D33887 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13A3B9721AC5FC2800FF0202 /* GeonamesCommunicator.swift in Sources */,
+				13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */,
+				13A3B9771AC6337900FF0202 /* NearbyPointsManager.swift in Sources */,
+				13A3B97F1AC6F5F300FF0202 /* GeoNamesJSONParser.swift in Sources */,
+				138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */,
+				135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */,
+				135237621ABA20A000D33887 /* AppDelegate.swift in Sources */,
+				138B18351ACB6D0900D54ECE /* AltitudeCommunicator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1352376D1ABA20A100D33887 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13A3B97C1AC638A100FF0202 /* MockNearbyPointsManager.swift in Sources */,
+				138B183B1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift in Sources */,
+				13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */,
+				13A3B9861AC7118000FF0202 /* FakeURLResponse.swift in Sources */,
+				13A3B9841AC7102000FF0202 /* NNGeonamesCommunicator.swift in Sources */,
+				13A3B9801AC707BA00FF0202 /* GeonamesCommunicator.swift in Sources */,
+				13A3B9741AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift in Sources */,
+				138B18371ACB75DE00D54ECE /* AltitudeCommunicator.swift in Sources */,
+				13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */,
+				138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */,
+				13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */,
+				138B18361ACB758700D54ECE /* NearbyPoint.swift in Sources */,
+				13A3B9791AC633AD00FF0202 /* NearbyPointsManagerTests.swift in Sources */,
+				138B18391ACB79B000D54ECE /* NearbyPointClassTests.swift in Sources */,
+				132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */,
+				13A3B9821AC70A2300FF0202 /* GeoNamesJSONParser.swift in Sources */,
+				132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */,
+				139E8BA51ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift in Sources */,
+				138B18311ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift in Sources */,
+				139E8BA31ACC907D00C4C7E5 /* NearbyPointsViewController.swift in Sources */,
+				132F2C431AC762710071266F /* ParserTests.swift in Sources */,
+				13C9BF9F1AE2CEF2005EF8D4 /* CaptureSessionManager.swift in Sources */,
+				13C9BFD61AE5B111005EF8D4 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		135237731ABA20A100D33887 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1352375B1ABA209F00D33887 /* what's what */;
+			targetProxy = 135237721ABA20A100D33887 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		135237651ABA20A000D33887 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				135237661ABA20A000D33887 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1352376A1ABA20A000D33887 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1352376B1ABA20A000D33887 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		135237791ABA20A100D33887 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1352377A1ABA20A100D33887 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1352377C1ABA20A100D33887 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "what's what/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1352377D1ABA20A100D33887 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "what's what/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		1352377F1ABA20A100D33887 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "what's whatTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/what's what.app/what's what";
+			};
+			name = Debug;
+		};
+		135237801ABA20A100D33887 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "what's whatTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/what's what.app/what's what";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		135237571ABA209E00D33887 /* Build configuration list for PBXProject "what's what" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				135237791ABA20A100D33887 /* Debug */,
+				1352377A1ABA20A100D33887 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1352377B1ABA20A100D33887 /* Build configuration list for PBXNativeTarget "what's what" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1352377C1ABA20A100D33887 /* Debug */,
+				1352377D1ABA20A100D33887 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1352377E1ABA20A100D33887 /* Build configuration list for PBXNativeTarget "what's whatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1352377F1ABA20A100D33887 /* Debug */,
+				135237801ABA20A100D33887 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 135237541ABA209E00D33887 /* Project object */;
+}
