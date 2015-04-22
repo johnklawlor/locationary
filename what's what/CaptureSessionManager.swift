@@ -33,21 +33,24 @@ class CaptureSessionManager {
             var error: NSError?
             let videoIn = AVCaptureDeviceInput.deviceInputWithDevice(videoDevice, error: &error) as? AVCaptureDeviceInput
             if error != nil {
-                println("Couldn't create video input")
-            }
-            else {
                 if captureSession?.canAddInput(videoIn) == true {
                     captureSession?.addInput(videoIn)
-
                 }
                 else {
                     println("Couldn't add video input")
                 }
             }
+            else {
+                println("Couldn't create video input")
+            }
         }
         else {
             println("Couldn't create video capture device")
         }
+    }
+    
+    func setPreviewLayer(layerBounds: CGRect, bounds: CGRect) {
+        
     }
     
     func dealloc() {

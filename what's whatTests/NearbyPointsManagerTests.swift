@@ -10,11 +10,14 @@ import UIKit
 import XCTest
 import CoreLocation
 
+struct Location {
+    static let One = CLLocation(coordinate: CLLocationCoordinate2DMake(43.739442,-72.021706), altitude: 0, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
+}
+
 class NearbyPointsManagerTests: XCTestCase {
 
     var manager = NearbyPointsManager()
     var communicator = MockGeonamesCommunicator()
-    var locationA = CLLocation(coordinate: CLLocationCoordinate2DMake(43.739442,-72.021706), altitude: 0, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
     var managerDelegate = MockNearbyPointsManagerDelegate()
     var parser = MockParser()
     var parserError = NSError(domain: "JSONError", code: 0, userInfo: nil)
@@ -29,7 +32,7 @@ class NearbyPointsManagerTests: XCTestCase {
         manager.managerDelegate = managerDelegate
         manager.parser = parser
         
-        manager.currentLocation = locationA
+        manager.currentLocation = Location.One
         
         let location = CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
         let name = "Smarts Mountain"
@@ -45,7 +48,7 @@ class NearbyPointsManagerTests: XCTestCase {
     }
 
     func testSettingManagersCurrentLocationSetsCommunicatorsCurrentLocation() {
-        XCTAssertEqual(communicator.currentLocation!, locationA, "Current location should be passed to communicator")
+        XCTAssertEqual(communicator.currentLocation!, Location.One, "Current location should be passed to communicator")
     }
     
     func testManagerHasAParser() {
@@ -112,6 +115,33 @@ class NearbyPointsManagerTests: XCTestCase {
         XCTAssertEqual(viewController.nearbyPointsWithAltitude!, [TestPoints.Point1], "Manager should pass NearbyPoint with altitude to its delegate")
         manager.successfullyRetrievedAltitude(TestPoints.Point2)
         XCTAssertEqual(viewController.nearbyPointsWithAltitude!, [TestPoints.Point1, TestPoints.Point2], "Manager should pass NearbyPoint with altitude to its delegate")
+    }
+    
+    func testManagerAddsDistanceFromCurrentLocationToNearbyPointBeforeNotifiyingDelegate() {
+        manager.successfullyRetrievedAltitude(TestPoints.Point1)
+        XCTAssertEqual(TestPoints.Point1.distanceFromCurrentLocation, 9614.14541222178, "nearbyPoint's distanceFromCurrentLocation should get updated after successfully retrieving altitude")
+    }
+    
+    func testManagerInitializesNearbyPointsWithAltitudeArrayBeforeGettingAltitudeData() {
+        manager.nearbyPoints = [TestPoints.Point1]
+        manager.getAltitudeJSONDataForEachPoint()
+        XCTAssertEqual(manager.nearbyPointsWithAltitude!, [NearbyPoint](), "Calling manager's getAltitudeJSONDataForEachPoint should initialize nearbyPointsWithAltitude array")
+    }
+    
+    func testManagerAddsNearbyPointToItsOwnArrayAfterSuccessfullyRetrievingAltitude() {
+        manager.nearbyPointsWithAltitude = [NearbyPoint]()
+        manager.successfullyRetrievedAltitude(TestPoints.Point1)
+        XCTAssertEqual(manager.nearbyPointsWithAltitude!, [TestPoints.Point1], "Manager should add NearbyPoint to its nearbyPointsWithAltitude array after successfully retrieving altitude")
+        manager.successfullyRetrievedAltitude(TestPoints.Point2)
+        XCTAssertEqual(manager.nearbyPointsWithAltitude!, [TestPoints.Point1, TestPoints.Point2], "Manager should add second NearbyPoint to its nearbyPointsWithAltitude array after successfully retrieving altitude")
+    }
+    
+    func testManagerDoesNotInformDelegateIfNearbyPointIsOutOfDistanceBounds() {
+        viewController.nearbyPointsWithAltitude = [NearbyPoint]()
+        manager.managerDelegate = viewController
+        manager.upperDistanceLimit = 5000
+        manager.successfullyRetrievedAltitude(TestPoints.Point1)
+        XCTAssertTrue(viewController.nearbyPointsWithAltitude?.isEmpty == true, "nearbyPoint should not have been passed to delegate")
     }
 
 }

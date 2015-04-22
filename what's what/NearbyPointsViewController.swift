@@ -57,7 +57,11 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             }
         }
     }
-    var motionManager: CMMotionManager!
+    var motionManager: CMMotionManager! {
+        didSet {
+            motionManager.accelerometerUpdateInterval = 1/30
+        }
+    }
     
 // m((18/75)*((distanceFromCurrentLocation)^2)/3.2808 // meters
 // ((2/3)*((2.204*1.60934)^2))*0.304= 2.54977064 subtract this
@@ -72,12 +76,8 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         captureManager?.addVideoInput()
         captureManager?.addVideoPreviewLayer()
+        captureManager?.setPreviewLayer(self.view.layer.bounds, bounds: self.view.bounds)
         
-        let layerRect = self.view.layer.bounds
-        captureManager?.previewLayer?.frame = self.view.bounds
-        captureManager?.previewLayer?.bounds = layerRect
-        captureManager?.previewLayer?.position = CGPointMake(CGRectGetMidX(layerRect),
-            CGRectGetMidY(layerRect))
         self.view.layer.addSublayer(captureManager?.previewLayer)
         
         var overlayImageView = UIImageView(image: UIImage(named: "overlaygraphic.png"))
@@ -88,7 +88,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         captureManager?.captureSession?.startRunning()
         
         if motionManager != nil && motionManager.accelerometerAvailable {
-            motionManager.accelerometerUpdateInterval = 1/30
             motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue())
                 { (motionData, error) -> Void in
                     if self.nearbyPointsSubviews != nil {
@@ -214,7 +213,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
     }
     
-    func retrievedNearbyPointsWithAltitude(nearbyPoint: NearbyPoint) {
+    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
         nearbyPointsWithAltitude?.append(nearbyPoint)
     }
 }

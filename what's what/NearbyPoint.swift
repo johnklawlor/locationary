@@ -38,6 +38,7 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     
     var name: String!
     var location: CLLocation!
+    var distanceFromCurrentLocation: CLLocationDistance!
     
     var altitudeCommunicator: AltitudeCommunicator?
     var fetchingError: NSError?

@@ -10,6 +10,7 @@ import UIKit
 import XCTest
 import CoreLocation
 import CoreMotion
+import AVFoundation
 
 class AppDelegateTests: XCTestCase {
     
@@ -63,4 +64,30 @@ class AppDelegateTests: XCTestCase {
         println("nC: \(applicationDelegate.navigationController!)")
         XCTAssertTrue(applicationDelegate.window!.rootViewController == applicationDelegate.navigationController!, "appDelegate's window's rootViewController should be appDelegate's navigationController")
     }
+    
+    func testAppDelegateSetsViewControllersDeviceConstantsGivenADevice() {
+        class MockAVCaptureDeviceFormat: AVCaptureDeviceFormat {
+            override var videoFieldOfView: Float {
+                return 58.0
+            }
+        }
+        class MockVideoDevice: AVCaptureDevice {
+            override class func devices() -> [AnyObject]! {
+                return [MockAVCaptureDeviceFormat()]
+            }
+            override var activeFormat: AVCaptureDeviceFormat! {
+                get {
+                    return MockAVCaptureDeviceFormat()
+                }
+                set {
+                    
+                }
+            }
+        }
+        println("MockVideoDevice() is \(MockVideoDevice())")
+        applicationDelegate.captureDevice = MockVideoDevice()
+//        XCTAssertEqual(viewController.DeviceConstants.HFOV, 58.0, "appDelegate should set its viewController's DeviceConstants")
+    }
+    
+    
 }

@@ -14,12 +14,14 @@ import AVFoundation
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-    var navigationController: UINavigationController?
-
     struct Motion {
         static let Manager = CMMotionManager()
     }
+    
+    var window: UIWindow?
+    var navigationController: UINavigationController?
+    
+    var captureDevice: AVCaptureDevice?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         var nearbyPointsViewController = NearbyPointsViewController()
@@ -33,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let phoneWidth = CGFloat(UIScreen.mainScreen().bounds.height)
         
         let devices = AVCaptureDevice.devices()
-        var captureDevice: AVCaptureDevice?
         for device in devices {
             if (device.hasMediaType(AVMediaTypeVideo)) {
                 if(device.position == AVCaptureDevicePosition.Back) {
@@ -41,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
+        println("captureDevice is \(captureDevice)")
         if let retrievedDevice = captureDevice {
             let HFOV = retrievedDevice.activeFormat.videoFieldOfView
             let VFOC = ((HFOV)/16.0)*9.0

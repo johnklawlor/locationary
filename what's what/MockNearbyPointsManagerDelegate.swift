@@ -21,7 +21,7 @@ class MockNearbyPointsManagerDelegate: NearbyPointsManagerDelegate {
         successfullyAssembledNearbyPointsArray = true
     }
     
-    func retrievedNearbyPointsWithAltitude(nearbyPoint: NearbyPoint) {
+    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
         
     }
     

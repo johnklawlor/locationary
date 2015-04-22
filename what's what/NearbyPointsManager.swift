@@ -11,7 +11,7 @@ import CoreLocation
 protocol NearbyPointsManagerDelegate {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
-    func retrievedNearbyPointsWithAltitude(nearbyPoint: NearbyPoint)
+    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
 }
 
 public struct ManagerConstants {
@@ -28,10 +28,14 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     var nearbyPointsJSON: String?
     var parser: GeoNamesJSONParser!
     var nearbyPoints: [NearbyPoint]?
+    var nearbyPointsWithAltitude: [NearbyPoint]?
 
     var fetchingError: NSError?
     var parsingAltitudeError: NSError?
     var managerDelegate: NearbyPointsManagerDelegate?
+    
+    var lowerDistanceLimit: CLLocationDistance! = 0
+    var upperDistanceLimit: CLLocationDistance! = 100000
     
     init() {
     }
@@ -67,13 +71,12 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     
     func getAltitudeJSONDataForEachPoint() {
         if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
+            nearbyPointsWithAltitude = [NearbyPoint]()
             for nearbyPoint in nearbyPoints! {
                 nearbyPoint.managerDelegate = self
                 nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
                 nearbyPoint.getAltitudeJSONData()
             }
-        } else {
-
         }
     }
     
@@ -87,6 +90,17 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     
     func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-        managerDelegate?.retrievedNearbyPointsWithAltitude(nearbyPoint)
+        calculateDistanceFromCurrentLocation(nearbyPoint)
+        nearbyPointsWithAltitude?.append(nearbyPoint)
+        if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
+            nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
+            managerDelegate?.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
+        }
+    }
+    
+    func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {
+        if currentLocation != nil {
+            nearbyPoint.distanceFromCurrentLocation = currentLocation!.distanceFromLocation(nearbyPoint.location)
+        }
     }
 }
