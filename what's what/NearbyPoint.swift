@@ -43,10 +43,11 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
         parser = GeoNamesJSONParser()
     }
     
-    var name: String!
+    let name: String!
     var location: CLLocation!
     var distanceFromCurrentLocation: CLLocationDistance!
     var angleToCurrentLocation: Double!
+    var angleToHorizon: Double!
     
     var altitudeCommunicator: AltitudeCommunicator?
     var fetchingError: NSError?

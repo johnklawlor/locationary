@@ -124,7 +124,13 @@ class NearbyPointsManagerTests: XCTestCase {
     
     func testManagerAddsAngleToCurrentLocationAfterSuccessfullyRetrievingAltitude() {
         manager.successfullyRetrievedAltitude(TestPoints.Point1)
-        XCTAssertEqual(TestPoints.Point1.angleToCurrentLocation, 84.86096230126363, "Manager should update nearbyPoint's angleToCurrentLocation")
+        XCTAssertEqual(TestPoints.Point1.angleToCurrentLocation.format(), "85.004272", "Manager should update nearbyPoint's angleToCurrentLocation")
+    }
+    
+    func testManagerAddsAngleToHorizonAfterSuccessfullyRetrievingAltitude() {
+        manager.currentLocation = TestPoints.Holts.location
+        manager.successfullyRetrievedAltitude(TestPoints.Winslow)
+        XCTAssertEqual(TestPoints.Winslow.angleToHorizon.format(), "2.258537", "Manager should update nearbyPoint's angleToCurrentLocation")
     }
     
     func testManagerInitializesNearbyPointsWithAltitudeArrayBeforeGettingAltitudeData() {
@@ -154,24 +160,25 @@ class NearbyPointsManagerTests: XCTestCase {
         XCTAssertEqual(managerDelegate.updatedNearbyPoints, [TestPoints.Point1, TestPoints.Point2], "Manager delegate should have been passed Point1 and Point2 as array")
     }
     
-    func testManagerUpdatesDistancesAndAnglesCorrectly() {
+    func testManagerUpdatesDistancesCorrectly() {
         
         manager.currentLocation = TestPoints.NearHolts.location
-        manager.calculateDistanceFromCurrentLocation(TestPoints.Point1)
-        manager.calculateDistanceFromCurrentLocation(TestPoints.Point2)
-        manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(TestPoints.Point1)
-        manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(TestPoints.Point2)
         manager.nearbyPointsWithAltitude = [TestPoints.Point1, TestPoints.Point2]
+        manager.updateDistanceOfNearbyPointsWithAltitude()
 
         let distance1 = TestPoints.Point1.distanceFromCurrentLocation
         let angle1 = TestPoints.Point1.angleToCurrentLocation
+        let horizonAngle1 = TestPoints.Point1.angleToHorizon
         let distance2 = TestPoints.Point2.distanceFromCurrentLocation
         let angle2 = TestPoints.Point2.angleToCurrentLocation
+        let horizonAngle2 = TestPoints.Point2.angleToHorizon
         
         XCTAssertEqual(distance1.format(), "8401.083881", "viewController should have updated Point1's distanceToCurrentLocation")
         XCTAssertEqual(distance2.format(), "20784.699292", "viewController should have updated Point2's distanceToCurrentLocation")
-        XCTAssertEqual(angle1.format(), "43.757197", "viewController should have updated Point1's distanceToCurrentLocation")
-        XCTAssertEqual(angle2.format(), "318.625419", "viewController should have updated Point2's distanceToCurrentLocation")
+        XCTAssertEqual(angle1.format(), "43.769368", "viewController should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(angle2.format(), "318.614398", "viewController should have updated Point2's distanceToCurrentLocation")
+        XCTAssertEqual(horizonAngle1.format(), "3.871676", "viewController should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(horizonAngle2.format(), "0.398280", "viewController should have updated Point2's distanceToCurrentLocation")
     }
     
     func testManagerInformsDelegateAfterItUpdatesDistances() {

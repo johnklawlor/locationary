@@ -94,6 +94,7 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
         if currentLocation != nil {
             calculateDistanceFromCurrentLocation(nearbyPoint)
             calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+            calculateAngleToHorizon(nearbyPoint)
             nearbyPointsWithAltitude?.append(nearbyPoint)
             if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
                 nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
@@ -107,6 +108,7 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
             for nearbyPoint in nearbyPointsWithAltitude! {
                 calculateDistanceFromCurrentLocation(nearbyPoint)
                 calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+                calculateAngleToHorizon(nearbyPoint)
             }
             managerDelegate?.updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPointsWithAltitude!)
         }
@@ -122,4 +124,17 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
         let theta = (dy < 0) ? 360 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI) : asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
         nearbyPoint.angleToCurrentLocation = theta
     }
+    
+    func calculateAngleToHorizon(nearbyPoint: NearbyPoint) {
+        if currentLocation != nil {
+            let distanceAway = nearbyPoint.distanceFromCurrentLocation
+            let heightToSubtract = ((2/3)*pow(distanceAway/1000*1.60934,2)) * 0.304
+            let nearbyPointAltitude = nearbyPoint.location.altitude
+            let height = nearbyPointAltitude - currentLocation!.altitude - heightToSubtract
+            let angle = atan(height/distanceAway)*(360.0/M_PI)
+            
+            nearbyPoint.angleToHorizon = angle
+        }
+    }
+    
 }

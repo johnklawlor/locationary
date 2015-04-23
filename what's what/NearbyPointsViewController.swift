@@ -29,6 +29,12 @@ struct DistanceConstants {
     static let WithinRadius = CLLocationDistance(20000) // distance in meters
 }
 
+struct NearbyPointLabel {
+    let indexIntoNearbyPointsWithAltitudeArray: Int!
+    let xPosition: Int!
+    let yPosition: Int!
+}
+
 class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, NearbyPointsManagerDelegate {
     
     var captureManager: CaptureSessionManager?
