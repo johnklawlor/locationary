@@ -11,6 +11,8 @@ import Foundation
 class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate {
     
     var retrievalCount = 0
+    var updatedDistances: Bool! = false
+    var askedToGetGeonamesJSONData: Bool! = false
     
     override func receivedNearbyPointsJSON(json: String) {
         nearbyPointsJSON = json
@@ -18,5 +20,13 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
     
     override func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
         retrievalCount++
+    }
+    
+    override func updateDistanceOfNearbyPointsWithAltitude() {
+        updatedDistances = true
+    }
+    
+    override func getGeonamesJSONData() {
+        askedToGetGeonamesJSONData = true
     }
 }

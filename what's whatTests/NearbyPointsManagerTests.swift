@@ -122,6 +122,11 @@ class NearbyPointsManagerTests: XCTestCase {
         XCTAssertEqual(TestPoints.Point1.distanceFromCurrentLocation, 9614.14541222178, "nearbyPoint's distanceFromCurrentLocation should get updated after successfully retrieving altitude")
     }
     
+    func testManagerAddsAngleToCurrentLocationAfterSuccessfullyRetrievingAltitude() {
+        manager.successfullyRetrievedAltitude(TestPoints.Point1)
+        XCTAssertEqual(TestPoints.Point1.angleToCurrentLocation, 84.86096230126363, "Manager should update nearbyPoint's angleToCurrentLocation")
+    }
+    
     func testManagerInitializesNearbyPointsWithAltitudeArrayBeforeGettingAltitudeData() {
         manager.nearbyPoints = [TestPoints.Point1]
         manager.getAltitudeJSONDataForEachPoint()
@@ -142,6 +147,37 @@ class NearbyPointsManagerTests: XCTestCase {
         manager.upperDistanceLimit = 5000
         manager.successfullyRetrievedAltitude(TestPoints.Point1)
         XCTAssertTrue(viewController.nearbyPointsWithAltitude?.isEmpty == true, "nearbyPoint should not have been passed to delegate")
+    }
+    
+    func testManagerPassesUpdatedArrayToItsDelegate() {
+        manager.managerDelegate?.updatedNearbyPointsWithAltitudeAndUpdatedDistance([TestPoints.Point1, TestPoints.Point2])
+        XCTAssertEqual(managerDelegate.updatedNearbyPoints, [TestPoints.Point1, TestPoints.Point2], "Manager delegate should have been passed Point1 and Point2 as array")
+    }
+    
+    func testManagerUpdatesDistancesAndAnglesCorrectly() {
+        
+        manager.currentLocation = TestPoints.NearHolts.location
+        manager.calculateDistanceFromCurrentLocation(TestPoints.Point1)
+        manager.calculateDistanceFromCurrentLocation(TestPoints.Point2)
+        manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(TestPoints.Point1)
+        manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(TestPoints.Point2)
+        manager.nearbyPointsWithAltitude = [TestPoints.Point1, TestPoints.Point2]
+
+        let distance1 = TestPoints.Point1.distanceFromCurrentLocation
+        let angle1 = TestPoints.Point1.angleToCurrentLocation
+        let distance2 = TestPoints.Point2.distanceFromCurrentLocation
+        let angle2 = TestPoints.Point2.angleToCurrentLocation
+        
+        XCTAssertEqual(distance1.format(), "8401.083881", "viewController should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(distance2.format(), "20784.699292", "viewController should have updated Point2's distanceToCurrentLocation")
+        XCTAssertEqual(angle1.format(), "43.757197", "viewController should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(angle2.format(), "318.625419", "viewController should have updated Point2's distanceToCurrentLocation")
+    }
+    
+    func testManagerInformsDelegateAfterItUpdatesDistances() {
+        manager.nearbyPointsWithAltitude = [TestPoints.Point1]
+        manager.updateDistanceOfNearbyPointsWithAltitude()
+        XCTAssertEqual(managerDelegate.updatedNearbyPoints, [TestPoints.Point1], "Manager should call its delegate after it updates distances and angle")
     }
 
 }

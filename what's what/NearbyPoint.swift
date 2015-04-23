@@ -27,7 +27,14 @@ protocol AltitudeManagerDelegate: class {
 class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     
     var description: String {
-        return "name: \(name), \n location: \(location)"
+        var descriptionString = "\n name: \(name), \n location: \(location)"
+        if distanceFromCurrentLocation != nil {
+            descriptionString += ", \n distanceFromCurrentLocation: \(distanceFromCurrentLocation)"
+        }
+        if angleToCurrentLocation != nil {
+            descriptionString += ", \n angleToCurrentLocation: \(angleToCurrentLocation)"
+        }
+        return descriptionString
     }
     
     init(aName: String, aLocation: CLLocation!) {
@@ -39,6 +46,7 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     var name: String!
     var location: CLLocation!
     var distanceFromCurrentLocation: CLLocationDistance!
+    var angleToCurrentLocation: Double!
     
     var altitudeCommunicator: AltitudeCommunicator?
     var fetchingError: NSError?

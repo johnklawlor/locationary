@@ -16,6 +16,7 @@
 		135237671ABA20A000D33887 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 135237651ABA20A000D33887 /* Main.storyboard */; };
 		135237691ABA20A000D33887 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 135237681ABA20A000D33887 /* Images.xcassets */; };
 		1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1352376A1ABA20A000D33887 /* LaunchScreen.xib */; };
+		136A0F101AE96EC000ED1D69 /* MockNearbyPointsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */; };
 		138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B182E1AC9C10100D54ECE /* MockParser.swift */; };
 		138B18311ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */; };
 		138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18321ACB6BB200D54ECE /* NearbyPoint.swift */; };
@@ -67,6 +68,7 @@
 		1352376B1ABA20A000D33887 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		135237711ABA20A100D33887 /* what's whatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "what's whatTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		135237761ABA20A100D33887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsViewController.swift; sourceTree = "<group>"; };
 		138B182E1AC9C10100D54ECE /* MockParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockParser.swift; sourceTree = "<group>"; };
 		138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltitudeCommunicatorTests.swift; sourceTree = "<group>"; };
 		138B18321ACB6BB200D54ECE /* NearbyPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPoint.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */,
 				13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */,
 				132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */,
+				136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */,
 				138B182E1AC9C10100D54ECE /* MockParser.swift */,
 				13A3B9781AC633AD00FF0202 /* NearbyPointsManagerTests.swift */,
 				138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */,
@@ -308,6 +311,7 @@
 				13A3B9861AC7118000FF0202 /* FakeURLResponse.swift in Sources */,
 				13A3B9841AC7102000FF0202 /* NNGeonamesCommunicator.swift in Sources */,
 				13A3B9801AC707BA00FF0202 /* GeonamesCommunicator.swift in Sources */,
+				136A0F101AE96EC000ED1D69 /* MockNearbyPointsViewController.swift in Sources */,
 				13A3B9741AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift in Sources */,
 				138B18371ACB75DE00D54ECE /* AltitudeCommunicator.swift in Sources */,
 				13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */,

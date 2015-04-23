@@ -12,6 +12,7 @@ protocol NearbyPointsManagerDelegate {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
     func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
+    func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint])
 }
 
 public struct ManagerConstants {
@@ -90,17 +91,35 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     
     func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-        calculateDistanceFromCurrentLocation(nearbyPoint)
-        nearbyPointsWithAltitude?.append(nearbyPoint)
-        if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
-            nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
-            managerDelegate?.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
+        if currentLocation != nil {
+            calculateDistanceFromCurrentLocation(nearbyPoint)
+            calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+            nearbyPointsWithAltitude?.append(nearbyPoint)
+            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
+                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
+                managerDelegate?.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
+            }
+        }
+    }
+    
+    func updateDistanceOfNearbyPointsWithAltitude() {
+        if nearbyPointsWithAltitude != nil {
+            for nearbyPoint in nearbyPointsWithAltitude! {
+                calculateDistanceFromCurrentLocation(nearbyPoint)
+                calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+            }
+            managerDelegate?.updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPointsWithAltitude!)
         }
     }
     
     func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {
-        if currentLocation != nil {
-            nearbyPoint.distanceFromCurrentLocation = currentLocation!.distanceFromLocation(nearbyPoint.location)
-        }
+        nearbyPoint.distanceFromCurrentLocation = currentLocation!.distanceFromLocation(nearbyPoint.location)
+    }
+    
+    func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
+        let y = CLLocation(coordinate: CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: nearbyPoint.location.coordinate.longitude), altitude: nearbyPoint.location.altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
+        let dy = nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude ? y.distanceFromLocation(nearbyPoint.location) : -(y.distanceFromLocation(nearbyPoint.location))
+        let theta = (dy < 0) ? 360 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI) : asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+        nearbyPoint.angleToCurrentLocation = theta
     }
 }
