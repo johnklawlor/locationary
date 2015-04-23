@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import CoreLocation
 
 class MockNearbyPointsViewController: NearbyPointsViewController {
-    override func prepareForNearbyPointsWithAltitude() {
+    
+    var preparingForNearbyPoints: Bool! = false
+    
+    override func prepareForNearbyPointsWithAltitudeForLocation(location: CLLocation!) {
         nearbyPointsManager = MockNearbyPointsManager()
     }
 }

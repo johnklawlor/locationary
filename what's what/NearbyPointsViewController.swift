@@ -126,7 +126,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 }
             }
         }
-
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateHeading newHeading: CLHeading!) {
@@ -140,7 +139,22 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             return
         } else {
             currentHeading = heading
-            showNearbyPointLabels()
+            let lowerValidAngle = heading - Double(DeviceConstants.VFOV/2)
+            let upperValidAngle = heading + Double(DeviceConstants.VFOV/2)
+
+
+//            if lowerValidAngle < 180 && upperValidAngle > 0 && currentLocation.coordinate.latitude < nearbyMtn.coordinate.latitude {
+//
+//            }
+//            else if lowerValidAngle > 180 && upperValidAngle > 180 && currentLocation.coordinate.latitude > nearbyMtn.coordinate.latitude {
+//
+//            }
+//            else if lowerValidAngle < 270 && upperValidAngle > 90 && currentLocation.coordinate.longitude > nearbyMtn.coordinate.longitude {
+//
+//            }
+//            else (lowerValidAngle < 90 || lowerValidAngle > 270) && (upperValidAngle > 270 || upperValidAngle < 90) && currentLocation.coordinate.longitude < nearbyMtn.coordinate.longitude {
+//
+//            }
         }
     }
     
@@ -198,27 +212,28 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 if nearbyPointsManager != nil {
                     let currentLocation = nearbyPointsManager.currentLocation!
                     if currentLocation.distanceFromLocation(location) > 1000 {
-                        prepareForNearbyPointsWithAltitude()
-                        nearbyPointsManager.currentLocation = location
+                        prepareForNearbyPointsWithAltitudeForLocation(location)
                         nearbyPointsManager.getGeonamesJSONData()
+
                     } else {
+                        nearbyPointsManager.currentLocation = location
                         nearbyPointsManager.updateDistanceOfNearbyPointsWithAltitude()
                     }
                 } else {
-                    prepareForNearbyPointsWithAltitude()
-                    nearbyPointsManager.currentLocation = location
+                    prepareForNearbyPointsWithAltitudeForLocation(location)
                     nearbyPointsManager.getGeonamesJSONData()
                 }
             }
         }
     }
     
-    func prepareForNearbyPointsWithAltitude() {
+    func prepareForNearbyPointsWithAltitudeForLocation(location: CLLocation!) {
         nearbyPointsManager = nil
         nearbyPointsManager = NearbyPointsManager()
         nearbyPointsManager.managerDelegate = self
         nearbyPointsWithAltitude = [NearbyPoint]()
         nearbyPointsToShow = [Int]()
+        nearbyPointsManager.currentLocation = location
     }
     
     func fetchingFailedWithError(error: NSError) {

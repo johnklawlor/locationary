@@ -129,7 +129,7 @@ class NearbyPointsViewControllerTests: XCTestCase {
         XCTAssertEqual(mockLocationManager.didStartUpdatingLocation, true, "ViewDidLoad should start updating location")
     }
     
-    func testUpdatingLocationForFirstTimeGetGeonmaesJSONData() {
+    func testUpdatingLocationForFirstTimeGetGeonamesJSONData() {
         let mockViewController = MockNearbyPointsViewController()
         mockViewController.locationManager(locationManager, didUpdateLocations: [Location.One])
         let mockNearbyPointsManager = mockViewController.nearbyPointsManager as! MockNearbyPointsManager
@@ -144,6 +144,15 @@ class NearbyPointsViewControllerTests: XCTestCase {
         mockViewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point3.location])
         let newMockNearbyPointsManager = mockViewController.nearbyPointsManager as! MockNearbyPointsManager
         XCTAssertEqual(newMockNearbyPointsManager.askedToGetGeonamesJSONData, true, "ViewController without a nearbyPointsManager should create one and call getGeonamesJSONData")
+    }
+    
+    func testUpdatingLocationLessThan1000MetersWithAnAlreadySetCurrentLocationUpdatesManagersCurrentLocationForAppropriateDistanceAndAngleCalculations() {
+        let mockViewController = MockNearbyPointsViewController()
+        let mockNearbyPointsManager = MockNearbyPointsManager()
+        mockNearbyPointsManager.currentLocation = TestPoints.Holts.location
+        mockViewController.nearbyPointsManager = mockNearbyPointsManager
+        mockViewController.locationManager(locationManager, didUpdateLocations: [TestPoints.NearHolts.location])
+        XCTAssertEqual(mockNearbyPointsManager.currentLocation!, TestPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
     }
     
 }
