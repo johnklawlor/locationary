@@ -21,6 +21,8 @@ struct TestPoints {
     static let MooseNorth = NearbyPoint(aName: "Moose Mountain, North", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.741299, -72.136657), altitude: 702, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let MooseSouth = NearbyPoint(aName: "Moose Mountain, South", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.720343, -72.145562), altitude: 694, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let Winslow = NearbyPoint(aName: "Winslow", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.776346, -72.077457), altitude: 693, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let BreadLoaf = NearbyPoint(aName: "Bread Loaf", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.002280,-72.941500), altitude: 1169, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let Schindlers = NearbyPoint(aName: "Schindlers", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.833084, -72.250574), altitude: 187, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
 }
 
 class NearbyPointClassTests: XCTestCase {
@@ -31,6 +33,8 @@ class NearbyPointClassTests: XCTestCase {
     var parser = MockParser()
     var parser2 = MockParser()
     var manager = MockNearbyPointsManager()
+    var viewController = NearbyPointsViewController()
+    var nearbyPoint = TestPoints.Smarts
     
     override func setUp() {
         super.setUp()
@@ -41,6 +45,10 @@ class NearbyPointClassTests: XCTestCase {
         let location2 = CLLocation(coordinate: CLLocationCoordinate2DMake(43.12563, -72.43231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
         let name2 = "Mount Cardigan"
         point2 = NearbyPoint(aName: name, aLocation: location2)
+        
+        nearbyPoint.label = UIView()
+        nearbyPoint.labelTapDelegate = viewController
+        viewController.view.addSubview(nearbyPoint.label)
     }
     
     override func tearDown() {
@@ -90,4 +98,25 @@ class NearbyPointClassTests: XCTestCase {
 
         XCTAssertEqual(manager.retrievalCount, 2, "NearbyPoint should inform manager delegate of successfully retrieving altitude, and add to already assembled nearbyPointsWithAltitude array")
     }
+    
+    func testTapCallsTapAction() {
+
+    }
+    
+    func testNearbyPointLabelTapInformsDelegate() {
+        
+        class MockTapGestureRecognizer: UITapGestureRecognizer {
+            override var state: UIGestureRecognizerState {
+                return .Ended
+            }
+            private override func numberOfTouches() -> Int {
+                return 1
+            }
+        }
+        var gesture = MockTapGestureRecognizer()
+        
+        nearbyPoint.showName(gesture)
+        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "NearbyPoint's tap delegate should be passed NearbyPoint")
+    }
+    
 }

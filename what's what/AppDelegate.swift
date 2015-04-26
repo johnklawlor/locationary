@@ -55,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         self.navigationController = UINavigationController()
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         self.navigationController?.viewControllers = [nearbyPointsViewController]
 
         self.window?.rootViewController = self.navigationController

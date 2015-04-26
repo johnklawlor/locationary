@@ -10,7 +10,7 @@ import Foundation
 
 class NNGeonamesCommunicator: GeonamesCommunicator {
     
-    func setReceivedData(data: NSData) {
+    func setTheReceivedData(data: NSData) {
         receivedData = data.mutableCopy() as? NSMutableData
     }
     

@@ -24,6 +24,10 @@ protocol AltitudeManagerDelegate: class {
     func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint)
 }
 
+protocol LabelTapDelegate {
+    func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
+}
+
 class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     
     var description: String {
@@ -33,6 +37,9 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
         }
         if angleToCurrentLocation != nil {
             descriptionString += ", \n angleToCurrentLocation: \(angleToCurrentLocation)"
+        }
+        if angleToHorizon != nil {
+            descriptionString += ", \n angleToHorizon: \(angleToHorizon)"
         }
         return descriptionString
     }
@@ -48,6 +55,20 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     var distanceFromCurrentLocation: CLLocationDistance!
     var angleToCurrentLocation: Double!
     var angleToHorizon: Double!
+    
+    // TEST
+    var labelTapDelegate: LabelTapDelegate?
+    // TEST
+    
+    // TEST THIS!
+    var label: UIButton! {
+        didSet {
+            let tapRecognizer = UITapGestureRecognizer(target: label, action: "showName:")
+//            label.userInteractionEnabled = true
+            label.addGestureRecognizer(tapRecognizer)
+        }
+    }
+    // TEST THIS!
     
     var altitudeCommunicator: AltitudeCommunicator?
     var fetchingError: NSError?
@@ -71,6 +92,7 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     }
     
     func receivedAltitudeJSON(json: String) {
+        println("got altitude data")
         altitudeJSONString = json
         let (altitude, error) = parser.buildAndReturnArrayFromJSON(json)
         
@@ -85,4 +107,16 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
             }
         }
     }
+    
+    // TEST
+    func showName(gesture: UITapGestureRecognizer){
+        if gesture.numberOfTapsRequired == 1 {
+            switch gesture.state {
+            case .Ended:
+                labelTapDelegate?.didReceiveTapForNearbyPoint(self)
+            default: break
+            }
+        }
+    }
+    // TEST
 }

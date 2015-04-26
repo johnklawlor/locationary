@@ -11,6 +11,8 @@
 		132F2C431AC762710071266F /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C421AC762700071266F /* ParserTests.swift */; };
 		132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */; };
 		132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */; };
+		134357181AEBF3E000DBEBCF /* geonamesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134357171AEBF3DF00DBEBCF /* geonamesData.swift */; };
+		1345C4A81AEB08750041D182 /* currentLocation.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 1345C4A71AEB08750041D182 /* currentLocation.gpx */; };
 		135237621ABA20A000D33887 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237611ABA20A000D33887 /* AppDelegate.swift */; };
 		135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237631ABA20A000D33887 /* NearbyPointsViewController.swift */; };
 		135237671ABA20A000D33887 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 135237651ABA20A000D33887 /* Main.storyboard */; };
@@ -59,6 +61,8 @@
 		132F2C421AC762700071266F /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeonamesCommunicator.swift; sourceTree = "<group>"; };
 		132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockNearbyPointsManagerDelegate.swift; path = "../what's what/MockNearbyPointsManagerDelegate.swift"; sourceTree = "<group>"; };
+		134357171AEBF3DF00DBEBCF /* geonamesData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = geonamesData.swift; sourceTree = "<group>"; };
+		1345C4A71AEB08750041D182 /* currentLocation.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = currentLocation.gpx; path = "what's what/currentLocation.gpx"; sourceTree = "<group>"; };
 		1352375C1ABA209F00D33887 /* what's what.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "what's what.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		135237601ABA20A000D33887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		135237611ABA20A000D33887 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -109,6 +113,7 @@
 		135237531ABA209E00D33887 = {
 			isa = PBXGroup;
 			children = (
+				1345C4A71AEB08750041D182 /* currentLocation.gpx */,
 				1352375E1ABA209F00D33887 /* what's what */,
 				135237741ABA20A100D33887 /* what's whatTests */,
 				1352375D1ABA209F00D33887 /* Products */,
@@ -127,6 +132,7 @@
 		1352375E1ABA209F00D33887 /* what's what */ = {
 			isa = PBXGroup;
 			children = (
+				134357171AEBF3DF00DBEBCF /* geonamesData.swift */,
 				135237611ABA20A000D33887 /* AppDelegate.swift */,
 				138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */,
 				13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */,
@@ -270,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1345C4A81AEB08750041D182 /* currentLocation.gpx in Resources */,
 				135237671ABA20A000D33887 /* Main.storyboard in Resources */,
 				1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */,
 				135237691ABA20A000D33887 /* Images.xcassets in Resources */,
@@ -297,6 +304,7 @@
 				138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */,
 				135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */,
 				135237621ABA20A000D33887 /* AppDelegate.swift in Sources */,
+				134357181AEBF3E000DBEBCF /* geonamesData.swift in Sources */,
 				138B18351ACB6D0900D54ECE /* AltitudeCommunicator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

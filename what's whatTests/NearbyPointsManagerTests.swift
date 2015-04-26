@@ -181,6 +181,15 @@ class NearbyPointsManagerTests: XCTestCase {
         XCTAssertEqual(horizonAngle2.format(), "0.398280", "viewController should have updated Point2's distanceToCurrentLocation")
     }
     
+    func testManagerUpdatesAngleToCurrentLocationCorrectly() {
+        manager.currentLocation = TestPoints.Schindlers.location
+        TestPoints.BreadLoaf.distanceFromCurrentLocation = 79642.5353450668
+        
+        manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(TestPoints.BreadLoaf)
+        
+        XCTAssertEqual(TestPoints.BreadLoaf.angleToCurrentLocation.format(), "158.444011", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
+    }
+    
     func testManagerInformsDelegateAfterItUpdatesDistances() {
         manager.nearbyPointsWithAltitude = [TestPoints.Point1]
         manager.updateDistanceOfNearbyPointsWithAltitude()

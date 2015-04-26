@@ -16,9 +16,10 @@ protocol GeonamesCommunicatorDelegate {
 
 struct CommunicatorConstants {
     static let HTTPResponseError = "GeonamesCommunicatorErrorDoman"
+    static let DistanceGeonamesPointsMustFallWithin: Double = 60.0
 }
 
-class GeonamesCommunicator {
+class GeonamesCommunicator: NSObject, NSURLConnectionDelegate {
 
     var geonamesCommunicatorDelegate: GeonamesCommunicatorDelegate?
 
@@ -26,7 +27,7 @@ class GeonamesCommunicator {
     var fetchingRequest: NSURLRequest?
     var fetchingUrl: NSURL? {
         if currentLocation != nil {
-            return NSURL(string: "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=\(south.format())&north=\(north.format())&west=\(west.format())&east=\(east.format())&orderby=elevation&username=jkl234")
+            return NSURL(string: "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=\(south.format())&north=\(north.format())&west=\(west.format())&east=\(east.format())&orderby=elevation&username=jkl234&maxRows=10")
         } else {
             return nil
         }
@@ -47,25 +48,27 @@ class GeonamesCommunicator {
         }
     }
     var requestAttempts = 0
-    let dlat: Double = 100*(1/110.54)
+    let dlat: Double = (1/110.54) * CommunicatorConstants.DistanceGeonamesPointsMustFallWithin
     var dlong: Double {
         if currentLocation != nil {
             println("returning calculated dlong")
-            return 100*(1/(111.32*cos(currentLocation!.coordinate.latitude*M_PI/180)))
+            return CommunicatorConstants.DistanceGeonamesPointsMustFallWithin * (1/(111.32*cos(currentLocation!.coordinate.latitude*M_PI/180)))
         }
         return 0.063494
     }
-    var north: Double { return currentLocation!.coordinate.latitude + dlat}
-    var south: Double { return currentLocation!.coordinate.latitude - dlat }
-    var east: Double { return currentLocation!.coordinate.longitude + dlong }
-    var west: Double { return currentLocation!.coordinate.longitude - dlong }
+    var north: Double { println("north: \(currentLocation!.coordinate.latitude + dlat)"); return currentLocation!.coordinate.latitude + dlat}
+    var south: Double { println("south: \(currentLocation!.coordinate.latitude - dlat)"); return currentLocation!.coordinate.latitude - dlat }
+    var east: Double { println("east: \(currentLocation!.coordinate.longitude + dlong)"); return currentLocation!.coordinate.longitude + dlong }
+    var west: Double { println("west: \(currentLocation!.coordinate.longitude - dlong)"); return currentLocation!.coordinate.longitude - dlong }
     
-    init() {
-        
+    override init() {
+        super.init()
     }
     
     func fetchGeonamesJSONData() {
+        println("trying to fetch")
         if let url = fetchingUrl {
+            println("fetching")
             fetchingRequest = NSURLRequest(URL: url)
             launchConnectionForRequest(fetchingRequest!)
         }
@@ -77,13 +80,16 @@ class GeonamesCommunicator {
     }
     
     func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
+        println("got response")
         if let httpResponse = response as? NSHTTPURLResponse {
             if httpResponse.statusCode != 200 {
                 let error = NSError(domain: CommunicatorConstants.HTTPResponseError, code: httpResponse.statusCode, userInfo: nil)
                 geonamesCommunicatorDelegate?.fetchingNearbyPointsFailedWithError(error)
+            } else {
+                // TEST
+                receivedData = NSMutableData()
+                // TEST
             }
-        } else {
-            receivedData = NSMutableData()
         }
     }
     
@@ -92,6 +98,7 @@ class GeonamesCommunicator {
     }
     
     func connection(connection: NSURLConnection, didFailWithError error: NSError) {
+        println("i died")
         receivedData = nil
         self.fetchingConnection = nil
         self.fetchingRequest = nil
@@ -99,10 +106,16 @@ class GeonamesCommunicator {
     }
     
     func connectionDidFinishLoading(connection: NSURLConnection) {
-        if receivedData != nil {
+        println("got data: \(receivedData)")
+        if let data = receivedData {
             if let jsonString = NSString(data: receivedData!, encoding: NSUTF8StringEncoding) {
+                println("calling commDelegate")
                 geonamesCommunicatorDelegate?.receivedNearbyPointsJSON(jsonString as String)
+            } else {
+                println("encoding error")
             }
+        } else {
+            println("no data received")
         }
     }
     

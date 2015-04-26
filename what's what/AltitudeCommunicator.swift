@@ -60,6 +60,7 @@ class AltitudeCommunicator: NSObject, NSURLConnectionDataDelegate {
     }
     
     func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
+        println("got altitude response")
         if let httpResponse = response as? NSHTTPURLResponse {
             if httpResponse.statusCode != 200 {
                 let error = NSError(domain: CommunicatorConstants.HTTPResponseError, code: httpResponse.statusCode, userInfo: nil)
@@ -75,9 +76,12 @@ class AltitudeCommunicator: NSObject, NSURLConnectionDataDelegate {
     }
     
     func connectionDidFinishLoading(connection: NSURLConnection) {
+        println("got data")
         if receivedData != nil {
             let jsonString = NSString(data: receivedData!, encoding: NSUTF8StringEncoding)!
             altitudeCommunicatorDelegate?.receivedAltitudeJSON(jsonString as String)
+        } else {
+            println("altitude data is nil")
         }
     }
     

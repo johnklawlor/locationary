@@ -35,7 +35,7 @@ struct NearbyPointLabel {
     let yPosition: Int!
 }
 
-class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, NearbyPointsManagerDelegate {
+class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, NearbyPointsManagerDelegate, LabelTapDelegate {
     
     var captureManager: CaptureSessionManager?
     
@@ -49,15 +49,23 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var DeviceConstants: Constants!
     
+    // TEST!
+    var nameLabel: UILabel! = UILabel()
+    var nearbyPointCurrentlyDisplayed: NearbyPoint?
+    // TEST!
+    
     var locationManager: CLLocationManager! {
         didSet {
+            // TEST THIS!!!!!!!!!!!!
+            locationManager.delegate = self
+            // TEST THIS!!!!!!!!!!!!
             locationManager.distanceFilter = kCLDistanceFilterNone
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.requestAlwaysAuthorization()
+            locationManager.requestWhenInUseAuthorization()
             
             if CLLocationManager.headingAvailable() {
-//                locationManager.headingFilter
-                locationManager.headingOrientation = CLDeviceOrientation.LandscapeRight
+                locationManager.headingFilter = 0.1
+                locationManager.headingOrientation = CLDeviceOrientation.LandscapeLeft
                 locationManager.startUpdatingHeading()
             }
         }
@@ -67,12 +75,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             motionManager.accelerometerUpdateInterval = 1/30
         }
     }
-    
-// m((18/75)*((distanceFromCurrentLocation)^2)/3.2808 // meters
-// ((2/3)*((2.204*1.60934)^2))*0.304= 2.54977064 subtract this
-// 352m high
-// 349.450229 high
-// 2204 far away
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,13 +89,12 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         self.view.layer.addSublayer(captureManager?.previewLayer)
         
-        var overlayImageView = UIImageView(image: UIImage(named: "overlaygraphic.png"))
-        overlayImageView.frame = CGRectMake(50, 100, 17, 16)
-        self.view.addSubview(overlayImageView)
-        nearbyPointsSubviews = [overlayImageView]
-        
         captureManager?.captureSession?.startRunning()
         
+        // TEST
+        nameLabel.hidden = true
+        self.view.addSubview(nameLabel)
+        // TEST
     }
 
     override func didReceiveMemoryWarning() {
@@ -102,59 +103,50 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func motionHandler(motionData: CMAccelerometerData!, error: NSError!) {
-        if self.nearbyPointsSubviews != nil {
+        if self.nearbyPointsWithAltitude != nil && self.nearbyPointsManager != nil && locationManager != nil && locationManager.heading != nil {
             let zData = motionData.acceleration.z
-            for subview in self.nearbyPointsSubviews! {
-                if abs(zData - self.currentZ) > 0.01 {
-                    self.currentZ = zData
-                    NSOperationQueue.mainQueue().addOperationWithBlock() {
-                        let labelAngle:CGFloat = 8
-                        let phoneAngle = CGFloat(90 * zData)
-                        let difference = labelAngle - phoneAngle
-                        let VFOV = CGFloat(self.DeviceConstants.VFOV/2)
-                        if difference > -1*VFOV && difference < VFOV {
-                            let multiplier = (difference+VFOV)/(VFOV*2)
-                            let yPosition = self.DeviceConstants.PhoneWidth - multiplier * self.DeviceConstants.PhoneWidth
-                            subview.hidden = false
-                            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
-                                subview.frame = CGRectMake(CGFloat(400), yPosition, CGFloat(17), CGFloat(16))
-                                }, completion: nil)
-                        } else {
-                            subview.hidden = true
+            if abs(zData - self.currentZ) > 0.01 {
+                self.currentZ = zData
+                if let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading) {
+                    println("heading: \(heading)")
+                    for nearbyPoint in self.nearbyPointsWithAltitude! {
+                        NSOperationQueue.mainQueue().addOperationWithBlock() {
+                            let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
+                            let phoneAngle = CGFloat(90 * zData)
+                            let difference = labelAngle - phoneAngle
+                            let VFOV = CGFloat(self.DeviceConstants.VFOV/2)
+                            if difference > -1*VFOV && difference < VFOV {
+                                let multiplier = (difference+VFOV)/(VFOV*2)
+                                let yPosition = self.DeviceConstants.PhoneWidth - multiplier * self.DeviceConstants.PhoneWidth
+                                let hfov: CGFloat = 28
+                                var xDifference = CGFloat(heading - nearbyPoint.angleToCurrentLocation)
+                                
+                                if abs(xDifference) > 308 {
+                                    if xDifference < 0 {
+                                        xDifference = CGFloat(heading + (360.0 - nearbyPoint.angleToCurrentLocation))
+                                    } else {
+                                        xDifference = CGFloat((heading - 360.0) - nearbyPoint.angleToCurrentLocation)
+                                    }
+                                }
+                                
+                                if xDifference > -hfov && xDifference < hfov {
+                                    let xMultiplier = CGFloat((xDifference + hfov)/(hfov*2))
+                                    println("xMultiplier: \(xMultiplier)")
+                                    let xPosition = xMultiplier * self.DeviceConstants.PhoneHeight
+                                    nearbyPoint.label.hidden = false
+                                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+                                        nearbyPoint.label.frame = CGRectMake(xPosition, yPosition, CGFloat(17), CGFloat(16))
+                                        }, completion: nil)
+                                } else {
+                                    nearbyPoint.label.hidden = true
+                                }
+                            } else {
+                                nearbyPoint.label.hidden = true
+                            }
                         }
                     }
                 }
             }
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager!, didUpdateHeading newHeading: CLHeading!) {
-        if newHeading.headingAccuracy < 0 {
-            return;
-        }
-        
-        let heading = returnHeadingBasedInProperCoordinateSystem(newHeading.trueHeading)
-        
-        if heading < 0 {
-            return
-        } else {
-            currentHeading = heading
-            let lowerValidAngle = heading - Double(DeviceConstants.VFOV/2)
-            let upperValidAngle = heading + Double(DeviceConstants.VFOV/2)
-
-
-//            if lowerValidAngle < 180 && upperValidAngle > 0 && currentLocation.coordinate.latitude < nearbyMtn.coordinate.latitude {
-//
-//            }
-//            else if lowerValidAngle > 180 && upperValidAngle > 180 && currentLocation.coordinate.latitude > nearbyMtn.coordinate.latitude {
-//
-//            }
-//            else if lowerValidAngle < 270 && upperValidAngle > 90 && currentLocation.coordinate.longitude > nearbyMtn.coordinate.longitude {
-//
-//            }
-//            else (lowerValidAngle < 90 || lowerValidAngle > 270) && (upperValidAngle > 270 || upperValidAngle < 90) && currentLocation.coordinate.longitude < nearbyMtn.coordinate.longitude {
-//
-//            }
         }
     }
     
@@ -192,18 +184,22 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         }
     }
     
-    func returnHeadingBasedInProperCoordinateSystem(heading: Double!) -> CLLocationDirection! {
-        switch heading {
-            case 0...90:        return 90 - heading
-            case 90.01...180:   return 360 - (heading - 90)
-            case 180.01...270:  return 180 + (270 - heading)
-            case 270.01...360:  return 90 + (360 - heading)
-            default: return -1
+    func returnHeadingBasedInProperCoordinateSystem(heading: Double?) -> CLLocationDirection? {
+        if heading != nil {
+            switch heading! {
+                case 0...90:        return 90 - heading!
+                case 90.01...180:   return 360 - (heading! - 90)
+                case 180.01...270:  return 180 + (270 - heading!)
+                case 270.01...360:  return 90 + (360 - heading!)
+                default: return nil
+            }
         }
+        return nil
     }
     
     func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-        println("locationManager didFailWithError: \(error)")
+        println("locationManager didFailWithError: \(error). Trying again...")
+        locationManager.startUpdatingLocation()
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations:[AnyObject]!) {
@@ -231,6 +227,16 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         nearbyPointsManager = nil
         nearbyPointsManager = NearbyPointsManager()
         nearbyPointsManager.managerDelegate = self
+        
+        // TEST
+        var communicator = GeonamesCommunicator()
+        communicator.geonamesCommunicatorDelegate = nearbyPointsManager
+        nearbyPointsManager.communicator = communicator
+        
+        nearbyPointsManager.parser = GeoNamesJSONParser()
+        
+        // TEST
+        
         nearbyPointsWithAltitude = [NearbyPoint]()
         nearbyPointsToShow = [Int]()
         nearbyPointsManager.currentLocation = location
@@ -241,15 +247,48 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func assembledNearbyPointsWithoutAltitude() {
-        
+        println("assemebled points without altitude")
+        // TEST
+        if nearbyPointsManager != nil {
+            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
+        } else{
+            println("we lost the nearbyPoints manager")
+        }
     }
     
     func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
+        
+        println("nearbyPointsWithAltitude is \(nearbyPointsWithAltitude)")
+        
         nearbyPointsWithAltitude?.append(nearbyPoint)
+        
+        // TEST
+        
+        self.view.addSubview(nearbyPoint.label)
+        
+        self.motionManager.stopAccelerometerUpdates()
+        self.motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: motionHandler)
+        // TEST
+        
     }
     
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint]) {
         nearbyPointsWithAltitude = nearbyPoints
     }
+    
+    // TEST
+    func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint) {
+        nearbyPointCurrentlyDisplayed = nearbyPoint
+
+        nameLabel.text = nearbyPoint.name
+        nameLabel.sizeToFit()
+        let width = nameLabel.frame.width
+        let height = nameLabel.frame.height
+        nameLabel.frame = CGRectMake(-width/2, -height, width, height)
+        nameLabel.hidden = false
+        nearbyPointCurrentlyDisplayed!.label.addSubview(nameLabel)
+        
+    }
+    // TEST
 }
 

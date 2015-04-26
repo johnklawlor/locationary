@@ -96,14 +96,14 @@ class GeonamesCommunicatorTests: XCTestCase {
     }
     
     func testConnectionPassedDataToDelegate() {
-        NNCommunicator.setReceivedData(receivedData!)
+        NNCommunicator.setTheReceivedData(receivedData!)
         NNCommunicator.connectionDidFinishLoading(testConnection)
         let jsonData = manager.nearbyPointsJSON!
         XCTAssertEqual(jsonData, "Received data", "Manager should receive JSON data as string")
     }
     
     func testConnectionDidReceiveDataAppendsData() {
-        NNCommunicator.setReceivedData(receivedData!)
+        NNCommunicator.setTheReceivedData(receivedData!)
         let moreData = ", plus more data".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         NNCommunicator.connection(testConnection, didReceiveData: moreData!)
         let jsonData = NSString(data: NNCommunicator.receivedData!, encoding: NSUTF8StringEncoding)
@@ -111,7 +111,7 @@ class GeonamesCommunicatorTests: XCTestCase {
     }
     
     func testNewConnectionDiscardsOldData() {
-        NNCommunicator.setReceivedData(receivedData!)
+        NNCommunicator.setTheReceivedData(receivedData!)
         NNCommunicator.fetchGeonamesJSONData()
         NNCommunicator.connection(testConnection, didReceiveResponse: NSURLResponse())
         XCTAssertNotEqual(receivedData!, NNCommunicator.receivedData!, "Old data should be discarded")

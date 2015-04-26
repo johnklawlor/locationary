@@ -23,7 +23,9 @@ class CaptureSessionManager {
         if captureSession != nil {
             previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
             previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
-//            previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
+            if previewLayer?.connection != nil {
+                previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
+            }
         }
     }
     
@@ -32,25 +34,30 @@ class CaptureSessionManager {
         if videoDevice != nil {
             var error: NSError?
             let videoIn = AVCaptureDeviceInput.deviceInputWithDevice(videoDevice, error: &error) as? AVCaptureDeviceInput
-            if error != nil {
+            if let actualError = error {
+                println("Couldn't create video input")
+            }
+            else {
                 if captureSession?.canAddInput(videoIn) == true {
                     captureSession?.addInput(videoIn)
+                    
                 }
                 else {
                     println("Couldn't add video input")
                 }
             }
-            else {
-                println("Couldn't create video input")
-            }
         }
         else {
-            println("Couldn't create video capture device")
+            println("video Device nil--Couldn't create video capture device.")
         }
     }
     
     func setPreviewLayer(layerBounds: CGRect, bounds: CGRect) {
-        
+        self.previewLayer?.frame = bounds
+        self.previewLayer?.bounds = layerBounds
+        self.previewLayer?.position = CGPointMake(CGRectGetMidX(layerBounds),
+            CGRectGetMidY(layerBounds))
+
     }
     
     func dealloc() {

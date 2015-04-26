@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import UIKit
 
 protocol NearbyPointsManagerDelegate {
     func fetchingFailedWithError(error: NSError)
@@ -42,7 +43,9 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     
     func getGeonamesJSONData() {
+        println("trying to get geonames")
         if communicator?.requestAttempts <= 3 {
+            println("getting geonames")
             communicator?.fetchGeonamesJSONData()
         } else {
             managerDelegate?.fetchingFailedWithError(ManagerConstants.Error_ReachedMaxConnectionAttempts)
@@ -54,28 +57,54 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     
     func receivedNearbyPointsJSON(json: String) {
+        println("received json")
         nearbyPointsJSON = json
         // if json is empty, attempt another request?
-        var (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(json)
+        var (nearbyPointsArray, error) = parser.buildAndReturnArrayFromJSON(json)
         
-        if error != nil {
+        // TEST
+        if let actualError = error {
             if communicator != nil {
                 communicator!.currentLocation = currentLocation
                 getGeonamesJSONData()
                 return
             }
         }
-        if nearbyPoints != nil {
+        if let castNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
+            
+            // TEST
+            nearbyPoints = castNearbyPointsArray
+            // TEST
+            
             managerDelegate?.assembledNearbyPointsWithoutAltitude()
         }
     }
     
     func getAltitudeJSONDataForEachPoint() {
+        println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
         if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
             nearbyPointsWithAltitude = [NearbyPoint]()
             for nearbyPoint in nearbyPoints! {
                 nearbyPoint.managerDelegate = self
-                nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
+                var altitudeCommunicator = AltitudeCommunicator()
+                nearbyPoint.altitudeCommunicator = altitudeCommunicator
+                
+                // TEST
+                
+                if let viewController = managerDelegate as? NearbyPointsViewController {
+                    nearbyPoint.labelTapDelegate = viewController
+                }
+                
+                // TEST
+                
+                if self.parser != nil {
+                    nearbyPoint.parser = self.parser
+                } else {
+                    println("nearbyPointManagerParser is gone")
+                }
+                // TEST
+                
+                
                 nearbyPoint.getAltitudeJSONData()
             }
         }
@@ -91,10 +120,18 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     
     func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
+        println("got altitude data")
         if currentLocation != nil {
             calculateDistanceFromCurrentLocation(nearbyPoint)
             calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
             calculateAngleToHorizon(nearbyPoint)
+            
+            // TEST THIS!
+            nearbyPoint.label = UIImageView(image: UIImage(named: "overlaygraphic.png"))
+            nearbyPoint.label.hidden = true
+            nearbyPoint.label.frame = CGRectMake(375.0/2, 667.0/2, 17, 16)
+            // TEST THIS!
+            
             nearbyPointsWithAltitude?.append(nearbyPoint)
             if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
                 nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
@@ -120,9 +157,22 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     
     func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
         let y = CLLocation(coordinate: CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: nearbyPoint.location.coordinate.longitude), altitude: nearbyPoint.location.altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
-        let dy = nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude ? y.distanceFromLocation(nearbyPoint.location) : -(y.distanceFromLocation(nearbyPoint.location))
-        let theta = (dy < 0) ? 360 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI) : asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
-        nearbyPoint.angleToCurrentLocation = theta
+        let dy = y.distanceFromLocation(nearbyPoint.location)
+        // nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude ? : -(y.distanceFromLocation(nearbyPoint.location))
+        
+        if nearbyPoint.location.coordinate.longitude < currentLocation!.coordinate.longitude {
+            if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
+                nearbyPoint.angleToCurrentLocation = 180.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+            } else {
+                nearbyPoint.angleToCurrentLocation = 180 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+            }
+        } else {
+            if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
+                nearbyPoint.angleToCurrentLocation = asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+            } else {
+                nearbyPoint.angleToCurrentLocation = 360 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+            }
+        }
     }
     
     func calculateAngleToHorizon(nearbyPoint: NearbyPoint) {

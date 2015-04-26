@@ -83,16 +83,16 @@ class NearbyPointsViewControllerTests: XCTestCase {
     func testUpdatingHeadingConvertsCurrentHeadingToAngleWhichIsZeroAtThePositiveXAxisAndIncrementsCounterClockwise() {
         var heading = MockHeading(heading: 45.0)
         var newHeading = viewController.returnHeadingBasedInProperCoordinateSystem(heading.trueHeading)
-        XCTAssertEqual(newHeading, heading.trueHeading, "Both headings should match")
+        XCTAssertEqual(newHeading!, heading.trueHeading, "Both headings should match")
         heading = MockHeading(heading: 0.1)
         newHeading = viewController.returnHeadingBasedInProperCoordinateSystem(heading.trueHeading)
-        XCTAssertEqual(newHeading, CLLocationDirection(89.9), "Both headings should match")
+        XCTAssertEqual(newHeading!, CLLocationDirection(89.9), "Both headings should match")
         heading = MockHeading(heading: 180.0)
         newHeading = viewController.returnHeadingBasedInProperCoordinateSystem(heading.trueHeading)
-        XCTAssertEqual(newHeading, CLLocationDirection(270.0), "Both headings should match")
+        XCTAssertEqual(newHeading!, CLLocationDirection(270.0), "Both headings should match")
         heading = MockHeading(heading: 255.0)
         newHeading = viewController.returnHeadingBasedInProperCoordinateSystem(heading.trueHeading)
-        XCTAssertEqual(newHeading, CLLocationDirection(195.0), "Both headings should match")
+        XCTAssertEqual(newHeading!, CLLocationDirection(195.0), "Both headings should match")
     }
     
     func testViewControllerGetsPointsWithinFieldOfVisionOfCamera() {
@@ -153,6 +153,33 @@ class NearbyPointsViewControllerTests: XCTestCase {
         mockViewController.nearbyPointsManager = mockNearbyPointsManager
         mockViewController.locationManager(locationManager, didUpdateLocations: [TestPoints.NearHolts.location])
         XCTAssertEqual(mockNearbyPointsManager.currentLocation!, TestPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
+    }
+    
+    func testPassingNilToGetAngleInNewCoordinateSystemReturnsNil() {
+        let newHeading = viewController.returnHeadingBasedInProperCoordinateSystem(nil)
+        XCTAssertNil(newHeading, "ReturnHeadingBasedInProperCoordinateSystem should return nil when passed nil")
+    }
+    
+    func testTapOnNearbyPointLabelShowsATextLabelWithTheNameOfTheNearbyPoint() {
+        var nearbyPoint = TestPoints.Smarts
+        nearbyPoint.label = UIImageView(frame: CGRectMake(200, 200, 17, 16))
+        
+        let testLabel = UILabel()
+        testLabel.text = TestPoints.Smarts.name
+        testLabel.sizeToFit()
+        let testWidth = testLabel.frame.width
+        
+        viewController.view.addSubview(nearbyPoint.label)
+        viewController.nearbyPointsWithAltitude = [nearbyPoint]
+        viewController.nameLabel = UILabel()
+        viewController.didReceiveTapForNearbyPoint(nearbyPoint)
+        let nameLabel = viewController.nameLabel
+        XCTAssertEqual(nameLabel.text!, "Smarts Mountain", "View Controller updates nameLabel's text up receiving tap delegation call")
+        XCTAssertEqual(nameLabel.frame.width, testWidth, "nameLabel should have proper width")
+        
+        let newTestLabel = nearbyPoint.label.subviews.first as! UILabel
+        XCTAssertEqual(newTestLabel, viewController.nameLabel, "nearbyPoint's label should have the text label added to its subviews")
+        XCTAssertFalse(viewController.nameLabel.hidden, "The text label should not be hidden")
     }
     
 }
