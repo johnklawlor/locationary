@@ -162,7 +162,7 @@ class NearbyPointsViewControllerTests: XCTestCase {
     
     func testTapOnNearbyPointLabelShowsATextLabelWithTheNameOfTheNearbyPoint() {
         var nearbyPoint = TestPoints.Smarts
-        nearbyPoint.label = UIImageView(frame: CGRectMake(200, 200, 17, 16))
+        nearbyPoint.label = UIButton(frame: CGRectMake(200, 200, 17, 16))
         
         let testLabel = UILabel()
         testLabel.text = TestPoints.Smarts.name

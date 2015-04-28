@@ -56,6 +56,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var locationManager: CLLocationManager! {
         didSet {
+            println("location manager just set")
             // TEST THIS!!!!!!!!!!!!
             locationManager.delegate = self
             // TEST THIS!!!!!!!!!!!!
@@ -68,6 +69,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 locationManager.headingOrientation = CLDeviceOrientation.LandscapeLeft
                 locationManager.startUpdatingHeading()
             }
+            println("location manager at the end of didset \(locationManager)")
         }
     }
     var motionManager: CMMotionManager! {
@@ -79,6 +81,10 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: "updateDistanceLimitRadius")
+        self.view.addGestureRecognizer(swipeGesture)
+        
+        println("location manager is \(locationManager)")
         locationManager.startUpdatingLocation()
         
         nearbyPointsSubviews = [UIImageView]()

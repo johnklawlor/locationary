@@ -127,9 +127,9 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
             calculateAngleToHorizon(nearbyPoint)
             
             // TEST THIS!
-            nearbyPoint.label = UIImageView(image: UIImage(named: "overlaygraphic.png"))
+            nearbyPoint.label = UIButton(frame: CGRectMake(375.0/2, 667.0/2, 17, 16))
+            nearbyPoint.label.setBackgroundImage(UIImage(named: "overlaygraphic.png"), forState: UIControlState.Normal)
             nearbyPoint.label.hidden = true
-            nearbyPoint.label.frame = CGRectMake(375.0/2, 667.0/2, 17, 16)
             // TEST THIS!
             
             nearbyPointsWithAltitude?.append(nearbyPoint)

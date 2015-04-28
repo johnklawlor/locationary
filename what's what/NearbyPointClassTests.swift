@@ -46,8 +46,9 @@ class NearbyPointClassTests: XCTestCase {
         let name2 = "Mount Cardigan"
         point2 = NearbyPoint(aName: name, aLocation: location2)
         
-        nearbyPoint.label = UIView()
+        nearbyPoint.label = UIButton()
         nearbyPoint.labelTapDelegate = viewController
+        viewController.locationManager = CLLocationManager()
         viewController.view.addSubview(nearbyPoint.label)
     }
     
@@ -100,22 +101,12 @@ class NearbyPointClassTests: XCTestCase {
     }
     
     func testTapCallsTapAction() {
-
+        nearbyPoint.label.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "Tapping button should call action")
     }
     
     func testNearbyPointLabelTapInformsDelegate() {
-        
-        class MockTapGestureRecognizer: UITapGestureRecognizer {
-            override var state: UIGestureRecognizerState {
-                return .Ended
-            }
-            private override func numberOfTouches() -> Int {
-                return 1
-            }
-        }
-        var gesture = MockTapGestureRecognizer()
-        
-        nearbyPoint.showName(gesture)
+        nearbyPoint.showName(UIButton())
         XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "NearbyPoint's tap delegate should be passed NearbyPoint")
     }
     

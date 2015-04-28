@@ -28,21 +28,21 @@ protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
-class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
+class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, Equatable, Printable {
     
-    var description: String {
-        var descriptionString = "\n name: \(name), \n location: \(location)"
-        if distanceFromCurrentLocation != nil {
-            descriptionString += ", \n distanceFromCurrentLocation: \(distanceFromCurrentLocation)"
-        }
-        if angleToCurrentLocation != nil {
-            descriptionString += ", \n angleToCurrentLocation: \(angleToCurrentLocation)"
-        }
-        if angleToHorizon != nil {
-            descriptionString += ", \n angleToHorizon: \(angleToHorizon)"
-        }
-        return descriptionString
-    }
+//    override var description: String {
+//        var descriptionString: String = "\n name: \(name), \n location: \(location)"
+//        if distanceFromCurrentLocation != nil {
+//            descriptionString += ", \n distanceFromCurrentLocation: \(distanceFromCurrentLocation)"
+//        }
+//        if angleToCurrentLocation != nil {
+//            descriptionString += ", \n angleToCurrentLocation: \(angleToCurrentLocation)"
+//        }
+//        if angleToHorizon != nil {
+//            descriptionString += ", \n angleToHorizon: \(angleToHorizon)"
+//        }
+//        return descriptionString
+//    }
     
     init(aName: String, aLocation: CLLocation!) {
         name = aName
@@ -63,11 +63,16 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     // TEST THIS!
     var label: UIButton! {
         didSet {
-            let tapRecognizer = UITapGestureRecognizer(target: label, action: "showName:")
-//            label.userInteractionEnabled = true
-            label.addGestureRecognizer(tapRecognizer)
+            label.addTarget(self, action: "showName:", forControlEvents: UIControlEvents.TouchUpInside)
         }
     }
+//        {
+//        didSet {
+//            let tapRecognizer = UITapGestureRecognizer(target: label, action: "showName:")
+//            label.userInteractionEnabled = true
+//            label.addGestureRecognizer(tapRecognizer)
+//        }
+//    }
     // TEST THIS!
     
     var altitudeCommunicator: AltitudeCommunicator?
@@ -109,14 +114,8 @@ class NearbyPoint: AltitudeCommunicatorDelegate, Equatable, Printable {
     }
     
     // TEST
-    func showName(gesture: UITapGestureRecognizer){
-        if gesture.numberOfTapsRequired == 1 {
-            switch gesture.state {
-            case .Ended:
-                labelTapDelegate?.didReceiveTapForNearbyPoint(self)
-            default: break
-            }
-        }
+    func showName(sender: UIButton!) {
+        labelTapDelegate?.didReceiveTapForNearbyPoint(self)
     }
     // TEST
 }

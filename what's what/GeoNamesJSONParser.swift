@@ -36,8 +36,8 @@ class GeoNamesJSONParser {
                 return (nil, jsonEncodingError)
             } else if jsonDictionary != nil {
                 var pointsArray = [NearbyPoint]()
-                let srt = jsonDictionary!.objectForKey("srtm3") as? NSInteger
-                println("jsonDictionary is \(srt)")
+//                let srt = jsonDictionary!.objectForKey("srtm3") as? NSInteger
+//                println("jsonDictionary is \(srt)")
                 if let geonames = jsonDictionary?.objectForKey("geonames") as? NSArray {
                     for aNearbyPoint in geonames {
                         let name = aNearbyPoint.objectForKey("name") as! String
