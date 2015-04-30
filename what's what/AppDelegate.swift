@@ -28,6 +28,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nearbyPointsViewController.locationManager = CLLocationManager()
         nearbyPointsViewController.motionManager = Motion.Manager
         nearbyPointsViewController.captureManager = CaptureSessionManager()
+        var nearbyPointsManager = NearbyPointsManager(delegate: nearbyPointsViewController)
+        nearbyPointsManager.communicator = GeonamesCommunicator()
+        nearbyPointsManager.communicator?.geonamesCommunicatorDelegate = nearbyPointsManager
+        nearbyPointsManager.parser = GeonamesJSONParser()
+        nearbyPointsViewController.nearbyPointsManager = nearbyPointsManager
 
         let phoneHeight = CGFloat(UIScreen.mainScreen().bounds.width)
         let phoneWidth = CGFloat(UIScreen.mainScreen().bounds.height)

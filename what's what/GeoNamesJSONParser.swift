@@ -9,6 +9,10 @@
 import UIKit
 import CoreLocation
 
+func == (lhs: GeonamesJSONParser, rhs: GeonamesJSONParser) -> Bool {
+    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
 struct JSONError {
     static let JSONStringIsNil = "JSONStringShouldNotBeNil"
 }
@@ -17,7 +21,7 @@ struct JSONErrorCode {
     static let JSONStringIsNil = 0
 }
 
-class GeoNamesJSONParser {
+class GeonamesJSONParser: Equatable {
     
     init() {
         

@@ -9,7 +9,7 @@
 import Foundation
 import CoreLocation
 
-class MockParser: GeoNamesJSONParser {
+class MockParser: GeonamesJSONParser {
     
     var parserError: NSError?
     var parserPoints: [AnyObject]?

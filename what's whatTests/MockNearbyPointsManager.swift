@@ -13,6 +13,7 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
     var retrievalCount = 0
     var updatedDistances: Bool! = false
     var askedToGetGeonamesJSONData: Bool! = false
+    var askedToDetermineIfEachPointIsInLineOfSight: Bool! = false
     
     override func receivedNearbyPointsJSON(json: String) {
         nearbyPointsJSON = json
@@ -28,5 +29,9 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
     
     override func getGeonamesJSONData() {
         askedToGetGeonamesJSONData = true
+    }
+    
+    override func determineIfEachPointIsInLineOfSight() {
+        askedToDetermineIfEachPointIsInLineOfSight = true
     }
 }

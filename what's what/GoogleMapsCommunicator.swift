@@ -7,3 +7,19 @@
 //
 
 import UIKit
+import CoreLocation
+
+protocol GoogleMapsCommunicatorDelegate {
+    func fetchingElevationProfileFailedWithError(error: NSError)
+    func receivedElevationProfileJSON(json: String)
+}
+
+class GoogleMapsCommunicator {
+    var googleMapsCommunicatorDelegate: GoogleMapsCommunicatorDelegate?
+    var currentLocation: CLLocation?
+    var locationOfNearbyPoint: CLLocation?
+    
+    func fetchElevationProfileJSONData() {
+        
+    }
+}

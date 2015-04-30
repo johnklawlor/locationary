@@ -12,8 +12,13 @@ import CoreLocation
 class MockNearbyPointsViewController: NearbyPointsViewController {
     
     var preparingForNearbyPoints: Bool! = false
+    var createdNewNearbyPointsManager: Bool! = false
     
-    override func prepareForNearbyPointsWithAltitudeForLocation(location: CLLocation!) {
-        nearbyPointsManager = MockNearbyPointsManager()
+    override func prepareForNewPointsAtLocation(location: CLLocation!) {
+        nearbyPointsManager = MockNearbyPointsManager(delegate: NearbyPointsViewController())
+    }
+    
+    override func createNewNearbyPointsManager() {
+        createdNewNearbyPointsManager = true
     }
 }

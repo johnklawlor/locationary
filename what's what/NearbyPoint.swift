@@ -28,26 +28,23 @@ protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
-class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, Equatable, Printable {
-    
-//    override var description: String {
-//        var descriptionString: String = "\n name: \(name), \n location: \(location)"
-//        if distanceFromCurrentLocation != nil {
-//            descriptionString += ", \n distanceFromCurrentLocation: \(distanceFromCurrentLocation)"
-//        }
-//        if angleToCurrentLocation != nil {
-//            descriptionString += ", \n angleToCurrentLocation: \(angleToCurrentLocation)"
-//        }
-//        if angleToHorizon != nil {
-//            descriptionString += ", \n angleToHorizon: \(angleToHorizon)"
-//        }
-//        return descriptionString
-//    }
+protocol CurrentLocationDelegate {
+    var currentLocation: CLLocation? { get }
+}
+
+struct NearbyPointConstants {
+    static let Error_GoogleMapsCommunicatorNil = NSError(domain: "GoogleMapsCommunicatorIsNil-CannotFetch", code: 1, userInfo: nil)
+    static let Error_AltitudeCommunicatorNil = NSError(domain: "AltitudeCommunicatorIsNil-CannotFetch", code: 2, userInfo: nil)
+    static let Error_NoCurrentLocation = NSError(domain: "NoCurrentLocation-CannotFetchElevationProfile", code: 3, userInfo: nil)
+    static let Error_NoNearbyPointLocation = NSError(domain: "NoNearbyPointLocation-CannotFetchElevationProfile", code: 4, userInfo: nil)
+}
+
+class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicatorDelegate, Equatable, Printable {
     
     init(aName: String, aLocation: CLLocation!) {
         name = aName
         location = aLocation
-        parser = GeoNamesJSONParser()
+        parser = GeonamesJSONParser()
     }
     
     let name: String!
@@ -66,32 +63,66 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, Equatable, Printable 
             label.addTarget(self, action: "showName:", forControlEvents: UIControlEvents.TouchUpInside)
         }
     }
-//        {
-//        didSet {
-//            let tapRecognizer = UITapGestureRecognizer(target: label, action: "showName:")
-//            label.userInteractionEnabled = true
-//            label.addGestureRecognizer(tapRecognizer)
-//        }
-//    }
     // TEST THIS!
     
+    var googleMapsCommunicator: GoogleMapsCommunicator?
     var altitudeCommunicator: AltitudeCommunicator?
+    var prefetchError: NSError?
     var fetchingError: NSError?
     var altitudeJSONString: String?
     
-    var parser: GeoNamesJSONParser!
+    var currentLocationDelegate: CurrentLocationDelegate?
+    
+    var parser: GeonamesJSONParser!
 
     weak var managerDelegate: AltitudeManagerDelegate?
     
     func getAltitudeJSONData() {
-        if altitudeCommunicator != nil {
-            altitudeCommunicator!.altitudeCommunicatorDelegate = self
-            altitudeCommunicator!.locationOfAltitudeToFetch = location
-            altitudeCommunicator!.fetchAltitudeJSONData()
+        if let communicator = altitudeCommunicator {
+            communicator.altitudeCommunicatorDelegate = self
+            communicator.locationOfAltitudeToFetch = location
+            communicator.fetchAltitudeJSONData()
+        } else {
+            // TEST
+            prefetchError = NearbyPointConstants.Error_AltitudeCommunicatorNil
+            // TEST
         }
     }
     
+    func determineIfInLineOfSight() {
+        if let communicator = googleMapsCommunicator {
+            if let currentLocation = currentLocationDelegate?.currentLocation {
+                if location != nil {
+                    communicator.currentLocation = currentLocation
+                    communicator.locationOfNearbyPoint = location
+                    communicator.googleMapsCommunicatorDelegate = self
+                    communicator.fetchElevationProfileJSONData()
+                }
+                else {
+                    prefetchError = NearbyPointConstants.Error_NoNearbyPointLocation
+                    println("location is nil. cannot fetch.")
+                }
+            } else {
+                println("currentLocationDelegate is nil. cannot fetch.")
+                prefetchError = NearbyPointConstants.Error_NoCurrentLocation
+            }
+            
+        } else {
+            println("googleMapsCommunicator is nil. cannot fetch.")
+            prefetchError = NearbyPointConstants.Error_GoogleMapsCommunicatorNil
+        }
+    }
+    
+    func fetchingElevationProfileFailedWithError(error: NSError) {
+        println("fetchingElevationProfileFailedWithError: \(error)")
+    }
+    
+    func receivedElevationProfileJSON(json: String) {
+        println("received elevation profile JSON data")
+    }
+    
     func fetchingAltitudeFailedWithError(error: NSError) {
+        println("fetchingAltitudeFailedWithError: \(error)")
         fetchingError = error
         managerDelegate?.gettingAltitudeFailedWithError(error)
     }

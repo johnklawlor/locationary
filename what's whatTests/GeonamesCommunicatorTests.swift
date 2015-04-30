@@ -26,7 +26,7 @@ class GeonamesCommunicatorTests: XCTestCase {
 
         NNCommunicator = NNGeonamesCommunicator()
         communicator = GeonamesCommunicator()
-        manager = MockNearbyPointsManager()
+        manager = MockNearbyPointsManager(delegate: NearbyPointsViewController())
         
         NNCommunicator.geonamesCommunicatorDelegate = manager
         NNCommunicator.currentLocation = locationA
@@ -113,7 +113,8 @@ class GeonamesCommunicatorTests: XCTestCase {
     func testNewConnectionDiscardsOldData() {
         NNCommunicator.setTheReceivedData(receivedData!)
         NNCommunicator.fetchGeonamesJSONData()
-        NNCommunicator.connection(testConnection, didReceiveResponse: NSURLResponse())
+        let fakeResponse = FakeURLResponse(code: 200)
+        NNCommunicator.connection(testConnection, didReceiveResponse: fakeResponse!)
         XCTAssertNotEqual(receivedData!, NNCommunicator.receivedData!, "Old data should be discarded")
     }
     

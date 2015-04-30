@@ -12,7 +12,7 @@ import CoreLocation
 
 class ParserTests: XCTestCase {
     
-    var parser = GeoNamesJSONParser()
+    var parser = GeonamesJSONParser()
     
     override func setUp() {
         super.setUp()

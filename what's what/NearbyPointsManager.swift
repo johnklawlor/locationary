@@ -9,7 +9,7 @@
 import CoreLocation
 import UIKit
 
-protocol NearbyPointsManagerDelegate {
+protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
     func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
@@ -18,9 +18,11 @@ protocol NearbyPointsManagerDelegate {
 
 public struct ManagerConstants {
     static let Error_ReachedMaxConnectionAttempts = NSError(domain: "ManagerReachedMaximumAllowedConnectionAttempts", code: 1, userInfo: nil)
+    static let Error_NearbyPointsIsNil = NSError(domain: "ManagerNearbyPointsIsNil-NothingToFetch", code: 2, userInfo: nil)
+
 }
 
-class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManagerDelegate, CurrentLocationDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -28,18 +30,21 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
     }
     var communicator: GeonamesCommunicator?
     var nearbyPointsJSON: String?
-    var parser: GeoNamesJSONParser!
+    var parser: GeonamesJSONParser!
     var nearbyPoints: [NearbyPoint]?
+    var nearbyPointsInLineOfSight: [NearbyPoint]?
     var nearbyPointsWithAltitude: [NearbyPoint]?
 
+    var prefetchError: NSError?
     var fetchingError: NSError?
     var parsingAltitudeError: NSError?
-    var managerDelegate: NearbyPointsManagerDelegate?
+    unowned var managerDelegate: NearbyPointsManagerDelegate
     
     var lowerDistanceLimit: CLLocationDistance! = 0
     var upperDistanceLimit: CLLocationDistance! = 100000
     
-    init() {
+    init(delegate: NearbyPointsViewController) {
+        managerDelegate = delegate
     }
     
     func getGeonamesJSONData() {
@@ -48,12 +53,13 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
             println("getting geonames")
             communicator?.fetchGeonamesJSONData()
         } else {
-            managerDelegate?.fetchingFailedWithError(ManagerConstants.Error_ReachedMaxConnectionAttempts)
+            managerDelegate.fetchingFailedWithError(ManagerConstants.Error_ReachedMaxConnectionAttempts)
         }
     }
     
     func fetchingNearbyPointsFailedWithError(error: NSError) {
         fetchingError = error
+        // we should do something else here
     }
     
     func receivedNearbyPointsJSON(json: String) {
@@ -70,24 +76,47 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
                 return
             }
         }
-        if let castNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
+        if let receivedNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
             
             // TEST
-            nearbyPoints = castNearbyPointsArray
+            nearbyPoints = receivedNearbyPointsArray
             // TEST
             
-            managerDelegate?.assembledNearbyPointsWithoutAltitude()
+            managerDelegate.assembledNearbyPointsWithoutAltitude()
+        }
+    }
+    
+    func determineIfEachPointIsInLineOfSight() {
+        println("nearbyPoints when fetching line of sight data is \(nearbyPoints)")
+        if nearbyPoints != nil {
+            nearbyPointsWithAltitude = [NearbyPoint]()
+            for nearbyPoint in nearbyPoints! {
+                nearbyPoint.managerDelegate = self
+                nearbyPoint.currentLocationDelegate = self
+                nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
+                
+                if self.parser != nil {
+                    nearbyPoint.parser = self.parser
+                } else {
+                    println("nearbyPointManagerParser is gone, trying to determineLineOfSight in NearbyPointsManager")
+                }
+                
+                // dispatch_async
+                nearbyPoint.determineIfInLineOfSight()
+                // dispatch_async
+            }
+        } else {
+            println("trying to determineIfEachPointIsInLineOfSight. nearbyPoints is nil.")
+            prefetchError = ManagerConstants.Error_NearbyPointsIsNil
         }
     }
     
     func getAltitudeJSONDataForEachPoint() {
         println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
         if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
-            nearbyPointsWithAltitude = [NearbyPoint]()
             for nearbyPoint in nearbyPoints! {
                 nearbyPoint.managerDelegate = self
-                var altitudeCommunicator = AltitudeCommunicator()
-                nearbyPoint.altitudeCommunicator = altitudeCommunicator
+                nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
                 
                 // TEST
                 
@@ -98,7 +127,10 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
                 // TEST
                 
                 if self.parser != nil {
-                    nearbyPoint.parser = self.parser
+                    if nearbyPoint.parser == nil {
+                        println("nearbyPoint's parser is gone")
+                        nearbyPoint.parser = self.parser
+                    }
                 } else {
                     println("nearbyPointManagerParser is gone")
                 }
@@ -135,7 +167,7 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
             nearbyPointsWithAltitude?.append(nearbyPoint)
             if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
                 nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
-                managerDelegate?.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
+                managerDelegate.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
             }
         }
     }
@@ -147,7 +179,7 @@ class NearbyPointsManager: GeonamesCommunicatorDelegate, AltitudeManagerDelegate
                 calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
                 calculateAngleToHorizon(nearbyPoint)
             }
-            managerDelegate?.updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPointsWithAltitude!)
+            managerDelegate.updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPointsWithAltitude!)
         }
     }
     

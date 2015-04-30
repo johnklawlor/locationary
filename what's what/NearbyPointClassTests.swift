@@ -23,16 +23,20 @@ struct TestPoints {
     static let Winslow = NearbyPoint(aName: "Winslow", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.776346, -72.077457), altitude: 693, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let BreadLoaf = NearbyPoint(aName: "Bread Loaf", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.002280,-72.941500), altitude: 1169, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let Schindlers = NearbyPoint(aName: "Schindlers", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.833084, -72.250574), altitude: 187, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.604598, -72.819852), altitude: 1272, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
 }
 
 class NearbyPointClassTests: XCTestCase {
 
     var point1, point2: NearbyPoint!
     var altitudeCommunicator = AltitudeCommunicator()
+    var mockGoogleMapsCommunicator = MockGoogleMapsCommunicator()
     var nnAltitudeCommunicator = MockAltitudeCommunicator()
     var parser = MockParser()
     var parser2 = MockParser()
-    var manager = MockNearbyPointsManager()
+    var manager: MockNearbyPointsManager!
     var viewController = NearbyPointsViewController()
     var nearbyPoint = TestPoints.Smarts
     
@@ -50,6 +54,8 @@ class NearbyPointClassTests: XCTestCase {
         nearbyPoint.labelTapDelegate = viewController
         viewController.locationManager = CLLocationManager()
         viewController.view.addSubview(nearbyPoint.label)
+        
+        manager = MockNearbyPointsManager(delegate: viewController)
     }
     
     override func tearDown() {
@@ -109,5 +115,39 @@ class NearbyPointClassTests: XCTestCase {
         nearbyPoint.showName(UIButton())
         XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "NearbyPoint's tap delegate should be passed NearbyPoint")
     }
+    
+    func testCallToDetermineLineOfSightWithNilCommunicatorSetsPrefetchError() {
+        nearbyPoint.googleMapsCommunicator = nil
+        nearbyPoint.determineIfInLineOfSight()
+        XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_GoogleMapsCommunicatorNil, "Nil googleMapsCommunicator should set prefetchError")
+    }
+    
+    func testDetermineLineOfSightSetsDelegateAndLocationsWithNonNilGoogleMapsCommunicatorAndFetchesData() {
+        nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
+        manager.currentLocation = TestPoints.Holts.location
+        nearbyPoint.currentLocationDelegate = manager
+        nearbyPoint.determineIfInLineOfSight()
+        let googleMapsDelegate = mockGoogleMapsCommunicator.googleMapsCommunicatorDelegate as! NearbyPoint
+        XCTAssertEqual(googleMapsDelegate, nearbyPoint, "nearbyPoint should be googleMapsCommunicator's delegate")
+        XCTAssertEqual(mockGoogleMapsCommunicator.currentLocation!, TestPoints.Holts.location, "GoogleMapsCommunicator's currentLocation should be equal to NearbyPointsManager's currentLocation")
+        XCTAssertEqual(mockGoogleMapsCommunicator.locationOfNearbyPoint!, nearbyPoint.location, "NearbyPoint should set GoogleMapsCommunicator's locationOfNearbyPoint to nearbyPoint's location")
+        XCTAssertTrue(mockGoogleMapsCommunicator.askedToFetchJSONData == true, "GoogleMapsCommunicator should have been asked to fetch JSON data")
+    }
+    
+    func testDetermineLineOfSightWithoutCurrentLocationSetPrefetchError() {
+        nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
+        manager.currentLocation = nil
+        nearbyPoint.currentLocationDelegate = manager
+        nearbyPoint.determineIfInLineOfSight()
+        XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_NoCurrentLocation, "nearbyPoint with a currentLocationDelegate that doesn't have a currentLocation sets a prefetch error")
+    }
+    
+    func testDetermineLineOfSightWithoutALocationSetsPrefetchError() {
+        nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
+        manager.currentLocation = TestPoints.Holts.location
+        nearbyPoint.currentLocationDelegate = manager
+        nearbyPoint.location = nil
+        nearbyPoint.determineIfInLineOfSight()
+        XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_NoNearbyPointLocation, "nearbyPoint with a currentLocationDelegate that doesn't have a location sets a prefetch error")    }
     
 }

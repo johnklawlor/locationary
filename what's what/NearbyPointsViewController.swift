@@ -41,8 +41,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var nearbyPointsManager: NearbyPointsManager!
     var nearbyPointsWithAltitude: [NearbyPoint]?
-    var nearbyPointsToShow: [Int]?
-    var nearbyPointsSubviews: [UIImageView]?
     
     var currentHeading: CLLocationDirection?
     var currentZ: Double! = 0
@@ -56,7 +54,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var locationManager: CLLocationManager! {
         didSet {
-            println("location manager just set")
+            println("location manager just set, view controller is \(self)")
             // TEST THIS!!!!!!!!!!!!
             locationManager.delegate = self
             // TEST THIS!!!!!!!!!!!!
@@ -86,8 +84,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         println("location manager is \(locationManager)")
         locationManager.startUpdatingLocation()
-        
-        nearbyPointsSubviews = [UIImageView]()
         
         captureManager?.addVideoInput()
         captureManager?.addVideoPreviewLayer()
@@ -156,40 +152,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         }
     }
     
-    func showNearbyPointLabels() {
-        locationManager.heading
-        println("currentHeading: \(currentHeading)")
-        getIndicesOfPointsWithinFieldOfVisionOfCamera()
-        
-        if nearbyPointsToShow != nil {
-            for nearbyPointIndex in nearbyPointsToShow! {
-                let index = nearbyPointIndex
-                if let nearbyPointToShow = nearbyPointsWithAltitude?[index] {
-                    
-                }
-            }
-        }
-
-    }
-    
-    func getIndicesOfPointsWithinFieldOfVisionOfCamera() {
-        if nearbyPointsWithAltitude != nil && currentHeading != nil {
-            for (index, nearbyPointWithAltitude) in enumerate(nearbyPointsWithAltitude!) {
-                let nearbyPointLocation = nearbyPointWithAltitude.location
-                
-                if nearbyPointWithAltitude.distanceFromCurrentLocation < DistanceConstants.WithinRadius {
-                    println("currentHeading \(currentHeading)")
-                    let lowerValidAngle = currentHeading! - Double(DeviceConstants.HFOV/2)
-                    let upperValidAngle = currentHeading! + Double(DeviceConstants.HFOV/2)
-                    
-//                    if theta > lowerValidAngle && theta < upperValidAngle {
-//                        nearbyPointsToShow?.append(index)
-//                    }
-                }
-            }
-        }
-    }
-    
     func returnHeadingBasedInProperCoordinateSystem(heading: Double?) -> CLLocationDirection? {
         if heading != nil {
             switch heading! {
@@ -205,46 +167,39 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
         println("locationManager didFailWithError: \(error). Trying again...")
-        locationManager.startUpdatingLocation()
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations:[AnyObject]!) {
         if manager != nil {
             if let location = locations.last as? CLLocation {
                 if nearbyPointsManager != nil {
-                    let currentLocation = nearbyPointsManager.currentLocation!
-                    if currentLocation.distanceFromLocation(location) > 1000 {
-                        prepareForNearbyPointsWithAltitudeForLocation(location)
-                        nearbyPointsManager.getGeonamesJSONData()
-
+                    let pointsManagerCurrentLocation2 = nearbyPointsManager
+                    if let pointsManagerCurrentLocation = nearbyPointsManager.currentLocation {
+                        if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 {
+                            createNewNearbyPointsManager()
+                            prepareForNewPointsAtLocation(location)
+                            nearbyPointsManager.getGeonamesJSONData()
+                        } else {
+                            nearbyPointsManager.currentLocation = location
+                            nearbyPointsManager.updateDistanceOfNearbyPointsWithAltitude()
+                        }
                     } else {
-                        nearbyPointsManager.currentLocation = location
-                        nearbyPointsManager.updateDistanceOfNearbyPointsWithAltitude()
+                        prepareForNewPointsAtLocation(location)
+                        nearbyPointsManager.getGeonamesJSONData()
                     }
                 } else {
-                    prepareForNearbyPointsWithAltitudeForLocation(location)
-                    nearbyPointsManager.getGeonamesJSONData()
+                    println("Something went wrong--nearbyPointsManager is nil")
                 }
             }
         }
     }
     
-    func prepareForNearbyPointsWithAltitudeForLocation(location: CLLocation!) {
-        nearbyPointsManager = nil
-        nearbyPointsManager = NearbyPointsManager()
-        nearbyPointsManager.managerDelegate = self
-        
-        // TEST
-        var communicator = GeonamesCommunicator()
-        communicator.geonamesCommunicatorDelegate = nearbyPointsManager
-        nearbyPointsManager.communicator = communicator
-        
-        nearbyPointsManager.parser = GeoNamesJSONParser()
-        
-        // TEST
-        
+    func createNewNearbyPointsManager() {
+        nearbyPointsManager = NearbyPointsManager(delegate: self)
+    }
+    
+    func prepareForNewPointsAtLocation(location: CLLocation!) {
         nearbyPointsWithAltitude = [NearbyPoint]()
-        nearbyPointsToShow = [Int]()
         nearbyPointsManager.currentLocation = location
     }
     
@@ -254,12 +209,15 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func assembledNearbyPointsWithoutAltitude() {
         println("assemebled points without altitude")
+        
         // TEST
         if nearbyPointsManager != nil {
-            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
+            nearbyPointsManager.determineIfEachPointIsInLineOfSight()
+//            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
         } else{
             println("we lost the nearbyPoints manager")
         }
+        // TEST
     }
     
     func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {

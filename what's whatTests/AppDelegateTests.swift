@@ -89,5 +89,20 @@ class AppDelegateTests: XCTestCase {
 //        XCTAssertEqual(viewController.DeviceConstants.HFOV, 58.0, "appDelegate should set its viewController's DeviceConstants")
     }
     
+    func testAppDelegateSetsUpInitialNearbyPointsManager() {
+        let nearbyPointsManager = viewController.nearbyPointsManager as NearbyPointsManager
+        XCTAssertNotNil(nearbyPointsManager, "viewController should have a nearbyPointsManager")
+    }
     
+    func testViewControllersNearbyPointsManagerHasAGeonamesCommunicatorAndAParser() {
+        let geonamesCommunicator = viewController.nearbyPointsManager.communicator as GeonamesCommunicator!
+        let parser = viewController.nearbyPointsManager.parser as GeonamesJSONParser
+        XCTAssertNotNil(geonamesCommunicator, "viewController's nearbyPointsManager should have a GeonamesCommunicator")
+        XCTAssertNotNil(parser, "viewController's nearbyPointsManager should have a GeonamesJSONParser")
+    }
+    
+    func testViewControllersNearbyPointsManagerIsDelegateForGeonamesCommunicator() {
+        let geonamesCommunicatorDelegate = viewController.nearbyPointsManager.communicator?.geonamesCommunicatorDelegate as! NearbyPointsManager
+        XCTAssertNotNil(geonamesCommunicatorDelegate, "viewController's nearbyPointsManager should be geonamesCommunicator's delegate")
+    }
 }
