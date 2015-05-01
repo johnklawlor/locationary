@@ -40,7 +40,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     var captureManager: CaptureSessionManager?
     
     var nearbyPointsManager: NearbyPointsManager!
-    var nearbyPointsWithAltitude: [NearbyPoint]?
+    var nearbyPointsInLineOfSight: [NearbyPoint]?
     
     var currentHeading: CLLocationDirection?
     var currentZ: Double! = 0
@@ -105,13 +105,13 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func motionHandler(motionData: CMAccelerometerData!, error: NSError!) {
-        if self.nearbyPointsWithAltitude != nil && self.nearbyPointsManager != nil && locationManager != nil && locationManager.heading != nil {
+        if self.nearbyPointsInLineOfSight != nil && self.nearbyPointsManager != nil && locationManager != nil && locationManager.heading != nil {
             let zData = motionData.acceleration.z
             if abs(zData - self.currentZ) > 0.01 {
                 self.currentZ = zData
                 if let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading) {
                     println("heading: \(heading)")
-                    for nearbyPoint in self.nearbyPointsWithAltitude! {
+                    for nearbyPoint in self.nearbyPointsInLineOfSight! {
                         NSOperationQueue.mainQueue().addOperationWithBlock() {
                             let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
                             let phoneAngle = CGFloat(90 * zData)
@@ -199,7 +199,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func prepareForNewPointsAtLocation(location: CLLocation!) {
-        nearbyPointsWithAltitude = [NearbyPoint]()
+        nearbyPointsInLineOfSight = [NearbyPoint]()
         nearbyPointsManager.currentLocation = location
     }
     
@@ -212,33 +212,38 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         // TEST
         if nearbyPointsManager != nil {
-            nearbyPointsManager.determineIfEachPointIsInLineOfSight()
-//            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
+            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
         } else{
             println("we lost the nearbyPoints manager")
         }
         // TEST
     }
     
-    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
-        
-        println("nearbyPointsWithAltitude is \(nearbyPointsWithAltitude)")
-        
-        nearbyPointsWithAltitude?.append(nearbyPoint)
-        
+    func retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
+        if nearbyPointsManager != nil {
+            nearbyPointsManager.getElevationProfileDataForPoint(nearbyPoint)
+        }
+    }
+    
+    func confirmedCurrentLocationCanSeeNearbyPoint(nearbyPoint: NearbyPoint) {
         // TEST
+        
+        nearbyPointsInLineOfSight?.append(nearbyPoint)
         
         self.view.addSubview(nearbyPoint.label)
         
         self.motionManager.stopAccelerometerUpdates()
         self.motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: motionHandler)
-        // TEST
         
+        // TEST
     }
     
+    
+    // this function might be superfluous now
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint]) {
-        nearbyPointsWithAltitude = nearbyPoints
+        nearbyPointsInLineOfSight = nearbyPoints
     }
+    // this function might be superfluous now
     
     // TEST
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint) {

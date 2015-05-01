@@ -26,6 +26,7 @@ struct TestPoints {
     static let Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.604598, -72.819852), altitude: 1272, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     static let Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    static let MockHolts = MockPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
 }
 
 class NearbyPointClassTests: XCTestCase {
@@ -87,11 +88,11 @@ class NearbyPointClassTests: XCTestCase {
     func testNearbyPointInformsManagerDelegateOfSuccessfulRetrievalOfAltitude() {
         
         parser.parserPoints = [123]
-        point1.managerDelegate = manager
+        point1.altitudeManagerDelegate = manager
         point1.parser = parser
 
         parser2.parserPoints = [456]
-        point2.managerDelegate = manager
+        point2.altitudeManagerDelegate = manager
         point2.parser = parser2
         
         point1.receivedAltitudeJSON("")
@@ -118,7 +119,7 @@ class NearbyPointClassTests: XCTestCase {
     
     func testCallToDetermineLineOfSightWithNilCommunicatorSetsPrefetchError() {
         nearbyPoint.googleMapsCommunicator = nil
-        nearbyPoint.determineIfInLineOfSight()
+        nearbyPoint.getElevationProfileData()
         XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_GoogleMapsCommunicatorNil, "Nil googleMapsCommunicator should set prefetchError")
     }
     
@@ -126,7 +127,7 @@ class NearbyPointClassTests: XCTestCase {
         nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
         manager.currentLocation = TestPoints.Holts.location
         nearbyPoint.currentLocationDelegate = manager
-        nearbyPoint.determineIfInLineOfSight()
+        nearbyPoint.getElevationProfileData()
         let googleMapsDelegate = mockGoogleMapsCommunicator.googleMapsCommunicatorDelegate as! NearbyPoint
         XCTAssertEqual(googleMapsDelegate, nearbyPoint, "nearbyPoint should be googleMapsCommunicator's delegate")
         XCTAssertEqual(mockGoogleMapsCommunicator.currentLocation!, TestPoints.Holts.location, "GoogleMapsCommunicator's currentLocation should be equal to NearbyPointsManager's currentLocation")
@@ -138,7 +139,7 @@ class NearbyPointClassTests: XCTestCase {
         nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
         manager.currentLocation = nil
         nearbyPoint.currentLocationDelegate = manager
-        nearbyPoint.determineIfInLineOfSight()
+        nearbyPoint.getElevationProfileData()
         XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_NoCurrentLocation, "nearbyPoint with a currentLocationDelegate that doesn't have a currentLocation sets a prefetch error")
     }
     
@@ -147,7 +148,142 @@ class NearbyPointClassTests: XCTestCase {
         manager.currentLocation = TestPoints.Holts.location
         nearbyPoint.currentLocationDelegate = manager
         nearbyPoint.location = nil
-        nearbyPoint.determineIfInLineOfSight()
-        XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_NoNearbyPointLocation, "nearbyPoint with a currentLocationDelegate that doesn't have a location sets a prefetch error")    }
+        nearbyPoint.getElevationProfileData()
+        XCTAssertEqual(nearbyPoint.prefetchError!, NearbyPointConstants.Error_NoNearbyPointLocation, "nearbyPoint with a currentLocationDelegate that doesn't have a location sets a prefetch error")
+    }
+    
+    func testPassingNilToReceivedElevationProfileJSONDataSetsFetchingError() {
+        nearbyPoint.receivedElevationProfileJSON(nil)
+        XCTAssertEqual(nearbyPoint.fetchingError!, NearbyPointConstants.Error_JSONIsNil, "Nil JSON string should set fetching error")
+    }
+    
+    func testPassingEmptyStringToReceivedElevationProfileJSONDataSetsFetchingError() {
+        nearbyPoint.receivedElevationProfileJSON("")
+        XCTAssertEqual(nearbyPoint.fetchingError!, NearbyPointConstants.Error_JSONIsEmpty, "Nil JSON string should set fetching error")
+    }
+    
+    func testNearbyPointNotifiesManagerOfParseErrorEvenIfParserReturnsArray() {
+        nearbyPoint.elevationManagerDelegate = manager
+        parser.parserError = ParserConstants.Error_SerializedJSONPossiblyNotADictionary
+        nearbyPoint.parser = parser
+        nearbyPoint.receivedElevationProfileJSON("JSON")
+        XCTAssertEqual(manager.parsingError!, ParserConstants.Error_SerializedJSONPossiblyNotADictionary, "ElevationManagerDelegate should be passed parsing error")
+    }
+    
+    func testNearbyPointInLineOfSightOfCurrentLocationInformsDelegate() {
+        var mockPoint = MockPoint(aName: "Mountain", aLocation: CLLocation())
+        parser.parserError = nil
+        mockPoint.parser = parser
+        parser.parserPoints = [CLLocation()]
+        mockPoint.elevationManagerDelegate = manager
+        mockPoint.receivedElevationProfileJSON("JSON")
+        XCTAssertTrue(manager.informedOfNearbyPointInLineOfSight, "ElevationManagerDelegate should have been informed of successfully discovery of NearbyPoint in line of sight of current location")
+    }
+    
+    func testNearbyPointNOTInLineOfSightOfCurrentLocationDoesNotInformDelegate() {
+        var mockPoint = MockPoint(aName: "Mountain", aLocation: CLLocation())
+        parser.parserError = nil
+        parser.parserPoints = nil
+        mockPoint.parser = parser
+        mockPoint.elevationManagerDelegate = manager
+        mockPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation()])
+        XCTAssertFalse(manager.informedOfNearbyPointInLineOfSight, "ElevationManagerDelegate should have been informed of successfully discovery of NearbyPoint in line of sight of current location")
+    }
+    
+    func testNearbyPointsIsInLineOfSightGivenNilElevationProfileReturnsFalse() {
+        let inLineOfSight = nearbyPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(nil)
+        XCTAssertFalse(inLineOfSight, "Nil elevationProfile should return false in determining if in line of sight")
+    }
+    
+    func testDeterminingLineOfSightReturnsFalseIfPassedArrayNotOfTypeCLLocation() {
+        var inLineOfSight = nearbyPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([1,2,3])
+        XCTAssertFalse(inLineOfSight, "Passing array NOT of type CLLocation to determine line of sight returns false")
+    }
+    
+    func testDeterminingLineOfSightReturnsFalseIfPassedEmptyArray() {
+        var inLineOfSight = nearbyPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation]())
+        XCTAssertFalse(inLineOfSight, "Passing empty array of type CLLocation to determine line of sight returns false")
+        inLineOfSight = nearbyPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([String]())
+        XCTAssertFalse(inLineOfSight, "Passing empty array NOT of type CLLocation to determine line of sight returns false")
+    }
+    
+    func testKillingtonIsInLineOfSightOfHolts() {
+        var currentPoint = TestPoints.Holts
+        manager.currentLocation = currentPoint.location
+        var killington = TestPoints.Killington
+        killington.angleToHorizon = 0.5987909267657717
+        killington.currentLocationDelegate = manager
+        
+        var elevationProfile = [CLLocation]()
+        let altitudes = [614.346008300781,
+            317.276916503906,
+            118.771034240723,
+            317.586242675781,
+            220.008392333984,
+            395.074798583984,
+            357.749359130859,
+            460.627288818359,
+            661.596984863281,
+            1287.99914550781]
+        
+        let coordinates = [[43.772333,-72.107691],
+            [43.7539144376924,-72.1870163156887],
+            [43.7354410486442,-72.2662927446971],
+            [43.7169129020388,-72.3455202036827],
+            [43.6983300671558,-72.4246986099388],
+            [43.6796926133706,-72.5038278813945],
+            [43.661000610153,-72.5829079366135],
+            [43.6422541270662,-72.6619386947941],
+            [43.6234532337661,-72.740920075768],
+            [43.604598,-72.819852]]
+        
+        for (index, coordinate) in enumerate(coordinates) {
+            let dc = CLLocationCoordinate2DMake(coordinate[0], coordinate[1])
+            let altitude = altitudes[index]
+            elevationProfile.append(CLLocation(coordinate: dc, altitude: altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSince1970: 0)))
+        }
+        
+        let inLineOfSight = killington.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile)
+        XCTAssertTrue(inLineOfSight, "Killington should be in Holt's line of sight")
+    }
+    
+    func testKillingtonIsNotInLineOfSightOfTheSchindlers() {
+        var currentPoint = TestPoints.Schindlers
+        manager.currentLocation = currentPoint.location
+        var killington = TestPoints.Killington
+        killington.angleToHorizon = 1.185378689113316
+        killington.currentLocationDelegate = manager
+        
+        var elevationProfile = [CLLocation]()
+        let altitudes = [180.866455078125,
+            405.994781494141,
+            468.278137207031,
+            242.092498779297,
+            393.950714111328,
+            469.626434326172,
+            571.395263671875,
+            440.786560058594,
+            569.484680175781,
+            1200.83447265625]
+        
+        let coordinates = [[43.833084,-72.250574],
+            [43.807836469372,-72.3140416085183],
+            [43.7825538467397,-72.3774555486805],
+            [43.7572361927417,-72.4408158388751],
+            [43.7318835679707,-72.5041224978059],
+            [43.7064960329729,-72.5673755444902],
+            [43.6810736482479,-72.6305749982576],
+            [43.6556164742485,-72.6937208787479],
+            [43.6301245713799,-72.7568132059099],
+            [43.604598,-72.819852]]
+        
+        for (index, coordinate) in enumerate(coordinates) {
+            let dc = CLLocationCoordinate2DMake(coordinate[0], coordinate[1])
+            let altitude = altitudes[index]
+            elevationProfile.append(CLLocation(coordinate: dc, altitude: altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSince1970: 0)))
+        }
+        let inLineOfSight = killington.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile)
+        XCTAssertFalse(inLineOfSight, "Killington not should be in the Schindler's line of sight")
+    }
     
 }

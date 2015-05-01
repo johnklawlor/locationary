@@ -13,6 +13,7 @@ class MockNearbyPointsManagerDelegate: NearbyPointsManagerDelegate {
     var failError: NSError?
     var successfullyAssembledNearbyPointsArray: Bool! = false
     var updatedNearbyPoints = [NearbyPoint]()
+    var retrievedPoint: NearbyPoint?
     
     func fetchingFailedWithError(error: NSError) {
         failError = error
@@ -22,8 +23,8 @@ class MockNearbyPointsManagerDelegate: NearbyPointsManagerDelegate {
         successfullyAssembledNearbyPointsArray = true
     }
     
-    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
-        
+    func retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
+        retrievedPoint = nearbyPoint
     }
     
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint]) {

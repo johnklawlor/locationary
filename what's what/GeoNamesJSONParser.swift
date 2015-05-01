@@ -21,6 +21,10 @@ struct JSONErrorCode {
     static let JSONStringIsNil = 0
 }
 
+struct ParserConstants {
+    static let Error_SerializedJSONPossiblyNotADictionary = NSError(domain: "SerializedJSONStringCouldNotBeCastAsDictionary", code: 1, userInfo: nil)
+}
+
 class GeonamesJSONParser: Equatable {
     
     init() {
@@ -29,20 +33,20 @@ class GeonamesJSONParser: Equatable {
     
     func buildAndReturnArrayFromJSON(json: String) -> ([AnyObject]?, NSError?) {
         if json.isEmpty {
-            let error = NSError(domain: JSONError.JSONStringIsNil, code: JSONErrorCode.JSONStringIsNil, userInfo: nil)
-            return (nil, error)
+            return (nil, NearbyPointConstants.Error_JSONIsEmpty)
         }
         
         if let data = json.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
-            var jsonEncodingError: NSError?
-            let jsonDictionary = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &jsonEncodingError) as! NSDictionary?
-            if jsonEncodingError != nil {
+            var error: NSError?
+            let serialzedJSONDictionary = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error) as? NSDictionary
+            if let jsonEncodingError = error {
                 return (nil, jsonEncodingError)
-            } else if jsonDictionary != nil {
+            }
+            if let jsonDictionary = serialzedJSONDictionary {
                 var pointsArray = [NearbyPoint]()
 //                let srt = jsonDictionary!.objectForKey("srtm3") as? NSInteger
 //                println("jsonDictionary is \(srt)")
-                if let geonames = jsonDictionary?.objectForKey("geonames") as? NSArray {
+                if let geonames = jsonDictionary.objectForKey("geonames") as? NSArray {
                     for aNearbyPoint in geonames {
                         let name = aNearbyPoint.objectForKey("name") as! String
                         let latitudeString = aNearbyPoint.objectForKey("lat") as! String
@@ -60,7 +64,7 @@ class GeonamesJSONParser: Equatable {
                     }
                     return (pointsArray, nil)
                 }
-                else if let altitude = jsonDictionary?.objectForKey("srtm3") as? NSInteger {
+                else if let altitude = jsonDictionary.objectForKey("srtm3") as? NSInteger {
                     return ([altitude], nil)
                 }
             }

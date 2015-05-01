@@ -10,8 +10,21 @@ import Foundation
 
 class MockPoint: NearbyPoint {
     var askedToDetermineIfInLineOfSight: Bool! = false
+    var askedToGetJSONData: Bool = false
     
-    override func determineIfInLineOfSight() {
+    override func getElevationProfileData() {
         askedToDetermineIfInLineOfSight = true
+    }
+    
+    override func nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile: [AnyObject]?) -> Bool {
+        if let anyObject = elevationProfile {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    override func getAltitudeJSONData() {
+        askedToGetJSONData = true
     }
 }

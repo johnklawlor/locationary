@@ -11,7 +11,7 @@ import CoreLocation
 
 protocol GoogleMapsCommunicatorDelegate {
     func fetchingElevationProfileFailedWithError(error: NSError)
-    func receivedElevationProfileJSON(json: String)
+    func receivedElevationProfileJSON(json: String?)
 }
 
 class GoogleMapsCommunicator {

@@ -12,7 +12,7 @@ import UIKit
 protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
-    func retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
+    func retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint])
 }
 
@@ -22,7 +22,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManagerDelegate, CurrentLocationDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManagerDelegate, ElevationManagerDelegate, CurrentLocationDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -37,7 +37,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
 
     var prefetchError: NSError?
     var fetchingError: NSError?
-    var parsingAltitudeError: NSError?
+    var parsingError: NSError?
     unowned var managerDelegate: NearbyPointsManagerDelegate
     
     var lowerDistanceLimit: CLLocationDistance! = 0
@@ -91,19 +91,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
         if nearbyPoints != nil {
             nearbyPointsWithAltitude = [NearbyPoint]()
             for nearbyPoint in nearbyPoints! {
-                nearbyPoint.managerDelegate = self
-                nearbyPoint.currentLocationDelegate = self
-                nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
-                
-                if self.parser != nil {
-                    nearbyPoint.parser = self.parser
-                } else {
-                    println("nearbyPointManagerParser is gone, trying to determineLineOfSight in NearbyPointsManager")
-                }
-                
-                // dispatch_async
-                nearbyPoint.determineIfInLineOfSight()
-                // dispatch_async
+                getElevationProfileDataForPoint(nearbyPoint)
             }
         } else {
             println("trying to determineIfEachPointIsInLineOfSight. nearbyPoints is nil.")
@@ -111,20 +99,40 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
         }
     }
     
+    func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
+        nearbyPoint.elevationManagerDelegate = self
+        nearbyPoint.currentLocationDelegate = self
+        nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
+        
+        if self.parser != nil {
+            nearbyPoint.parser = self.parser
+        } else {
+            println("trying to determineLineOfSight in NearbyPointsManager and nearbyPointManagerParser is gone")
+        }
+        
+        // dispatch_async
+        nearbyPoint.getElevationProfileData()
+        // dispatch_async
+    }
+    
+    func parsingElevationProfileFailedWithError(error: NSError) {
+        parsingError = error
+    }
+    
+    func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint) {
+        nearbyPointsWithAltitude?.append(nearbyPoint)
+    }
+    
     func getAltitudeJSONDataForEachPoint() {
         println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
         if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
             for nearbyPoint in nearbyPoints! {
-                nearbyPoint.managerDelegate = self
+                nearbyPoint.altitudeManagerDelegate = self
                 nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
-                
-                // TEST
                 
                 if let viewController = managerDelegate as? NearbyPointsViewController {
                     nearbyPoint.labelTapDelegate = viewController
                 }
-                
-                // TEST
                 
                 if self.parser != nil {
                     if nearbyPoint.parser == nil {
@@ -133,12 +141,13 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
                     }
                 } else {
                     println("nearbyPointManagerParser is gone")
+                    // should we create a new parser here? is this parser a singleton like cmmotion is?
                 }
-                // TEST
-                
                 
                 nearbyPoint.getAltitudeJSONData()
             }
+        } else {
+            // should we make another request to get nearby points?
         }
     }
     
@@ -148,7 +157,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
     }
     
     func parsingAltitudeFailedWithError(error: NSError) {
-        parsingAltitudeError = error
+        parsingError = error
     }
     
     func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
@@ -165,10 +174,12 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
             // TEST THIS!
             
             nearbyPointsWithAltitude?.append(nearbyPoint)
-            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
-                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
-                managerDelegate.retrievedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoint)
-            }
+
+            managerDelegate.retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint)
+            
+//            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
+//                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
+//            }
         }
     }
     
