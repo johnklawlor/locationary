@@ -21,6 +21,9 @@ class GoogleMapsCommunicatorTests: XCTestCase {
         super.tearDown()
     }
 
-
+    func testGoogleMapsCommunicatorReturnsCorrectURL() {
+//        communicator.locationOfAltitudeToFetch = point1.location
+//        XCTAssertEqual(communicator.fetchingUrl!, NSURL(string: "http://api.geonames.org/srtm3JSON?lat=43.82563&lng=-72.03231&username=jkl234")!, "Communicator should return correct URL")
+    }
 
 }

@@ -46,6 +46,10 @@
 		13C9BF9F1AE2CEF2005EF8D4 /* CaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */; };
 		13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */; };
 		13C9BFD61AE5B111005EF8D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237611ABA20A000D33887 /* AppDelegate.swift */; };
+		13DCD1F71AF44048009993C5 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F61AF44048009993C5 /* Communicator.swift */; };
+		13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F61AF44048009993C5 /* Communicator.swift */; };
+		13DCD1FA1AF440A3009993C5 /* CommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */; };
+		13DCD1FC1AF4468F009993C5 /* MockCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */; };
 		13F6E3E71AEF42660035B3F1 /* GoogleMapsCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F6E3E61AEF42660035B3F1 /* GoogleMapsCommunicator.swift */; };
 		13F6E3E81AEF42E20035B3F1 /* GoogleMapsCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F6E3E61AEF42660035B3F1 /* GoogleMapsCommunicator.swift */; };
 		13F6E3EA1AEF431B0035B3F1 /* GoogleMapsCommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F6E3E91AEF431B0035B3F1 /* GoogleMapsCommunicatorTests.swift */; };
@@ -97,6 +101,9 @@
 		13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLResponse.swift; sourceTree = "<group>"; };
 		13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSessionManager.swift; sourceTree = "<group>"; };
 		13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
+		13DCD1F61AF44048009993C5 /* Communicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
+		13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunicatorTests.swift; sourceTree = "<group>"; };
+		13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCommunicator.swift; sourceTree = "<group>"; };
 		13F6E3E61AEF42660035B3F1 /* GoogleMapsCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapsCommunicator.swift; sourceTree = "<group>"; };
 		13F6E3E91AEF431B0035B3F1 /* GoogleMapsCommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GoogleMapsCommunicatorTests.swift; path = "what's whatTests/GoogleMapsCommunicatorTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -145,6 +152,7 @@
 				135237611ABA20A000D33887 /* AppDelegate.swift */,
 				138B18341ACB6D0900D54ECE /* AltitudeCommunicator.swift */,
 				13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */,
+				13DCD1F61AF44048009993C5 /* Communicator.swift */,
 				13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */,
 				13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */,
 				13F6E3E61AEF42660035B3F1 /* GoogleMapsCommunicator.swift */,
@@ -172,10 +180,12 @@
 			children = (
 				13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */,
 				138B18301ACA33DB00D54ECE /* AltitudeCommunicatorTests.swift */,
+				13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */,
 				13A3B9731AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift */,
 				13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */,
 				13F6E3E91AEF431B0035B3F1 /* GoogleMapsCommunicatorTests.swift */,
 				13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */,
+				13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */,
 				132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */,
 				136CCE341AF2C08100C74B8F /* MockGoogleMapsCommunicator.swift */,
 				13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */,
@@ -310,6 +320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13DCD1F71AF44048009993C5 /* Communicator.swift in Sources */,
 				13A3B9721AC5FC2800FF0202 /* GeonamesCommunicator.swift in Sources */,
 				13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */,
 				13A3B9771AC6337900FF0202 /* NearbyPointsManager.swift in Sources */,
@@ -327,7 +338,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13DCD1FA1AF440A3009993C5 /* CommunicatorTests.swift in Sources */,
 				136CCE351AF2C08100C74B8F /* MockGoogleMapsCommunicator.swift in Sources */,
+				13DCD1FC1AF4468F009993C5 /* MockCommunicator.swift in Sources */,
 				13A3B97C1AC638A100FF0202 /* MockNearbyPointsManager.swift in Sources */,
 				138B183B1ACB7EAA00D54ECE /* MockAltitudeCommunicator.swift in Sources */,
 				13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */,
@@ -342,6 +355,7 @@
 				13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */,
 				138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */,
 				13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */,
+				13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */,
 				138B18361ACB758700D54ECE /* NearbyPoint.swift in Sources */,
 				13A3B9791AC633AD00FF0202 /* NearbyPointsManagerTests.swift in Sources */,
 				138B18391ACB79B000D54ECE /* NearbyPointClassTests.swift in Sources */,

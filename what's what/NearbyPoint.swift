@@ -27,6 +27,7 @@ protocol AltitudeManagerDelegate: class {
 protocol ElevationManagerDelegate: class {
     func parsingElevationProfileFailedWithError(error: NSError)
     func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint)
+    func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
 protocol LabelTapDelegate {
@@ -46,7 +47,7 @@ struct NearbyPointConstants {
     static let Error_JSONIsEmpty = NSError(domain: "ElevationProfileJSONStringIsEmpty-CannotDetermineLineOfSight", code: 6, userInfo: nil)
 }
 
-class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicatorDelegate, Equatable, Printable {
+class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegate, Equatable, Printable {
     
     init(aName: String, aLocation: CLLocation!) {
         name = aName
@@ -73,7 +74,7 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicato
     // TEST THIS!
     
     var googleMapsCommunicator: GoogleMapsCommunicator?
-    var altitudeCommunicator: AltitudeCommunicator?
+    var communicator: Communicator?
     var prefetchError: NSError?
     var fetchingError: NSError?
     var elevationProfileJSONString: String?
@@ -87,15 +88,15 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicato
     weak var altitudeManagerDelegate: AltitudeManagerDelegate?
     
     func getAltitudeJSONData() {
-        if let communicator = altitudeCommunicator {
-            communicator.altitudeCommunicatorDelegate = self
-            communicator.locationOfAltitudeToFetch = location
-            communicator.fetchAltitudeJSONData()
-        } else {
-            // TEST
-            prefetchError = NearbyPointConstants.Error_AltitudeCommunicatorNil
-            // TEST
-        }
+//        if let communicator = altitudeCommunicator {
+//            communicator.altitudeCommunicatorDelegate = self
+//            communicator.locationOfAltitudeToFetch = location
+//            communicator.fetchAltitudeJSONData()
+//        } else {
+//            // TEST
+//            prefetchError = NearbyPointConstants.Error_AltitudeCommunicatorNil
+//            // TEST
+//        }
     }
     
     func getElevationProfileData() {
@@ -138,6 +139,8 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicato
                 } else {
                     if nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfileArray) {
                         elevationManagerDelegate?.currentLocationCanViewNearbyPoint(self)
+                    } else {
+                        elevationManagerDelegate?.currentLocationCANNOTViewNearbyPoint(self)
                     }
                 }
             } else {
@@ -152,7 +155,15 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicato
     
     func nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile: [AnyObject]?) -> Bool {
         if elevationProfile != nil && !elevationProfile!.isEmpty {
-            if let elevationPoints = elevationProfile as? [CLLocation] {
+            if var elevationPoints = elevationProfile as? [CLLocation] {
+                let lastElevationPoint = elevationPoints.removeLast()
+                self.location = CLLocation(coordinate: self.location.coordinate, altitude: lastElevationPoint.altitude, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate(timeIntervalSinceNow: 0))
+                
+                if elevationPoints.isEmpty {
+                    // we're being lazy and using this line to test that the last item of elevationProfile was removed, which may otherwise cause the test below to determine if the point is in line of sight to fail
+                    return false
+                }
+                
                 for elevationPoint in elevationPoints {
                     let currentLocation = currentLocationDelegate?.currentLocation
                     let o = elevationPoint.altitude - currentLocation!.altitude
@@ -172,13 +183,13 @@ class NearbyPoint: NSObject, AltitudeCommunicatorDelegate, GoogleMapsCommunicato
         }
     }
     
-    func fetchingAltitudeFailedWithError(error: NSError) {
+    func fetchingFailedWithError(error: NSError) {
         println("fetchingAltitudeFailedWithError: \(error)")
         fetchingError = error
         altitudeManagerDelegate?.gettingAltitudeFailedWithError(error)
     }
     
-    func receivedAltitudeJSON(json: String) {
+    func receivedJSON(json: String) {
         println("got altitude data")
         altitudeJSONString = json
         let (altitude, error) = parser.buildAndReturnArrayFromJSON(json)

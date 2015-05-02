@@ -212,17 +212,15 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         // TEST
         if nearbyPointsManager != nil {
-            nearbyPointsManager.getAltitudeJSONDataForEachPoint()
+            nearbyPointsManager.determineIfEachPointIsInLineOfSight()
         } else{
             println("we lost the nearbyPoints manager")
         }
         // TEST
     }
     
-    func retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint) {
-        if nearbyPointsManager != nil {
-            nearbyPointsManager.getElevationProfileDataForPoint(nearbyPoint)
-        }
+    func retrievedNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
+        nearbyPointsInLineOfSight?.append(nearbyPoint)
     }
     
     func confirmedCurrentLocationCanSeeNearbyPoint(nearbyPoint: NearbyPoint) {

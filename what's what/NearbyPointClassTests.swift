@@ -64,48 +64,48 @@ class NearbyPointClassTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCallToSetJSONDataSetsCommunicatorsDelegateToSelfAndCommunicatorsLocationOfAltitudeToFetch() {
-        point1.altitudeCommunicator = altitudeCommunicator
-        point1.getAltitudeJSONData()
-        XCTAssertEqual(point1.location, point1.altitudeCommunicator!.locationOfAltitudeToFetch!, "NearbyPoint should pass its location to its communicator")
-        XCTAssertTrue(altitudeCommunicator.altitudeCommunicatorDelegate != nil, "NearbyPoint should be communicator's delegate")
-    }
+//    func testCallToSetJSONDataSetsCommunicatorsDelegateToSelfAndCommunicatorsLocationOfAltitudeToFetch() {
+//        point1.altitudeCommunicator = altitudeCommunicator
+//        point1.getAltitudeJSONData()
+//        XCTAssertEqual(point1.location, point1.altitudeCommunicator!.locationOfAltitudeToFetch!, "NearbyPoint should pass its location to its communicator")
+//        XCTAssertTrue(altitudeCommunicator.altitudeCommunicatorDelegate != nil, "NearbyPoint should be communicator's delegate")
+//    }
     
-    func testCallToSetJSONDataCallsFetchJSONDataOnCommunicator() {
-        point1.altitudeCommunicator = nnAltitudeCommunicator
-        point1.getAltitudeJSONData()
-        XCTAssertTrue(nnAltitudeCommunicator.askedToFetchJSONData == true, "Call to NearbyPoint to set altitude data should make call to NearbyPoint's altitudeCommunicator")
-    }
+//    func testCallToSetJSONDataCallsFetchJSONDataOnCommunicator() {
+//        point1.altitudeCommunicator = nnAltitudeCommunicator
+//        point1.getAltitudeJSONData()
+//        XCTAssertTrue(nnAltitudeCommunicator.askedToFetchJSONData == true, "Call to NearbyPoint to set altitude data should make call to NearbyPoint's altitudeCommunicator")
+//    }
 
-    func testCorrectlyParsedAltitudeJSONAddsAltitudeToNearbyPoint() {
-        parser.parserPoints = [NSInteger(694)]
-        parser.parserError = nil
-        point1.parser = parser
-        point1.receivedAltitudeJSON("JSON")
-        XCTAssertEqual(point1.location.altitude, Double(694), "NearbyPoint should get altitude value from parser")
-    }
+//    func testCorrectlyParsedAltitudeJSONAddsAltitudeToNearbyPoint() {
+//        parser.parserPoints = [NSInteger(694)]
+//        parser.parserError = nil
+//        point1.parser = parser
+//        point1.receivedAltitudeJSON("JSON")
+//        XCTAssertEqual(point1.location.altitude, Double(694), "NearbyPoint should get altitude value from parser")
+//    }
     
-    func testNearbyPointInformsManagerDelegateOfSuccessfulRetrievalOfAltitude() {
-        
-        parser.parserPoints = [123]
-        point1.altitudeManagerDelegate = manager
-        point1.parser = parser
-
-        parser2.parserPoints = [456]
-        point2.altitudeManagerDelegate = manager
-        point2.parser = parser2
-        
-        point1.receivedAltitudeJSON("")
-        
-        point1.location = CLLocation(coordinate: point1.location.coordinate, altitude: 123, horizontalAccuracy: point1.location.horizontalAccuracy, verticalAccuracy: point1.location.verticalAccuracy, timestamp: point1.location.timestamp)
-        point2.location = CLLocation(coordinate: point2.location.coordinate, altitude: 456, horizontalAccuracy: point2.location.horizontalAccuracy, verticalAccuracy: point2.location.verticalAccuracy, timestamp: point2.location.timestamp)
-        
-        XCTAssertEqual(manager.retrievalCount, 1, "NearbyPoint should inform manager delegate of successfully retrieving altitude")
-        
-        point2.receivedAltitudeJSON("")
-
-        XCTAssertEqual(manager.retrievalCount, 2, "NearbyPoint should inform manager delegate of successfully retrieving altitude, and add to already assembled nearbyPointsWithAltitude array")
-    }
+//    func testNearbyPointInformsManagerDelegateOfSuccessfulRetrievalOfAltitude() {
+//        
+//        parser.parserPoints = [123]
+//        point1.altitudeManagerDelegate = manager
+//        point1.parser = parser
+//
+//        parser2.parserPoints = [456]
+//        point2.altitudeManagerDelegate = manager
+//        point2.parser = parser2
+//        
+//        point1.receivedAltitudeJSON("")
+//        
+//        point1.location = CLLocation(coordinate: point1.location.coordinate, altitude: 123, horizontalAccuracy: point1.location.horizontalAccuracy, verticalAccuracy: point1.location.verticalAccuracy, timestamp: point1.location.timestamp)
+//        point2.location = CLLocation(coordinate: point2.location.coordinate, altitude: 456, horizontalAccuracy: point2.location.horizontalAccuracy, verticalAccuracy: point2.location.verticalAccuracy, timestamp: point2.location.timestamp)
+//        
+//        XCTAssertEqual(manager.retrievalCount, 1, "NearbyPoint should inform manager delegate of successfully retrieving altitude")
+//        
+//        point2.receivedAltitudeJSON("")
+//
+//        XCTAssertEqual(manager.retrievalCount, 2, "NearbyPoint should inform manager delegate of successfully retrieving altitude, and add to already assembled nearbyPointsWithAltitude array")
+//    }
     
     func testTapCallsTapAction() {
         nearbyPoint.label.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
@@ -180,14 +180,14 @@ class NearbyPointClassTests: XCTestCase {
         XCTAssertTrue(manager.informedOfNearbyPointInLineOfSight, "ElevationManagerDelegate should have been informed of successfully discovery of NearbyPoint in line of sight of current location")
     }
     
-    func testNearbyPointNOTInLineOfSightOfCurrentLocationDoesNotInformDelegate() {
+    func testNearbyPointNOTInLineOfSightOfCurrentLocationInformsDelegate() {
         var mockPoint = MockPoint(aName: "Mountain", aLocation: CLLocation())
         parser.parserError = nil
         parser.parserPoints = nil
         mockPoint.parser = parser
         mockPoint.elevationManagerDelegate = manager
         mockPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation()])
-        XCTAssertFalse(manager.informedOfNearbyPointInLineOfSight, "ElevationManagerDelegate should have been informed of successfully discovery of NearbyPoint in line of sight of current location")
+        XCTAssertFalse(manager.informedOfNearbyPointNOTInLineOfSight, "ElevationManagerDelegate should have been informed of NearbyPoint NOT in line of sight of current location")
     }
     
     func testNearbyPointsIsInLineOfSightGivenNilElevationProfileReturnsFalse() {
@@ -205,6 +205,12 @@ class NearbyPointClassTests: XCTestCase {
         XCTAssertFalse(inLineOfSight, "Passing empty array of type CLLocation to determine line of sight returns false")
         inLineOfSight = nearbyPoint.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([String]())
         XCTAssertFalse(inLineOfSight, "Passing empty array NOT of type CLLocation to determine line of sight returns false")
+    }
+    
+    func testNearbyPointIsInLineOfSightUpdatesNearbyPointsAltitudeAndRemovesLastElevationProfilePoint() {
+        let inLineOfSight = TestPoints.Holts.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation(coordinate: CLLocationCoordinate2D(), altitude: 111.1, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())])
+        XCTAssertEqual(TestPoints.Holts.location.altitude, 111.1, "Determining if NearbyPoint is in line of sight should update its altitude")
+        XCTAssertFalse(inLineOfSight, "NearbyPointIsInLineOfSight should return false because elevationPoints should be empty after removing last time")
     }
     
     func testKillingtonIsInLineOfSightOfHolts() {

@@ -15,6 +15,7 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
     var askedToGetGeonamesJSONData: Bool! = false
     var askedToDetermineIfEachPointIsInLineOfSight: Bool! = false
     var informedOfNearbyPointInLineOfSight: Bool = false
+    var informedOfNearbyPointNOTInLineOfSight: Bool = false
     var askedToGetAltitudeJSONDataForEachPoint: Bool = false
     var askedToGetElevationProfileDataForPoint: Bool = false
     
@@ -22,9 +23,9 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
         nearbyPointsJSON = json
     }
     
-    override func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-        retrievalCount++
-    }
+//    override func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
+//        retrievalCount++
+//    }
     
     override func updateDistanceOfNearbyPointsWithAltitude() {
         updatedDistances = true
@@ -42,9 +43,13 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
         informedOfNearbyPointInLineOfSight = true
     }
     
-    override func getAltitudeJSONDataForEachPoint() {
-        askedToGetAltitudeJSONDataForEachPoint = true
+    override func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint) {
+        informedOfNearbyPointNOTInLineOfSight = true
     }
+    
+//    override func getAltitudeJSONDataForEachPoint() {
+//        askedToGetAltitudeJSONDataForEachPoint = true
+//    }
     
     override func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
         askedToGetElevationProfileDataForPoint = true

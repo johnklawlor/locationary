@@ -9,8 +9,13 @@
 import Foundation
 
 class MockPoint: NearbyPoint {
+    var receivedJSON: String?
     var askedToDetermineIfInLineOfSight: Bool! = false
     var askedToGetJSONData: Bool = false
+    
+    override func receivedJSON(json: String) {
+        receivedJSON = json
+    }
     
     override func getElevationProfileData() {
         askedToDetermineIfInLineOfSight = true

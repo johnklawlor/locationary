@@ -12,7 +12,7 @@ import UIKit
 protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
-    func retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint: NearbyPoint)
+    func retrievedNearbyPointInLineOfSight(nearbyPoint: NearbyPoint)
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint])
 }
 
@@ -22,7 +22,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManagerDelegate, ElevationManagerDelegate, CurrentLocationDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationManagerDelegate, CurrentLocationDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -104,6 +104,10 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
         nearbyPoint.currentLocationDelegate = self
         nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
         
+        if let viewController = managerDelegate as? NearbyPointsViewController {
+            nearbyPoint.labelTapDelegate = viewController
+        }
+        
         if self.parser != nil {
             nearbyPoint.parser = self.parser
         } else {
@@ -121,35 +125,40 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
     
     func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint) {
         nearbyPointsWithAltitude?.append(nearbyPoint)
+        managerDelegate.retrievedNearbyPointInLineOfSight(nearbyPoint)
+    }
+
+    func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint) {
+        nearbyPointsWithAltitude?.append(nearbyPoint)
     }
     
-    func getAltitudeJSONDataForEachPoint() {
-        println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
-        if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
-            for nearbyPoint in nearbyPoints! {
-                nearbyPoint.altitudeManagerDelegate = self
-                nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
-                
-                if let viewController = managerDelegate as? NearbyPointsViewController {
-                    nearbyPoint.labelTapDelegate = viewController
-                }
-                
-                if self.parser != nil {
-                    if nearbyPoint.parser == nil {
-                        println("nearbyPoint's parser is gone")
-                        nearbyPoint.parser = self.parser
-                    }
-                } else {
-                    println("nearbyPointManagerParser is gone")
-                    // should we create a new parser here? is this parser a singleton like cmmotion is?
-                }
-                
-                nearbyPoint.getAltitudeJSONData()
-            }
-        } else {
-            // should we make another request to get nearby points?
-        }
-    }
+//    func getAltitudeJSONDataForEachPoint() {
+//        println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
+//        if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
+//            for nearbyPoint in nearbyPoints! {
+//                nearbyPoint.altitudeManagerDelegate = self
+//                nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
+//                
+//                if let viewController = managerDelegate as? NearbyPointsViewController {
+//                    nearbyPoint.labelTapDelegate = viewController
+//                }
+//                
+//                if self.parser != nil {
+//                    if nearbyPoint.parser == nil {
+//                        println("nearbyPoint's parser is gone")
+//                        nearbyPoint.parser = self.parser
+//                    }
+//                } else {
+//                    println("nearbyPointManagerParser is gone")
+//                    // should we create a new parser here? is this parser a singleton like cmmotion is?
+//                }
+//                
+//                nearbyPoint.getAltitudeJSONData()
+//            }
+//        } else {
+//            // should we make another request to get nearby points?
+//        }
+//    }
     
     // should we try to request altitude data from another web service?
     func gettingAltitudeFailedWithError(error: NSError) {
@@ -160,28 +169,28 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, AltitudeManag
         parsingError = error
     }
     
-    func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-        println("got altitude data")
-        if currentLocation != nil {
-            calculateDistanceFromCurrentLocation(nearbyPoint)
-            calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
-            calculateAngleToHorizon(nearbyPoint)
-            
-            // TEST THIS!
-            nearbyPoint.label = UIButton(frame: CGRectMake(375.0/2, 667.0/2, 17, 16))
-            nearbyPoint.label.setBackgroundImage(UIImage(named: "overlaygraphic.png"), forState: UIControlState.Normal)
-            nearbyPoint.label.hidden = true
-            // TEST THIS!
-            
-            nearbyPointsWithAltitude?.append(nearbyPoint)
-
-            managerDelegate.retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint)
-            
-//            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
-//                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
-//            }
-        }
-    }
+//    func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
+//        println("got altitude data")
+//        if currentLocation != nil {
+//            calculateDistanceFromCurrentLocation(nearbyPoint)
+//            calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+//            calculateAngleToHorizon(nearbyPoint)
+//            
+//            // TEST THIS!
+//            nearbyPoint.label = UIButton(frame: CGRectMake(375.0/2, 667.0/2, 17, 16))
+//            nearbyPoint.label.setBackgroundImage(UIImage(named: "overlaygraphic.png"), forState: UIControlState.Normal)
+//            nearbyPoint.label.hidden = true
+//            // TEST THIS!
+//            
+//            nearbyPointsWithAltitude?.append(nearbyPoint)
+//
+//            managerDelegate.retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint)
+//            
+////            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
+////                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
+////            }
+//        }
+//    }
     
     func updateDistanceOfNearbyPointsWithAltitude() {
         if nearbyPointsWithAltitude != nil {
