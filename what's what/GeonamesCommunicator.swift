@@ -9,30 +9,38 @@
 import Foundation
 import CoreLocation
 
+func == (lhs: GeonamesJSONParser, rhs: GeonamesJSONParser) -> Bool {
+    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
 protocol GeonamesCommunicatorDelegate {
     func fetchingNearbyPointsFailedWithError(error: NSError)
     func receivedNearbyPointsJSON(json: String)
 }
 
-struct CommunicatorConstants {
-    static let HTTPResponseError = "GeonamesCommunicatorErrorDoman"
-    static let DistanceGeonamesPointsMustFallWithin: Double = 60.0
-}
+class GeonamesCommunicator: Communicator, CommunicatorDelegate {
 
-class GeonamesCommunicator: NSObject, NSURLConnectionDelegate {
+    var geonamesCommunicatorDelegate: GeonamesCommunicatorDelegate? {
+        didSet {
+            self.communicatorDelegate = self
+        }
+    }
+    
+    func fetchingFailedWithError(error: NSError) {
+        geonamesCommunicatorDelegate?.fetchingNearbyPointsFailedWithError(error)
+    }
+    
+    func receivedJSON(json: String) {
+        geonamesCommunicatorDelegate?.receivedNearbyPointsJSON(json)
+    }
 
-    var geonamesCommunicatorDelegate: GeonamesCommunicatorDelegate?
-
-    var fetchingConnection: NSURLConnection?
-    var fetchingRequest: NSURLRequest?
-    var fetchingUrl: NSURL? {
+    override var fetchingUrl: NSURL? {
         if currentLocation != nil {
-            return NSURL(string: "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=\(south.format())&north=\(north.format())&west=\(west.format())&east=\(east.format())&orderby=elevation&username=jkl234&maxRows=10")
+            return NSURL(string: "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=\(south.format())&north=\(north.format())&west=\(west.format())&east=\(east.format())&orderby=elevation&username=jkl234")
         } else {
             return nil
         }
     }
-    var receivedData: NSMutableData?
     
     var currentLocation: CLLocation? {
         willSet {
@@ -47,7 +55,6 @@ class GeonamesCommunicator: NSObject, NSURLConnectionDelegate {
             }
         }
     }
-    var requestAttempts = 0
     let dlat: Double = (1/110.54) * CommunicatorConstants.DistanceGeonamesPointsMustFallWithin
     var dlong: Double {
         if currentLocation != nil {
@@ -63,65 +70,6 @@ class GeonamesCommunicator: NSObject, NSURLConnectionDelegate {
     
     override init() {
         super.init()
-    }
-    
-    func fetchGeonamesJSONData() {
-        println("trying to fetch")
-        if let url = fetchingUrl {
-            println("fetching")
-            fetchingRequest = NSURLRequest(URL: url)
-            launchConnectionForRequest(fetchingRequest!)
-        }
-    }
-    
-    func launchConnectionForRequest(request: NSURLRequest) {
-        self.cancelAndDiscardConnection()
-        fetchingConnection = NSURLConnection(request: request, delegate: self)
-    }
-    
-    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
-        println("got response")
-        if let httpResponse = response as? NSHTTPURLResponse {
-            if httpResponse.statusCode != 200 {
-                let error = NSError(domain: CommunicatorConstants.HTTPResponseError, code: httpResponse.statusCode, userInfo: nil)
-                geonamesCommunicatorDelegate?.fetchingNearbyPointsFailedWithError(error)
-            } else {
-                // TEST
-                receivedData = NSMutableData()
-                // TEST
-            }
-        }
-    }
-    
-    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
-        receivedData?.appendData(data)
-    }
-    
-    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
-        println("i died")
-        receivedData = nil
-        self.fetchingConnection = nil
-        self.fetchingRequest = nil
-        geonamesCommunicatorDelegate?.fetchingNearbyPointsFailedWithError(error)
-    }
-    
-    func connectionDidFinishLoading(connection: NSURLConnection) {
-        println("got data: \(receivedData)")
-        if let data = receivedData {
-            if let jsonString = NSString(data: receivedData!, encoding: NSUTF8StringEncoding) {
-                println("calling commDelegate")
-                geonamesCommunicatorDelegate?.receivedNearbyPointsJSON(jsonString as String)
-            } else {
-                println("encoding error")
-            }
-        } else {
-            println("no data received")
-        }
-    }
-    
-    func cancelAndDiscardConnection() {
-        fetchingConnection?.cancel()
-        fetchingConnection = nil
     }
     
 }

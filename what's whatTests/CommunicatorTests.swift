@@ -14,10 +14,14 @@ class CommunicatorTests: XCTestCase {
 
     var mockCommunicator: MockCommunicator!
     var communicator: Communicator!
+    
+    var mockGeonamesCommunicator: MockGeonamesCommunicator!
 
     var receivedData = "Received data".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
     var testRequest: NSURLRequest!
     var testConnection: NSURLConnection!
+    
+    var testPoints = TestPoints()
     
     override func setUp() {
         super.setUp()
@@ -25,11 +29,13 @@ class CommunicatorTests: XCTestCase {
         communicator = Communicator()
         mockCommunicator = MockCommunicator()
         
+        mockGeonamesCommunicator = MockGeonamesCommunicator()
+        
         testRequest = NSURLRequest(URL: NSURL(string: "http://api.geonames.org/srtm3JSON?lat=43.720343&lng=-72.145562&username=jkl234")!)
         testConnection = NSURLConnection(request: testRequest, delegate: mockCommunicator)
         
-        communicator.communicatorDelegate = TestPoints.MockHolts
-        mockCommunicator.communicatorDelegate = TestPoints.MockHolts
+        communicator.communicatorDelegate = testPoints.MockHolts
+        mockCommunicator.communicatorDelegate = testPoints.MockHolts
         
     }
     
@@ -37,27 +43,34 @@ class CommunicatorTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-
-    func testFetchingJSONDataCreatesRequestAndLaunchesConnection() {
-        communicator.fetchingUrl = NSURL(string: "anURL")
+    
+    func testFetchingJSONDataWithoutURLInformsDelegateOfError() {
+        communicator.communicatorDelegate = mockGeonamesCommunicator
         communicator.fetchJSONData()
-        XCTAssertNotNil(communicator.fetchingRequest, "Communicator should have an altitude request")
-        XCTAssertNotNil(communicator.fetchingConnection, "Communicator should have an altitude connection")
+        XCTAssertEqual(mockGeonamesCommunicator.fetchingError, CommunicatorConstants.Error_NoURLToFetch, "Communicator should passes no url error to its delegate if fetchingURL is nil")
+    }
+    
+    func testLaunchingNewConnectionCancelsCurrentConnection() {
+        let request = NSURLRequest(URL: NSURL(string: "www.google.com")!)
+        let oldConnection = NSURLConnection(request: request, delegate: mockCommunicator)
+        communicator.fetchingConnection = oldConnection
+        communicator.launchConnectionForRequest(request)
+        XCTAssertNotEqual(communicator.fetchingConnection!, oldConnection!, "Launching new connection cancels old one")
         communicator.cancelAndDiscardConnection()
     }
 
     func testCommunicatorNotifiesCommunicatorDelegateOfError() {
         let FourOhFourResponse = FakeURLResponse(code: 404)
-        communicator.communicatorDelegate = TestPoints.MockHolts
+        communicator.communicatorDelegate = testPoints.MockHolts
         communicator.connection(testConnection, didReceiveResponse: FourOhFourResponse!)
-        XCTAssertEqual(TestPoints.MockHolts.fetchingError!.code, 404, "Response error should have been passed to the delegate")
+        XCTAssertEqual(testPoints.MockHolts.fetchingError!.code, 404, "Response error should have been passed to the delegate")
     }
 
     func testConnectionDidFailWithErrorNotifiesCommunicatorDelegate() {
         let error = NSError(domain: "Bad domain", code: 420, userInfo: nil)
         communicator.fetchingConnection = testConnection
         communicator.connection(testConnection, didFailWithError: error)
-        let connectionFailErrorCode = TestPoints.MockHolts.fetchingError!.code
+        let connectionFailErrorCode = testPoints.MockHolts.fetchingError!.code
         XCTAssertEqual(connectionFailErrorCode, 420, "Connection Failed error should have been passed to the delegate")
     }
 
@@ -75,9 +88,10 @@ class CommunicatorTests: XCTestCase {
         XCTAssertEqual(mockCommunicator.receivedData!, receivedData!, "Communicator should append received data")
     }
     
-    func testConnectionDidFinishedLoadingInformsDelegate() {
+    func testConnectionDidFinishedLoadingPassesDataToDelegate() {
         mockCommunicator.setTheReceivedData(receivedData!)
         mockCommunicator.connectionDidFinishLoading(testConnection)
-        XCTAssertEqual(TestPoints.MockHolts.receivedJSON!, "Received data", "Communicator's delegate should have been passed JSON string")
+        XCTAssertEqual(testPoints.MockHolts.receivedJSON!, "Received data", "Communicator's delegate should have been passed JSON string")
     }
+    
 }

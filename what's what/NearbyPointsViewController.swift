@@ -196,6 +196,9 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func createNewNearbyPointsManager() {
         nearbyPointsManager = NearbyPointsManager(delegate: self)
+        nearbyPointsManager.communicator = GeonamesCommunicator()
+        nearbyPointsManager.communicator?.geonamesCommunicatorDelegate = nearbyPointsManager
+        nearbyPointsManager.parser = GeonamesJSONParser()
     }
     
     func prepareForNewPointsAtLocation(location: CLLocation!) {
@@ -210,24 +213,19 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     func assembledNearbyPointsWithoutAltitude() {
         println("assemebled points without altitude")
         
-        // TEST
         if nearbyPointsManager != nil {
             nearbyPointsManager.determineIfEachPointIsInLineOfSight()
         } else{
             println("we lost the nearbyPoints manager")
         }
-        // TEST
     }
     
     func retrievedNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
         nearbyPointsInLineOfSight?.append(nearbyPoint)
-    }
-    
-    func confirmedCurrentLocationCanSeeNearbyPoint(nearbyPoint: NearbyPoint) {
+        
+        println("added nearbyPoints: \(nearbyPoint)")
+        
         // TEST
-        
-        nearbyPointsInLineOfSight?.append(nearbyPoint)
-        
         self.view.addSubview(nearbyPoint.label)
         
         self.motionManager.stopAccelerometerUpdates()
@@ -235,7 +233,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         // TEST
     }
-    
     
     // this function might be superfluous now
     func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint]) {

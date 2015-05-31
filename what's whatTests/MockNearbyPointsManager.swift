@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate {
+class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
     
     var retrievalCount = 0
     var updatedDistances: Bool! = false
@@ -18,14 +18,19 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
     var informedOfNearbyPointNOTInLineOfSight: Bool = false
     var askedToGetAltitudeJSONDataForEachPoint: Bool = false
     var askedToGetElevationProfileDataForPoint: Bool = false
+    var didUpdateDistancesAndAnglesForPoint: Bool = false
+    
+    var nearbyPointToUpdate: NearbyPoint!
     
     override func receivedNearbyPointsJSON(json: String) {
         nearbyPointsJSON = json
     }
     
-//    override func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-//        retrievalCount++
-//    }
+    func fetchingFailedWithError(error: NSError) {
+    }
+    
+    func receivedJSON(json: String) {
+    }
     
     override func updateDistanceOfNearbyPointsWithAltitude() {
         updatedDistances = true
@@ -47,11 +52,11 @@ class MockNearbyPointsManager: NearbyPointsManager, GeonamesCommunicatorDelegate
         informedOfNearbyPointNOTInLineOfSight = true
     }
     
-//    override func getAltitudeJSONDataForEachPoint() {
-//        askedToGetAltitudeJSONDataForEachPoint = true
-//    }
-    
     override func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
         askedToGetElevationProfileDataForPoint = true
+    }
+    
+    override func updateDistancesAndAnglesForPoint(nearbyPoint: NearbyPoint) {
+        didUpdateDistancesAndAnglesForPoint = true
     }
 }

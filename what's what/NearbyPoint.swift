@@ -18,16 +18,11 @@ func == (lhs: NearbyPoint, rhs: NearbyPoint) -> Bool {
     return false
 }
 
-protocol AltitudeManagerDelegate: class {
-    func gettingAltitudeFailedWithError(error: NSError)
-    func parsingAltitudeFailedWithError(error: NSError)
-    func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint)
-}
-
 protocol ElevationManagerDelegate: class {
     func parsingElevationProfileFailedWithError(error: NSError)
     func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint)
     func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint)
+    func updateDistancesAndAnglesForPoint(nearbyPoint: NearbyPoint)
 }
 
 protocol LabelTapDelegate {
@@ -74,7 +69,6 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
     // TEST THIS!
     
     var googleMapsCommunicator: GoogleMapsCommunicator?
-    var communicator: Communicator?
     var prefetchError: NSError?
     var fetchingError: NSError?
     var elevationProfileJSONString: String?
@@ -85,9 +79,9 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
     var parser: GeonamesJSONParser!
 
     weak var elevationManagerDelegate: ElevationManagerDelegate?
-    weak var altitudeManagerDelegate: AltitudeManagerDelegate?
+//    weak var altitudeManagerDelegate: AltitudeManagerDelegate?
     
-    func getAltitudeJSONData() {
+//    func getAltitudeJSONData() {
 //        if let communicator = altitudeCommunicator {
 //            communicator.altitudeCommunicatorDelegate = self
 //            communicator.locationOfAltitudeToFetch = location
@@ -97,7 +91,7 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
 //            prefetchError = NearbyPointConstants.Error_AltitudeCommunicatorNil
 //            // TEST
 //        }
-    }
+//    }
     
     func getElevationProfileData() {
         if let communicator = googleMapsCommunicator {
@@ -106,7 +100,7 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
                     communicator.currentLocation = currentLocation
                     communicator.locationOfNearbyPoint = location
                     communicator.googleMapsCommunicatorDelegate = self
-                    communicator.fetchElevationProfileJSONData()
+                    communicator.fetchJSONData()
                 }
                 else {
                     prefetchError = NearbyPointConstants.Error_NoNearbyPointLocation
@@ -124,6 +118,7 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
     }
     
     func fetchingElevationProfileFailedWithError(error: NSError) {
+        fetchingError = error
         println("fetchingElevationProfileFailedWithError: \(error)")
     }
     
@@ -159,8 +154,12 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
                 let lastElevationPoint = elevationPoints.removeLast()
                 self.location = CLLocation(coordinate: self.location.coordinate, altitude: lastElevationPoint.altitude, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate(timeIntervalSinceNow: 0))
                 
+                elevationManagerDelegate?.updateDistancesAndAnglesForPoint(self)
+                
                 if elevationPoints.isEmpty {
                     // we're being lazy and using this line to test that the last item of elevationProfile was removed, which may otherwise cause the test below to determine if the point is in line of sight to fail
+                    let point = self
+                    println("I AM \(self)")
                     return false
                 }
                 
@@ -186,7 +185,7 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
     func fetchingFailedWithError(error: NSError) {
         println("fetchingAltitudeFailedWithError: \(error)")
         fetchingError = error
-        altitudeManagerDelegate?.gettingAltitudeFailedWithError(error)
+//        elevationManagerDelegate?.gettingAltitudeFailedWithError(error)
     }
     
     func receivedJSON(json: String) {
@@ -195,20 +194,18 @@ class NearbyPoint: NSObject, CommunicatorDelegate, GoogleMapsCommunicatorDelegat
         let (altitude, error) = parser.buildAndReturnArrayFromJSON(json)
         
         if let parserError = error {
-            altitudeManagerDelegate?.parsingAltitudeFailedWithError(parserError)
+//            elevationManagerDelegate?.parsingFailedWithError(parserError)
         }
         
         if let altitudeArray = altitude as? [NSInteger] {
             if let altitudeValue = altitudeArray.first {
                 location = CLLocation(coordinate: location.coordinate, altitude: Double(altitudeValue), horizontalAccuracy: location.horizontalAccuracy, verticalAccuracy: location.verticalAccuracy, timestamp: location.timestamp)
-                altitudeManagerDelegate?.successfullyRetrievedAltitude(self)
+//                elevationManagerDelegate?.successfullyRetrievedAltitude(self)
             }
         }
     }
     
-    // TEST
     func showName(sender: UIButton!) {
         labelTapDelegate?.didReceiveTapForNearbyPoint(self)
     }
-    // TEST
 }

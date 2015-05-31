@@ -19,6 +19,8 @@ class NearbyPointsViewControllerTests: XCTestCase {
     var mockManager: MockNearbyPointsManager!
     var locationManager = CLLocationManager()
     
+    var testPoints = TestPoints()
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -39,40 +41,40 @@ class NearbyPointsViewControllerTests: XCTestCase {
     }
     
     func testViewControllerInitialesNearbyPointsWithAltitudeWhenCurrentLocationIsNil() {
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point1.location])
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point1.location])
         XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [NearbyPoint](), "When locationManager updates location and nearbyPointsManager's currentLocation is nil, viewController initializes an empty nearbyPointsWithAltitude array")
     }
     
     func testViewControllerNearbyPointsManagersCurrentLocationWhenCurrentLocationIsNil() {
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point1.location])
-        XCTAssertEqual(viewController.nearbyPointsManager.currentLocation!, TestPoints.Point1.location, "When locationManager updates location and nearbyPointsManager's currentLocation is nil, viewController sets nearbyPointsManager's currentLocation")
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point1.location])
+        XCTAssertEqual(viewController.nearbyPointsManager.currentLocation!, testPoints.Point1.location, "When locationManager updates location and nearbyPointsManager's currentLocation is nil, viewController sets nearbyPointsManager's currentLocation")
     }
 
     func testViewControllerDoesNotRenitialesNearbyPointsWithAltitudeArrayWhenCurrentLocationIsSet() {
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point1.location])
-        viewController.nearbyPointsInLineOfSight = [TestPoints.Point1]
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point1.location])
-        XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [TestPoints.Point1], "Resetting viewController's currentLocation is less than 1000 away from new value of currentLocation does not initialize an empty nearbyPointsWithAltitude array")
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point1.location])
+        viewController.nearbyPointsInLineOfSight = [testPoints.Point1]
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point1.location])
+        XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [testPoints.Point1], "Resetting viewController's currentLocation is less than 1000 away from new value of currentLocation does not initialize an empty nearbyPointsWithAltitude array")
     }
     
     func testViewControllerReinitializesNearbyPointsWithAltitudeArrayWhenCurrentIsSetAndDistanceToNewCurrentLocationValueIsGreaterThan1000(){
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point1.location])
-        viewController.nearbyPointsInLineOfSight = [TestPoints.Point1]
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point3.location])
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point1.location])
+        viewController.nearbyPointsInLineOfSight = [testPoints.Point1]
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point3.location])
         XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [NearbyPoint](), "Resetting viewController's currentLocation is less than 1000 away from new value of currentLocation does not initialize an empty nearbyPointsWithAltitude array")
     }
     
     func testSettingNewNearbyPointsManagerStopsAppendingOfOldNearbyPointsWithAltitude() {
 //        viewController.nearbyPointsManager = manager
-//        let point1 = TestPoints.Point1
-//        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Holts.location])
+//        let point1 = testPoints.Point1
+//        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.Holts.location])
 //        point1.elevationManagerDelegate = viewController.nearbyPointsManager
 //        point1.elevationManagerDelegate!.successfullyRetrievedAltitude(point1)
 //        XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [point1], "viewController should have received the NearbyPoint and appended it to nearbyPointsWithAltitude")
 //
-//        let point2 = TestPoints.Point2
+//        let point2 = testPoints.Point2
 //        point2.altitudeManagerDelegate = point1.altitudeManagerDelegate
-//        let point3 = TestPoints.Point3
+//        let point3 = testPoints.Point3
 //        viewController.locationManager(locationManager, didUpdateLocations: [point3.location])
 //        println("point2 manager delegate: \(point2.altitudeManagerDelegate)")
 //        point2.altitudeManagerDelegate?.successfullyRetrievedAltitude(point2)
@@ -98,7 +100,7 @@ class NearbyPointsViewControllerTests: XCTestCase {
     func testViewControllerGetsPointsWithinFieldOfVisionOfCamera() {
 //        viewController.DeviceConstants = Constants(hfov: 58, vfoc: 32, phoneWidth: 650, phoneHeight: 376)
 //        viewController.nearbyPointsToShow = [Int]()
-//        viewController.nearbyPointsWithAltitude = [TestPoints.Holts, TestPoints.Smarts, TestPoints.Winslow]
+//        viewController.nearbyPointsWithAltitude = [testPoints.Holts, testPoints.Smarts, testPoints.Winslow]
 //        viewController.currentHeading = 30.0
 //        viewController.getIndicesOfPointsWithinFieldOfVisionOfCamera()
 //        XCTAssertEqual(viewController.nearbyPointsToShow!, [1,2], "nearbyPointsToShow should contain the first two indices of nearbyPointsWithAltitude because iPhone is pointed in their direction")
@@ -133,17 +135,17 @@ class NearbyPointsViewControllerTests: XCTestCase {
     }
     
     func testUpdatingLocationGreaterThan1000MetersAwayGetsNewJSONData() {
-        manager.currentLocation = TestPoints.Point1.location
+        manager.currentLocation = testPoints.Point1.location
         mockViewController.nearbyPointsManager = manager
-        mockViewController.locationManager(locationManager, didUpdateLocations: [TestPoints.Point3.location])
+        mockViewController.locationManager(locationManager, didUpdateLocations: [testPoints.Point3.location])
         XCTAssertTrue(mockViewController.createdNewNearbyPointsManager == true, "ViewController should create a new instance of NearbyPointsManager to get new Geonames data")
     }
     
     func testUpdatingLocationToLessThan1000MetersFromOldLocationRecalculatesAngleAndDistanceInNearbyPointsWithAltitude() {
-        mockManager.currentLocation = TestPoints.Holts.location
+        mockManager.currentLocation = testPoints.Holts.location
         viewController.nearbyPointsManager = mockManager
-        viewController.locationManager(locationManager, didUpdateLocations: [TestPoints.NearHolts.location])
-        XCTAssertEqual(mockManager.currentLocation!, TestPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
+        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.NearHolts.location])
+        XCTAssertEqual(mockManager.currentLocation!, testPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
         XCTAssertEqual(mockManager.updatedDistances, true, "ViewController should have called its nearbyPointsManager to update distances and angles for the new location")
     }
 
@@ -154,11 +156,11 @@ class NearbyPointsViewControllerTests: XCTestCase {
     }
     
     func testTapOnNearbyPointLabelShowsATextLabelWithTheNameOfTheNearbyPoint() {
-        var nearbyPoint = TestPoints.Smarts
+        var nearbyPoint = testPoints.Smarts
         nearbyPoint.label = UIButton(frame: CGRectMake(200, 200, 17, 16))
         
         let testLabel = UILabel()
-        testLabel.text = TestPoints.Smarts.name
+        testLabel.text = testPoints.Smarts.name
         testLabel.sizeToFit()
         let testWidth = testLabel.frame.width
         
@@ -178,7 +180,12 @@ class NearbyPointsViewControllerTests: XCTestCase {
     func testCreateNewNearbyPointsManagerCreatesNewNearbyPointManager() {
         viewController.nearbyPointsManager = manager
         viewController.createNewNearbyPointsManager()
-        XCTAssertNotEqual(viewController.nearbyPointsManager, manager, "New nearbyPointsManager should have been created")
+        let newManager = viewController.nearbyPointsManager
+        XCTAssertNotEqual(newManager, manager, "New nearbyPointsManager should have been created")
+        XCTAssertNotNil(newManager.communicator, "New NearbyPointsManager should have a GeonamesCommunicator")
+        let delegate = newManager.communicator!.geonamesCommunicatorDelegate as! NearbyPointsManager
+        XCTAssertTrue(delegate === newManager, "New NearbyPointsManager should be GeonamesCommunicator's delegate")
+        XCTAssertNotNil(newManager.parser, "New NearbyPointsManager should have a parser")
     }
     
     func testViewControllerIsLocationManagersDelegate() {
@@ -195,10 +202,10 @@ class NearbyPointsViewControllerTests: XCTestCase {
     
     func testCallFromNearbyPointsManagerOfSuccessfulRetrievalNearbyPointInLineOfSightAppendsSaidPointToNearbyPointsInLineOfSightArray() {
         mockViewController.nearbyPointsInLineOfSight = [NearbyPoint]()
-        mockViewController.retrievedNearbyPointInLineOfSight(TestPoints.Holts)
-        XCTAssertEqual(mockViewController.nearbyPointsInLineOfSight!, [TestPoints.Holts], "ViewController should append successfully retrieved NearbyPoint in line of sight of current location")
-        mockViewController.retrievedNearbyPointInLineOfSight(TestPoints.Smarts)
-        XCTAssertEqual(mockViewController.nearbyPointsInLineOfSight!, [TestPoints.Holts, TestPoints.Smarts], "ViewController should append successfully retrieved NearbyPoint in line of sight of current location")
+        mockViewController.retrievedNearbyPointInLineOfSight(testPoints.Holts)
+        XCTAssertEqual(mockViewController.nearbyPointsInLineOfSight!, [testPoints.Holts], "ViewController should append successfully retrieved NearbyPoint in line of sight of current location")
+        mockViewController.retrievedNearbyPointInLineOfSight(testPoints.Smarts)
+        XCTAssertEqual(mockViewController.nearbyPointsInLineOfSight!, [testPoints.Holts, testPoints.Smarts], "ViewController should append successfully retrieved NearbyPoint in line of sight of current location")
     }
     
 }

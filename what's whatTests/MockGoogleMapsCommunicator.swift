@@ -11,7 +11,7 @@ import Foundation
 class MockGoogleMapsCommunicator: GoogleMapsCommunicator {
     var askedToFetchJSONData: Bool! = false
     
-    override func fetchElevationProfileJSONData() {
+    override func fetchJSONData() {
         askedToFetchJSONData = true
     }
 }

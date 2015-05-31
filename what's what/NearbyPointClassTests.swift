@@ -10,23 +10,49 @@ import UIKit
 import XCTest
 import CoreLocation
 
-struct TestPoints {
-    static let Point1 = NearbyPoint(aName: "Smarts Mountain", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: 962, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
-    static let Point2 = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649675, -71.914211), altitude: 940, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
-    static let Point3 = NearbyPoint(aName: "Mount Far Away", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(40.12563, -80.43231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+class TestPoints {
+    var Point1 = NearbyPoint(aName: "Smarts Mountain", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: 962, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Point2 = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649675, -71.914211), altitude: 940, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Point3 = NearbyPoint(aName: "Mount Far Away", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(40.12563, -80.43231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
     
-    static let Holts = NearbyPoint(aName: "Holts Ledge", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let NearHolts = NearbyPoint(aName: "Holts Ledge", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.773333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Smarts = NearbyPoint(aName: "Smarts Mountain", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: 962, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let MooseNorth = NearbyPoint(aName: "Moose Mountain, North", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.741299, -72.136657), altitude: 702, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let MooseSouth = NearbyPoint(aName: "Moose Mountain, South", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.720343, -72.145562), altitude: 694, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Winslow = NearbyPoint(aName: "Winslow", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.776346, -72.077457), altitude: 693, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let BreadLoaf = NearbyPoint(aName: "Bread Loaf", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.002280,-72.941500), altitude: 1169, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Schindlers = NearbyPoint(aName: "Schindlers", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.833084, -72.250574), altitude: 187, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.604598, -72.819852), altitude: 1272, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    static let MockHolts = MockPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Holts = NearbyPoint(aName: "Holts Ledge", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var NearHolts = NearbyPoint(aName: "Holts Ledge", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.773333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Smarts = NearbyPoint(aName: "Smarts Mountain", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: 962, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var MooseNorth = NearbyPoint(aName: "Moose Mountain, North", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.741299, -72.136657), altitude: 702, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var MooseSouth = NearbyPoint(aName: "Moose Mountain, South", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.720343, -72.145562), altitude: 694, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Winslow = NearbyPoint(aName: "Winslow", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.776346, -72.077457), altitude: 693, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var BreadLoaf = NearbyPoint(aName: "Bread Loaf", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.002280,-72.941500), altitude: 1169, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Schindlers = NearbyPoint(aName: "Schindlers", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.833084, -72.250574), altitude: 187, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.604598, -72.819852), altitude: 1272, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var MockHolts = MockPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+}
+
+struct Altitudes {
+    static let HoltsToKillington = [614.346008300781,
+        317.276916503906,
+        118.771034240723,
+        317.586242675781,
+        220.008392333984,
+        395.074798583984,
+        357.749359130859,
+        460.627288818359,
+        661.596984863281,
+        1287.99914550781].map({floor($0 / 0.000001) / 1000000})
+}
+
+struct Coordinates {
+    static let HoltsToKillington = [[43.772333,-72.107691],
+        [43.7539144376924,-72.1870163156887],
+        [43.7354410486442,-72.2662927446971],
+        [43.7169129020388,-72.3455202036827],
+        [43.6983300671558,-72.4246986099388],
+        [43.6796926133706,-72.5038278813945],
+        [43.661000610153,-72.5829079366135],
+        [43.6422541270662,-72.6619386947941],
+        [43.6234532337661,-72.740920075768],
+        [43.604598,-72.819852]]
 }
 
 class NearbyPointClassTests: XCTestCase {
@@ -39,7 +65,9 @@ class NearbyPointClassTests: XCTestCase {
     var parser2 = MockParser()
     var manager: MockNearbyPointsManager!
     var viewController = NearbyPointsViewController()
-    var nearbyPoint = TestPoints.Smarts
+    var nearbyPoint: NearbyPoint!
+    
+    var testPoints = TestPoints()
     
     override func setUp() {
         super.setUp()
@@ -50,6 +78,11 @@ class NearbyPointClassTests: XCTestCase {
         let location2 = CLLocation(coordinate: CLLocationCoordinate2DMake(43.12563, -72.43231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
         let name2 = "Mount Cardigan"
         point2 = NearbyPoint(aName: name, aLocation: location2)
+        
+        nearbyPoint = testPoints.Holts
+        
+        testPoints.Holts.label = UIButton()
+        testPoints.Holts.labelTapDelegate = viewController
         
         nearbyPoint.label = UIButton()
         nearbyPoint.labelTapDelegate = viewController
@@ -107,14 +140,19 @@ class NearbyPointClassTests: XCTestCase {
 //        XCTAssertEqual(manager.retrievalCount, 2, "NearbyPoint should inform manager delegate of successfully retrieving altitude, and add to already assembled nearbyPointsWithAltitude array")
 //    }
     
+    func testNearbyPointSetsFetchingErrorWhenPassedElevationError() {
+        testPoints.Holts.fetchingElevationProfileFailedWithError(CommunicatorConstants.Error_NoURLToFetch)
+        XCTAssertEqual(testPoints.Holts.fetchingError!, CommunicatorConstants.Error_NoURLToFetch)
+    }
+    
     func testTapCallsTapAction() {
-        nearbyPoint.label.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
-        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "Tapping button should call action")
+        testPoints.Holts.label.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, testPoints.Holts, "Tapping button should call action")
     }
     
     func testNearbyPointLabelTapInformsDelegate() {
-        nearbyPoint.showName(UIButton())
-        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, nearbyPoint, "NearbyPoint's tap delegate should be passed NearbyPoint")
+        testPoints.Holts.showName(testPoints.Holts.label)
+        XCTAssertEqual(viewController.nearbyPointCurrentlyDisplayed!, testPoints.Holts, "NearbyPoint's tap delegate should be passed NearbyPoint")
     }
     
     func testCallToDetermineLineOfSightWithNilCommunicatorSetsPrefetchError() {
@@ -125,12 +163,12 @@ class NearbyPointClassTests: XCTestCase {
     
     func testDetermineLineOfSightSetsDelegateAndLocationsWithNonNilGoogleMapsCommunicatorAndFetchesData() {
         nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
-        manager.currentLocation = TestPoints.Holts.location
+        manager.currentLocation = testPoints.Holts.location
         nearbyPoint.currentLocationDelegate = manager
         nearbyPoint.getElevationProfileData()
         let googleMapsDelegate = mockGoogleMapsCommunicator.googleMapsCommunicatorDelegate as! NearbyPoint
         XCTAssertEqual(googleMapsDelegate, nearbyPoint, "nearbyPoint should be googleMapsCommunicator's delegate")
-        XCTAssertEqual(mockGoogleMapsCommunicator.currentLocation!, TestPoints.Holts.location, "GoogleMapsCommunicator's currentLocation should be equal to NearbyPointsManager's currentLocation")
+        XCTAssertEqual(mockGoogleMapsCommunicator.currentLocation!, testPoints.Holts.location, "GoogleMapsCommunicator's currentLocation should be equal to NearbyPointsManager's currentLocation")
         XCTAssertEqual(mockGoogleMapsCommunicator.locationOfNearbyPoint!, nearbyPoint.location, "NearbyPoint should set GoogleMapsCommunicator's locationOfNearbyPoint to nearbyPoint's location")
         XCTAssertTrue(mockGoogleMapsCommunicator.askedToFetchJSONData == true, "GoogleMapsCommunicator should have been asked to fetch JSON data")
     }
@@ -145,7 +183,7 @@ class NearbyPointClassTests: XCTestCase {
     
     func testDetermineLineOfSightWithoutALocationSetsPrefetchError() {
         nearbyPoint.googleMapsCommunicator = mockGoogleMapsCommunicator
-        manager.currentLocation = TestPoints.Holts.location
+        manager.currentLocation = testPoints.Holts.location
         nearbyPoint.currentLocationDelegate = manager
         nearbyPoint.location = nil
         nearbyPoint.getElevationProfileData()
@@ -171,7 +209,7 @@ class NearbyPointClassTests: XCTestCase {
     }
     
     func testNearbyPointInLineOfSightOfCurrentLocationInformsDelegate() {
-        var mockPoint = MockPoint(aName: "Mountain", aLocation: CLLocation())
+        var mockPoint = MockPointTwo(aName: "Mountain", aLocation: CLLocation())
         parser.parserError = nil
         mockPoint.parser = parser
         parser.parserPoints = [CLLocation()]
@@ -208,59 +246,51 @@ class NearbyPointClassTests: XCTestCase {
     }
     
     func testNearbyPointIsInLineOfSightUpdatesNearbyPointsAltitudeAndRemovesLastElevationProfilePoint() {
-        let inLineOfSight = TestPoints.Holts.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation(coordinate: CLLocationCoordinate2D(), altitude: 111.1, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())])
-        XCTAssertEqual(TestPoints.Holts.location.altitude, 111.1, "Determining if NearbyPoint is in line of sight should update its altitude")
+        let inLineOfSight = testPoints.Holts.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation(coordinate: CLLocationCoordinate2D(), altitude: 111.1, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())])
+        XCTAssertEqual(testPoints.Holts.location.altitude, 111.1, "Determining if NearbyPoint is in line of sight should update its altitude")
         XCTAssertFalse(inLineOfSight, "NearbyPointIsInLineOfSight should return false because elevationPoints should be empty after removing last time")
     }
     
+    func testNearbyPointIsInLineOfSightCallsElevationManagerDelegateToUpdateDistancesAndAnglesForNearbyPoint() {
+        let mockManager = MockNearbyPointsManager(delegate: viewController)
+        testPoints.Holts.elevationManagerDelegate = mockManager
+        let inLineOfSight = testPoints.Holts.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([CLLocation(coordinate: CLLocationCoordinate2D(), altitude: 111.1, horizontalAccuracy: 1.0, verticalAccuracy: 1.0, timestamp: NSDate())])
+        XCTAssertTrue(mockManager.didUpdateDistancesAndAnglesForPoint, "NearbyPoint should call its elevationManagerDelegate to update distances and angles and to add NearbyPoint to nearbyPointsWithAltitude array")
+        XCTAssertFalse(inLineOfSight, "NearbyPointIsInLineOfSight should return false because elevationPoints should be empty after removing last time")
+    }
+
+    func testCallToElevationManagerDelegateUpdatesDistancesAndAnglesForNearbyPointCorrectly() {
+        testPoints.Holts.elevationManagerDelegate = manager
+        let Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(Coordinates.HoltsToKillington.last![0], Coordinates.HoltsToKillington.last![1]), altitude: Altitudes.HoltsToKillington.last!, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+        let inLineOfSight = testPoints.Holts.nearbyPointIsInLineOfSightOfCurrenctLocationGiven([Killington])
+        XCTAssertEqual(Killington.angleToHorizon, 0.5987909267657717, "NearbyPoint should have correct angleToHorizon")
+        XCTAssertEqual(Killington.angleToCurrentLocation, 0.5987909267657717, "NearbyPoint should have correct angleToHorizon")
+        XCTAssertEqual(Killington.distanceFromCurrentLocation, 0.5987909267657717, "NearbyPoint should have correct angleToHorizon")
+    }
+    
     func testKillingtonIsInLineOfSightOfHolts() {
-        var currentPoint = TestPoints.Holts
+        var currentPoint = testPoints.Holts
         manager.currentLocation = currentPoint.location
-        var killington = TestPoints.Killington
+        var killington = testPoints.Killington
         killington.angleToHorizon = 0.5987909267657717
         killington.currentLocationDelegate = manager
         
-        var elevationProfile = [CLLocation]()
-        let altitudes = [614.346008300781,
-            317.276916503906,
-            118.771034240723,
-            317.586242675781,
-            220.008392333984,
-            395.074798583984,
-            357.749359130859,
-            460.627288818359,
-            661.596984863281,
-            1287.99914550781]
+        let altitudes = Altitudes.HoltsToKillington
         
-        let coordinates = [[43.772333,-72.107691],
-            [43.7539144376924,-72.1870163156887],
-            [43.7354410486442,-72.2662927446971],
-            [43.7169129020388,-72.3455202036827],
-            [43.6983300671558,-72.4246986099388],
-            [43.6796926133706,-72.5038278813945],
-            [43.661000610153,-72.5829079366135],
-            [43.6422541270662,-72.6619386947941],
-            [43.6234532337661,-72.740920075768],
-            [43.604598,-72.819852]]
+        let coordinates = Coordinates.HoltsToKillington
         
-        for (index, coordinate) in enumerate(coordinates) {
-            let dc = CLLocationCoordinate2DMake(coordinate[0], coordinate[1])
-            let altitude = altitudes[index]
-            elevationProfile.append(CLLocation(coordinate: dc, altitude: altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSince1970: 0)))
-        }
-        
+        let elevationProfile = CLLocation.locationArrayFromCoordinates(coordinates, altitudes: altitudes)
         let inLineOfSight = killington.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile)
         XCTAssertTrue(inLineOfSight, "Killington should be in Holt's line of sight")
     }
     
     func testKillingtonIsNotInLineOfSightOfTheSchindlers() {
-        var currentPoint = TestPoints.Schindlers
+        var currentPoint = testPoints.Schindlers
         manager.currentLocation = currentPoint.location
-        var killington = TestPoints.Killington
+        var killington = testPoints.Killington
         killington.angleToHorizon = 1.185378689113316
         killington.currentLocationDelegate = manager
         
-        var elevationProfile = [CLLocation]()
         let altitudes = [180.866455078125,
             405.994781494141,
             468.278137207031,
@@ -283,13 +313,22 @@ class NearbyPointClassTests: XCTestCase {
             [43.6301245713799,-72.7568132059099],
             [43.604598,-72.819852]]
         
+        let elevationProfile = CLLocation.locationArrayFromCoordinates(coordinates, altitudes: altitudes)
+        let inLineOfSight = killington.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile)
+        XCTAssertFalse(inLineOfSight, "Killington should not be in the Schindler's line of sight")
+    }
+    
+}
+
+extension CLLocation {
+    
+    class func locationArrayFromCoordinates(coordinates: [[Double]], altitudes: [Double]) -> [CLLocation] {
+        var elevationProfile = [CLLocation]()
         for (index, coordinate) in enumerate(coordinates) {
             let dc = CLLocationCoordinate2DMake(coordinate[0], coordinate[1])
             let altitude = altitudes[index]
-            elevationProfile.append(CLLocation(coordinate: dc, altitude: altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSince1970: 0)))
+            elevationProfile.append(CLLocation(coordinate: dc, altitude: altitude, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
         }
-        let inLineOfSight = killington.nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile)
-        XCTAssertFalse(inLineOfSight, "Killington not should be in the Schindler's line of sight")
+        return elevationProfile
     }
-    
 }

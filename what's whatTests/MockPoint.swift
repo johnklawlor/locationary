@@ -1,5 +1,5 @@
 //
-//  MockNearbyPoint.swift
+//  MockPoint.swift
 //  what's what
 //
 //  Created by John Lawlor on 4/30/15.
@@ -13,12 +13,23 @@ class MockPoint: NearbyPoint {
     var askedToDetermineIfInLineOfSight: Bool! = false
     var askedToGetJSONData: Bool = false
     
+    var failError: NSError?
+    var jsonString: String?
+    
     override func receivedJSON(json: String) {
         receivedJSON = json
     }
     
     override func getElevationProfileData() {
         askedToDetermineIfInLineOfSight = true
+    }
+    
+    override func fetchingElevationProfileFailedWithError(error: NSError) {
+        failError = error
+    }
+    
+    override func receivedElevationProfileJSON(json: String?) {
+        jsonString = json
     }
     
     override func nearbyPointIsInLineOfSightOfCurrenctLocationGiven(elevationProfile: [AnyObject]?) -> Bool {
@@ -29,7 +40,4 @@ class MockPoint: NearbyPoint {
         }
     }
     
-    override func getAltitudeJSONData() {
-        askedToGetJSONData = true
-    }
 }

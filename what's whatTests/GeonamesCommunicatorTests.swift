@@ -10,6 +10,10 @@ import XCTest
 import what_s_what
 import CoreLocation
 
+struct TestError {
+    static let ForCommunicator = NSError(domain: "Bad domain", code: 420, userInfo: nil)
+}
+
 class GeonamesCommunicatorTests: XCTestCase {
     
     var NNCommunicator: NNGeonamesCommunicator!
@@ -43,79 +47,45 @@ class GeonamesCommunicatorTests: XCTestCase {
         super.tearDown()
     }
     
+    func testGeonamesCommunicatorIsItsOwnCommunicatorDelegate() {
+        let communicatorDelegate = communicator.communicatorDelegate! as! GeonamesCommunicator
+        XCTAssertTrue(communicatorDelegate === communicator, "GeonamesCommunicator should be its own delegate to Communicator callbacks")
+    }
+    
     func testManagerReturnsCorrectURL() {
         XCTAssertEqual("\(NNCommunicator.fetchingUrl!)", "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.834792&north=44.644092&west=-73.265058&east=-70.778354&orderby=elevation&username=jkl234", "Communicator should return correct URL")
     }
     
-    func testLaunchingNewConnectionCancelsCurrentConnection() {
-        let request = NSURLRequest(URL: NNCommunicator.fetchingUrl!)
-        let oldConnection = NSURLConnection(request: request, delegate: NNCommunicator)
-        communicator.fetchingConnection = oldConnection
-        communicator.launchConnectionForRequest(request)
-        XCTAssertNotEqual(communicator.fetchingConnection!, oldConnection!, "Launching new connection cancels old one")
+    func testFetchingJSONDataCreatesRequestAndLaunchesConnection() {
+        communicator.fetchJSONData()
+        XCTAssertNotNil(communicator.fetchingRequest, "Communicator should have an altitude request")
+        XCTAssertNotNil(communicator.fetchingConnection, "Communicator should have an altitude connection")
         communicator.cancelAndDiscardConnection()
     }
     
-    func testFetchingGeonamesJSONDataCreatesFetchingRequestAndConnection() {
-        communicator.fetchGeonamesJSONData()
-        XCTAssertNotNil(communicator.fetchingRequest!, "Fetching Geonames JSON Data should create a request")
-        XCTAssertNotNil(communicator.fetchingConnection!, "Fetching Geonames JSON Data should create a connection")
-        communicator.cancelAndDiscardConnection()
+    func testGeonamesCommunicatorInformsItsDelegateOfAnError() {
+        communicator.geonamesCommunicatorDelegate?.fetchingNearbyPointsFailedWithError(TestError.ForCommunicator)
+        XCTAssertEqual(manager.fetchingError!, TestError.ForCommunicator, "GeonamesCommunicator should pass error to its delegate")
     }
     
-    func testConnectionErrorInformsDelegateOfError() {
-        let FourOhFourResponse = FakeURLResponse(code: 404)
-        NNCommunicator.connection(testConnection, didReceiveResponse: FourOhFourResponse!)
-        XCTAssertEqual(manager.fetchingError!.code, 404, "Response error should have been passed to the delegate")
-    }
-
-    func testConnection200ResponseDoesNotInformDelegateOfError() {
-        let TwoHundredResponse = FakeURLResponse(code: 200)
-        NNCommunicator.connection(testConnection, didReceiveResponse: TwoHundredResponse!)
-        XCTAssertNil(manager.fetchingError, "The communicator delegate should not have a response error");
+    func testGeonamesCommunicatorPassesJSONDataToDelegate() {
+        communicator.geonamesCommunicatorDelegate?.receivedNearbyPointsJSON("Received data")
+        XCTAssertEqual(manager.nearbyPointsJSON!, "Received data", "GeonamesCommunicator should pass JSON string to its delegate")
     }
     
-    func testConnectionDidFailWithErrorNotifiesCommunicatorDelegate() {
-        let error = NSError(domain: "Bad domain", code: 420, userInfo: nil)
-        NNCommunicator.connection(testConnection, didFailWithError: error)
-        NNCommunicator.fetchingConnection = testConnection
-        let connectionFailErrorCode = manager.fetchingError!.code
-        XCTAssertEqual(connectionFailErrorCode, 420, "Connection Failed error should have been passed to the delegate")
-    }
-
     func testConnectionDidFailAddsOneToRequestAttemptsOnConnectionRetry() {
-        let error = NSError(domain: "Bad domain", code: 420, userInfo: nil)
         NNCommunicator.currentLocation = locationA
         XCTAssertEqual(NNCommunicator.requestAttempts, 2, "Communicator should increment requestAttempts to 2")
     }
     
-    func testConnectionDidFailResetsAttemptsForNewConnection() {
-        let error = NSError(domain: "Bad domain", code: 420, userInfo: nil)
+    func testSettingNewLocationResetsAttemptsForNewConnection() {
         NNCommunicator.currentLocation = locationB
         XCTAssertEqual(NNCommunicator.requestAttempts, 1, "Communicator should reset attempts to 1 when resetting the currentLocation")
     }
     
-    func testConnectionPassedDataToDelegate() {
-        NNCommunicator.setTheReceivedData(receivedData!)
-        NNCommunicator.connectionDidFinishLoading(testConnection)
-        let jsonData = manager.nearbyPointsJSON!
-        XCTAssertEqual(jsonData, "Received data", "Manager should receive JSON data as string")
-    }
-    
-    func testConnectionDidReceiveDataAppendsData() {
-        NNCommunicator.setTheReceivedData(receivedData!)
-        let moreData = ", plus more data".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-        NNCommunicator.connection(testConnection, didReceiveData: moreData!)
-        let jsonData = NSString(data: NNCommunicator.receivedData!, encoding: NSUTF8StringEncoding)
-        XCTAssertEqual(jsonData!, "Received data, plus more data", "connectionDidReceiveData should append data")
-    }
-    
-    func testNewConnectionDiscardsOldData() {
-        NNCommunicator.setTheReceivedData(receivedData!)
-        NNCommunicator.fetchGeonamesJSONData()
-        let fakeResponse = FakeURLResponse(code: 200)
-        NNCommunicator.connection(testConnection, didReceiveResponse: fakeResponse!)
-        XCTAssertNotEqual(receivedData!, NNCommunicator.receivedData!, "Old data should be discarded")
+    func testGeonamesCommunicatorInformsDelegateOfReachingRequestAttemptLimit() {
+        NNCommunicator.currentLocation = locationA
+        XCTAssertEqual(NNCommunicator.requestAttempts, 2, "Communicator should increment requestAttempts to 2")
     }
     
 }

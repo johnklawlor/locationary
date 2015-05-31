@@ -50,8 +50,8 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     func getGeonamesJSONData() {
         println("trying to get geonames")
         if communicator?.requestAttempts <= 3 {
-            println("getting geonames")
-            communicator?.fetchGeonamesJSONData()
+            println("getting geonames with communicator \(communicator)")
+            communicator?.fetchJSONData()
         } else {
             managerDelegate.fetchingFailedWithError(ManagerConstants.Error_ReachedMaxConnectionAttempts)
         }
@@ -60,6 +60,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     func fetchingNearbyPointsFailedWithError(error: NSError) {
         fetchingError = error
         // we should do something else here
+        println("error fetching: \(error)")
     }
     
     func receivedNearbyPointsJSON(json: String) {
@@ -77,11 +78,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
             }
         }
         if let receivedNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
-            
-            // TEST
             nearbyPoints = receivedNearbyPointsArray
-            // TEST
-            
             managerDelegate.assembledNearbyPointsWithoutAltitude()
         }
     }
@@ -100,23 +97,43 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     }
     
     func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
-        nearbyPoint.elevationManagerDelegate = self
-        nearbyPoint.currentLocationDelegate = self
-        nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
+//        nearbyPoint.elevationManagerDelegate = self
+//        nearbyPoint.currentLocationDelegate = self
+//        nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
+//        
+//        if let viewController = managerDelegate as? NearbyPointsViewController {
+//            nearbyPoint.labelTapDelegate = viewController
+//        }
+//        
+//        if self.parser != nil {
+//            nearbyPoint.parser = self.parser
+//        } else {
+//            println("trying to determineLineOfSight in NearbyPointsManager and nearbyPointManagerParser is gone")
+//        }
+//        
+//        // dispatch_async
+//        nearbyPoint.getElevationProfileData()
+//        // dispatch_async
+        /*
+
+
+
+
+
+*/
+        nearbyPoint.distanceFromCurrentLocation = currentLocation?.distanceFromLocation(nearbyPoint.location)
+        let elevationAndIsInLineOfSight = call_to_objective-c_function(currentLocation?.coordinate.latitude, currentLocation?.coordinate.longitude, nearbyPoint.location.coordinate.latitude, nearbyPoint.location.coordinate.longitude, nearbyPoint.distanceFromCurrentLocation, )
         
-        if let viewController = managerDelegate as? NearbyPointsViewController {
-            nearbyPoint.labelTapDelegate = viewController
-        }
-        
-        if self.parser != nil {
-            nearbyPoint.parser = self.parser
+        if elevationAndIsInLineOfSight.elevation == 32678 {
+            // should we try to get its elevation again? should we remove it from the nearbyPoints array?
+            // should we make a request to Geonames to get the elevation of the point and simply display it?
         } else {
-            println("trying to determineLineOfSight in NearbyPointsManager and nearbyPointManagerParser is gone")
+            nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevationAndIsInLineOfSight.elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
+            if elevationAndIsInLineOfSight.isInLineOfSight == true {
+                nearbyPointsInLineOfSight?.append(nearbyPoint)
+                managerDelegate.retrievedNearbyPointInLineOfSight(nearbyPoint)
+            }
         }
-        
-        // dispatch_async
-        nearbyPoint.getElevationProfileData()
-        // dispatch_async
     }
     
     func parsingElevationProfileFailedWithError(error: NSError) {
@@ -124,11 +141,17 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     }
     
     func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint) {
-        nearbyPointsWithAltitude?.append(nearbyPoint)
         managerDelegate.retrievedNearbyPointInLineOfSight(nearbyPoint)
     }
 
     func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint) {
+        updateDistancesAndAnglesForPoint(nearbyPoint)
+    }
+    
+    func updateDistancesAndAnglesForPoint(nearbyPoint: NearbyPoint) {
+        calculateDistanceFromCurrentLocation(nearbyPoint)
+        calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+        calculateAngleToHorizon(nearbyPoint)
         nearbyPointsWithAltitude?.append(nearbyPoint)
     }
     
