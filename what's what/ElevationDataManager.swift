@@ -31,8 +31,14 @@ class ElevationDataManager {
     
     func getElevationForPoint(nearbyPoint: NearbyPoint) {
         
+        let currentLatitude = currentLocationDelegate!.currentLocation!.coordinate.latitude
+        let currentLongitude = currentLocationDelegate!.currentLocation!.coordinate.longitude
+        let currentAltitude = currentLocationDelegate!.currentLocation!.altitude
+        
+        println("altitude: \(currentAltitude)")
+        
         if currentLocationDelegate != nil && dataDelegate != nil {
-            let nearbyPointElevationData = GDALWrapper.getElevationAtLatitude(currentLocationDelegate!.currentLocation!.coordinate.latitude, currentLongitude: currentLocationDelegate!.currentLocation!.coordinate.longitude, currentAltitude: currentLocationDelegate!.currentLocation!.altitude, nearbyPointLatitude: nearbyPoint.location.coordinate.latitude, nearbyPointLongitude: nearbyPoint.location.coordinate.longitude, distanceFromCurrentLocation: nearbyPoint.distanceFromCurrentLocation)
+            let nearbyPointElevationData = GDALWrapper.getElevationAtLatitude(currentLatitude, currentLongitude: currentLongitude, currentAltitude: currentAltitude, nearbyPointLatitude: nearbyPoint.location.coordinate.latitude, nearbyPointLongitude: nearbyPoint.location.coordinate.longitude, distanceFromCurrentLocation: nearbyPoint.distanceFromCurrentLocation)
             
             let elevationData = ElevationData(anElevation: nearbyPointElevationData.elevation, anAngleToHorizon: nearbyPointElevationData.angleToHorizon, IsInLineOfSight: nearbyPointElevationData.inLineOfSight)
             
