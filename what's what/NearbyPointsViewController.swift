@@ -109,25 +109,25 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             let zData = motionData.acceleration.z
             if abs(zData - self.currentZ) > 0.01 {
                 self.currentZ = zData
-                if let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading) {
-                    println("heading: \(heading)")
+                if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading) {
+                    println("heading: \(deviceHeading)")
                     for nearbyPoint in self.nearbyPointsInLineOfSight! {
                         NSOperationQueue.mainQueue().addOperationWithBlock() {
                             let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
                             let phoneAngle = CGFloat(90 * zData)
-                            let difference = labelAngle - phoneAngle
+                            let yDifference = labelAngle - phoneAngle
                             let VFOV = CGFloat(self.DeviceConstants.VFOV/2)
-                            if difference > -1*VFOV && difference < VFOV {
-                                let multiplier = (difference+VFOV)/(VFOV*2)
+                            if yDifference > -1*VFOV && yDifference < VFOV {
+                                let multiplier = (yDifference+VFOV)/(VFOV*2)
                                 let yPosition = self.DeviceConstants.PhoneWidth - multiplier * self.DeviceConstants.PhoneWidth
                                 let hfov: CGFloat = 28
-                                var xDifference = CGFloat(heading - nearbyPoint.angleToCurrentLocation)
+                                var xDifference = CGFloat(deviceHeading - nearbyPoint.angleToCurrentLocation)
                                 
                                 if abs(xDifference) > 308 {
                                     if xDifference < 0 {
-                                        xDifference = CGFloat(heading + (360.0 - nearbyPoint.angleToCurrentLocation))
+                                        xDifference = CGFloat(deviceHeading + (360.0 - nearbyPoint.angleToCurrentLocation))
                                     } else {
-                                        xDifference = CGFloat((heading - 360.0) - nearbyPoint.angleToCurrentLocation)
+                                        xDifference = CGFloat((deviceHeading - 360.0) - nearbyPoint.angleToCurrentLocation)
                                     }
                                 }
                                 
@@ -173,7 +173,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         if manager != nil {
             if let location = locations.last as? CLLocation {
                 if nearbyPointsManager != nil {
-                    let pointsManagerCurrentLocation2 = nearbyPointsManager
                     if let pointsManagerCurrentLocation = nearbyPointsManager.currentLocation {
                         if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 {
                             createNewNearbyPointsManager()
@@ -181,7 +180,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                             nearbyPointsManager.getGeonamesJSONData()
                         } else {
                             nearbyPointsManager.currentLocation = location
-                            nearbyPointsManager.updateDistanceOfNearbyPointsWithAltitude()
+                            nearbyPointsManager.determineIfEachPointIsInLineOfSight()
                         }
                     } else {
                         prepareForNewPointsAtLocation(location)
@@ -220,10 +219,11 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         }
     }
     
-    func retrievedNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
+    func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
+
         nearbyPointsInLineOfSight?.append(nearbyPoint)
         
-        println("added nearbyPoints: \(nearbyPoint)")
+        println("added nearbyPoint: \(nearbyPoint)")
         
         // TEST
         self.view.addSubview(nearbyPoint.label)
@@ -233,12 +233,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         // TEST
     }
-    
-    // this function might be superfluous now
-    func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint]) {
-        nearbyPointsInLineOfSight = nearbyPoints
-    }
-    // this function might be superfluous now
     
     // TEST
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint) {

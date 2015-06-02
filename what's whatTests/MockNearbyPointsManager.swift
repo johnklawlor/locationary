@@ -32,10 +32,6 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
     func receivedJSON(json: String) {
     }
     
-    override func updateDistanceOfNearbyPointsWithAltitude() {
-        updatedDistances = true
-    }
-    
     override func getGeonamesJSONData() {
         askedToGetGeonamesJSONData = true
     }
@@ -44,19 +40,7 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
         askedToDetermineIfEachPointIsInLineOfSight = true
     }
     
-    override func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint) {
-        informedOfNearbyPointInLineOfSight = true
-    }
-    
-    override func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint) {
-        informedOfNearbyPointNOTInLineOfSight = true
-    }
-    
     override func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
         askedToGetElevationProfileDataForPoint = true
-    }
-    
-    override func updateDistancesAndAnglesForPoint(nearbyPoint: NearbyPoint) {
-        didUpdateDistancesAndAnglesForPoint = true
     }
 }

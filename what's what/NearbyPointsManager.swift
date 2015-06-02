@@ -12,8 +12,7 @@ import UIKit
 protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
-    func retrievedNearbyPointInLineOfSight(nearbyPoint: NearbyPoint)
-    func updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPoints: [NearbyPoint])
+    func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint)
 }
 
 public struct ManagerConstants {
@@ -22,7 +21,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationManagerDelegate, CurrentLocationDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, CurrentLocationDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -32,8 +31,6 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     var nearbyPointsJSON: String?
     var parser: GeonamesJSONParser!
     var nearbyPoints: [NearbyPoint]?
-    var nearbyPointsInLineOfSight: [NearbyPoint]?
-    var nearbyPointsWithAltitude: [NearbyPoint]?
 
     var prefetchError: NSError?
     var fetchingError: NSError?
@@ -86,7 +83,6 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     func determineIfEachPointIsInLineOfSight() {
         println("nearbyPoints when fetching line of sight data is \(nearbyPoints)")
         if nearbyPoints != nil {
-            nearbyPointsWithAltitude = [NearbyPoint]()
             for nearbyPoint in nearbyPoints! {
                 getElevationProfileDataForPoint(nearbyPoint)
             }
@@ -97,132 +93,27 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
     }
     
     func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
-//        nearbyPoint.elevationManagerDelegate = self
-//        nearbyPoint.currentLocationDelegate = self
-//        nearbyPoint.googleMapsCommunicator = GoogleMapsCommunicator()
-//        
-//        if let viewController = managerDelegate as? NearbyPointsViewController {
-//            nearbyPoint.labelTapDelegate = viewController
-//        }
-//        
-//        if self.parser != nil {
-//            nearbyPoint.parser = self.parser
-//        } else {
-//            println("trying to determineLineOfSight in NearbyPointsManager and nearbyPointManagerParser is gone")
-//        }
-//        
-//        // dispatch_async
-//        nearbyPoint.getElevationProfileData()
-//        // dispatch_async
-        /*
 
-
-
-
-
-*/
         nearbyPoint.distanceFromCurrentLocation = currentLocation?.distanceFromLocation(nearbyPoint.location)
-        let elevationAndIsInLineOfSight = call_to_objective-c_function(currentLocation?.coordinate.latitude, currentLocation?.coordinate.longitude, nearbyPoint.location.coordinate.latitude, nearbyPoint.location.coordinate.longitude, nearbyPoint.distanceFromCurrentLocation, )
+        let elevationData = MockNearbyPointElevationData()
         
-        if elevationAndIsInLineOfSight.elevation == 32678 {
+        if elevationData.elevation == 32678 {
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
             // should we make a request to Geonames to get the elevation of the point and simply display it?
         } else {
-            nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevationAndIsInLineOfSight.elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
-            if elevationAndIsInLineOfSight.isInLineOfSight == true {
-                nearbyPointsInLineOfSight?.append(nearbyPoint)
-                managerDelegate.retrievedNearbyPointInLineOfSight(nearbyPoint)
-            }
-        }
-    }
-    
-    func parsingElevationProfileFailedWithError(error: NSError) {
-        parsingError = error
-    }
-    
-    func currentLocationCanViewNearbyPoint(nearbyPoint: NearbyPoint) {
-        managerDelegate.retrievedNearbyPointInLineOfSight(nearbyPoint)
-    }
-
-    func currentLocationCANNOTViewNearbyPoint(nearbyPoint: NearbyPoint) {
-        updateDistancesAndAnglesForPoint(nearbyPoint)
-    }
-    
-    func updateDistancesAndAnglesForPoint(nearbyPoint: NearbyPoint) {
-        calculateDistanceFromCurrentLocation(nearbyPoint)
-        calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
-        calculateAngleToHorizon(nearbyPoint)
-        nearbyPointsWithAltitude?.append(nearbyPoint)
-    }
-    
-//    func getAltitudeJSONDataForEachPoint() {
-//        println("nearbyPoints when fetching altitudes is \(nearbyPoints)")
-//        if nearbyPoints != nil && !(nearbyPoints!.isEmpty) {
-//            for nearbyPoint in nearbyPoints! {
-//                nearbyPoint.altitudeManagerDelegate = self
-//                nearbyPoint.altitudeCommunicator = AltitudeCommunicator()
-//                
-//                if let viewController = managerDelegate as? NearbyPointsViewController {
-//                    nearbyPoint.labelTapDelegate = viewController
-//                }
-//                
-//                if self.parser != nil {
-//                    if nearbyPoint.parser == nil {
-//                        println("nearbyPoint's parser is gone")
-//                        nearbyPoint.parser = self.parser
-//                    }
-//                } else {
-//                    println("nearbyPointManagerParser is gone")
-//                    // should we create a new parser here? is this parser a singleton like cmmotion is?
-//                }
-//                
-//                nearbyPoint.getAltitudeJSONData()
-//            }
-//        } else {
-//            // should we make another request to get nearby points?
-//        }
-//    }
-    
-    // should we try to request altitude data from another web service?
-    func gettingAltitudeFailedWithError(error: NSError) {
-        fetchingError = error
-    }
-    
-    func parsingAltitudeFailedWithError(error: NSError) {
-        parsingError = error
-    }
-    
-//    func successfullyRetrievedAltitude(nearbyPoint: NearbyPoint) {
-//        println("got altitude data")
-//        if currentLocation != nil {
-//            calculateDistanceFromCurrentLocation(nearbyPoint)
-//            calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
-//            calculateAngleToHorizon(nearbyPoint)
-//            
-//            // TEST THIS!
-//            nearbyPoint.label = UIButton(frame: CGRectMake(375.0/2, 667.0/2, 17, 16))
-//            nearbyPoint.label.setBackgroundImage(UIImage(named: "overlaygraphic.png"), forState: UIControlState.Normal)
-//            nearbyPoint.label.hidden = true
-//            // TEST THIS!
-//            
-//            nearbyPointsWithAltitude?.append(nearbyPoint)
-//
-//            managerDelegate.retrievedNearbyPointWithAltitudeAndUpdatedDistance(nearbyPoint)
-//            
-////            if nearbyPoint.distanceFromCurrentLocation > lowerDistanceLimit &&
-////                nearbyPoint.distanceFromCurrentLocation < upperDistanceLimit {
-////            }
-//        }
-//    }
-    
-    func updateDistanceOfNearbyPointsWithAltitude() {
-        if nearbyPointsWithAltitude != nil {
-            for nearbyPoint in nearbyPointsWithAltitude! {
-                calculateDistanceFromCurrentLocation(nearbyPoint)
+            nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevationData.elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
+            if elevationData.inLineOfSight == true {
+                
+                if let viewController = managerDelegate as? NearbyPointsViewController {
+                    nearbyPoint.labelTapDelegate = viewController
+                }
+                
+                nearbyPoint.label = UIButton()
+                nearbyPoint.angleToHorizon = elevationData.angleToHorizon
                 calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
-                calculateAngleToHorizon(nearbyPoint)
+                
+                managerDelegate.foundNearbyPointInLineOfSight(nearbyPoint)
             }
-            managerDelegate.updatedNearbyPointsWithAltitudeAndUpdatedDistance(nearbyPointsWithAltitude!)
         }
     }
     
@@ -237,15 +128,15 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationMana
         
         if nearbyPoint.location.coordinate.longitude < currentLocation!.coordinate.longitude {
             if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
-                nearbyPoint.angleToCurrentLocation = 180.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+                nearbyPoint.angleToCurrentLocation = 180.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
             } else {
-                nearbyPoint.angleToCurrentLocation = 180 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+                nearbyPoint.angleToCurrentLocation = 180.0 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
             }
         } else {
             if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
                 nearbyPoint.angleToCurrentLocation = asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
             } else {
-                nearbyPoint.angleToCurrentLocation = 360 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+                nearbyPoint.angleToCurrentLocation = 360.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
             }
         }
     }

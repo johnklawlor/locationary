@@ -72,7 +72,7 @@ class Communicator: NSObject, NSURLConnectionDataDelegate {
     func connectionDidFinishLoading(connection: NSURLConnection) {
         println("connection did finish loading")
         if receivedData != nil {
-            println("passing jsos to delegate")
+            println("passing json to delegate")
             let jsonString = NSString(data: receivedData!, encoding: NSUTF8StringEncoding)!
             communicatorDelegate?.receivedJSON(jsonString as String)
         } else {

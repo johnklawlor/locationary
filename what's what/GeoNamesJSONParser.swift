@@ -19,6 +19,7 @@ struct JSONErrorCode {
 
 struct ParserConstants {
     static let Error_SerializedJSONPossiblyNotADictionary = NSError(domain: "SerializedJSONStringCouldNotBeCastAsDictionary", code: 1, userInfo: nil)
+    static let Error_JSONIsEmpty = NSError(domain: "Attempted to parse empty JSON string", code: 2, userInfo: nil)
 }
 
 class GeonamesJSONParser: Equatable {
@@ -29,7 +30,7 @@ class GeonamesJSONParser: Equatable {
     
     func buildAndReturnArrayFromJSON(json: String) -> ([AnyObject]?, NSError?) {
         if json.isEmpty {
-            return (nil, NearbyPointConstants.Error_JSONIsEmpty)
+            return (nil, ParserConstants.Error_JSONIsEmpty)
         }
         
         if let data = json.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {

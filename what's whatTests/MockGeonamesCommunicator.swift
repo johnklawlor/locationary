@@ -8,9 +8,10 @@
 
 import Foundation
 
-class MockGeonamesCommunicator: GeonamesCommunicator {
+class MockGeonamesCommunicator: GeonamesCommunicator, CommunicatorDelegate {
     var askedToFetchedJSON: Bool! = false
     var askedToFetchAltitudeJSON: Bool! = false
+    var receivedJSON: String!
     
     var fetchingError: NSError!
     
@@ -20,5 +21,9 @@ class MockGeonamesCommunicator: GeonamesCommunicator {
     
     override func fetchJSONData() {
         askedToFetchedJSON = true
+    }
+    
+    override func receivedJSON(json: String) {
+        receivedJSON = json
     }
 }

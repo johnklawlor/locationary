@@ -34,8 +34,8 @@ class CommunicatorTests: XCTestCase {
         testRequest = NSURLRequest(URL: NSURL(string: "http://api.geonames.org/srtm3JSON?lat=43.720343&lng=-72.145562&username=jkl234")!)
         testConnection = NSURLConnection(request: testRequest, delegate: mockCommunicator)
         
-        communicator.communicatorDelegate = testPoints.MockHolts
-        mockCommunicator.communicatorDelegate = testPoints.MockHolts
+        communicator.communicatorDelegate = mockGeonamesCommunicator
+        mockCommunicator.communicatorDelegate = mockGeonamesCommunicator
         
     }
     
@@ -61,16 +61,15 @@ class CommunicatorTests: XCTestCase {
 
     func testCommunicatorNotifiesCommunicatorDelegateOfError() {
         let FourOhFourResponse = FakeURLResponse(code: 404)
-        communicator.communicatorDelegate = testPoints.MockHolts
         communicator.connection(testConnection, didReceiveResponse: FourOhFourResponse!)
-        XCTAssertEqual(testPoints.MockHolts.fetchingError!.code, 404, "Response error should have been passed to the delegate")
+        XCTAssertEqual(mockGeonamesCommunicator.fetchingError!.code, 404, "Response error should have been passed to the delegate")
     }
 
     func testConnectionDidFailWithErrorNotifiesCommunicatorDelegate() {
         let error = NSError(domain: "Bad domain", code: 420, userInfo: nil)
         communicator.fetchingConnection = testConnection
         communicator.connection(testConnection, didFailWithError: error)
-        let connectionFailErrorCode = testPoints.MockHolts.fetchingError!.code
+        let connectionFailErrorCode = mockGeonamesCommunicator.fetchingError!.code
         XCTAssertEqual(connectionFailErrorCode, 420, "Connection Failed error should have been passed to the delegate")
     }
 
@@ -91,7 +90,7 @@ class CommunicatorTests: XCTestCase {
     func testConnectionDidFinishedLoadingPassesDataToDelegate() {
         mockCommunicator.setTheReceivedData(receivedData!)
         mockCommunicator.connectionDidFinishLoading(testConnection)
-        XCTAssertEqual(testPoints.MockHolts.receivedJSON!, "Received data", "Communicator's delegate should have been passed JSON string")
+        XCTAssertEqual(mockGeonamesCommunicator.receivedJSON, "Received data", "Communicator's delegate should have been passed JSON string")
     }
     
 }
