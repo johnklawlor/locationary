@@ -231,7 +231,6 @@ class NearbyPointClassTests: XCTestCase {
         manager.currentLocation = currentPoint.location
         var killington = testPoints.Killington
         killington.angleToHorizon = 0.5987909267657717
-        killington.currentLocationDelegate = manager
         
         let altitudes = Altitudes.HoltsToKillington
         
@@ -247,7 +246,6 @@ class NearbyPointClassTests: XCTestCase {
         manager.currentLocation = currentPoint.location
         var killington = testPoints.Killington
         killington.angleToHorizon = 1.185378689113316
-        killington.currentLocationDelegate = manager
         
         let altitudes = [180.866455078125,
             405.994781494141,

@@ -120,7 +120,8 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                             if yDifference > -1*VFOV && yDifference < VFOV {
                                 let multiplier = (yDifference+VFOV)/(VFOV*2)
                                 let yPosition = self.DeviceConstants.PhoneWidth - multiplier * self.DeviceConstants.PhoneWidth
-                                let hfov: CGFloat = 28
+                                // let hfov: CGFloat = 28
+                                let hfov = CGFloat(self.DeviceConstants.HFOV/2)
                                 var xDifference = CGFloat(deviceHeading - nearbyPoint.angleToCurrentLocation)
                                 
                                 if abs(xDifference) > 308 {
@@ -180,6 +181,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                             nearbyPointsManager.getGeonamesJSONData()
                         } else {
                             nearbyPointsManager.currentLocation = location
+                            prepareToDetermineLineOfSight()
                             nearbyPointsManager.determineIfEachPointIsInLineOfSight()
                         }
                     } else {
@@ -205,6 +207,11 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         nearbyPointsManager.currentLocation = location
     }
     
+    func prepareToDetermineLineOfSight() {
+        nearbyPointsManager.elevationDataManager = ElevationDataManager()
+        nearbyPointsManager.elevationDataManager?.dataDelegate = nearbyPointsManager
+    }
+    
     func fetchingFailedWithError(error: NSError) {
         
     }
@@ -213,6 +220,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         println("assemebled points without altitude")
         
         if nearbyPointsManager != nil {
+            prepareToDetermineLineOfSight()
             nearbyPointsManager.determineIfEachPointIsInLineOfSight()
         } else{
             println("we lost the nearbyPoints manager")

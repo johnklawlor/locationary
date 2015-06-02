@@ -13,6 +13,7 @@ class MockNearbyPointsViewController: NearbyPointsViewController {
     
     var preparingForNearbyPoints: Bool! = false
     var createdNewNearbyPointsManager: Bool! = false
+    var informedOfSuccessfullyFindingNearbyPointInLineOfSight: Bool = false
     
     override func prepareForNewPointsAtLocation(location: CLLocation!) {
         nearbyPointsManager = MockNearbyPointsManager(delegate: NearbyPointsViewController())
@@ -20,5 +21,9 @@ class MockNearbyPointsViewController: NearbyPointsViewController {
     
     override func createNewNearbyPointsManager() {
         createdNewNearbyPointsManager = true
+    }
+    
+    override func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
+        informedOfSuccessfullyFindingNearbyPointInLineOfSight = true
     }
 }

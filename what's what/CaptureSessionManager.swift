@@ -40,7 +40,6 @@ class CaptureSessionManager {
             else {
                 if captureSession?.canAddInput(videoIn) == true {
                     captureSession?.addInput(videoIn)
-                    
                 }
                 else {
                     println("Couldn't add video input")

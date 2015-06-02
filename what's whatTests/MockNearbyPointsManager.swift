@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
+class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, ElevationDataDelegate {
     
     var retrievalCount = 0
     var updatedDistances: Bool! = false
@@ -19,6 +19,9 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
     var askedToGetAltitudeJSONDataForEachPoint: Bool = false
     var askedToGetElevationProfileDataForPoint: Bool = false
     var didUpdateDistancesAndAnglesForPoint: Bool = false
+    var askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin: Bool = false
+    var askedToUpdateElevationAndAngleToHorizon: Bool = false
+    var askedToCalculateDistance: Bool = false
     
     var nearbyPointToUpdate: NearbyPoint!
     
@@ -40,7 +43,16 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate {
         askedToDetermineIfEachPointIsInLineOfSight = true
     }
     
-    override func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
-        askedToGetElevationProfileDataForPoint = true
+    override func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
+        askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin = true
     }
+    
+    override func updateElevationAndAngleToHorizonForPoint(nearbyPoint: NearbyPoint, elevation: Double, angleToHorizon: Double) {
+        askedToUpdateElevationAndAngleToHorizon = true
+    }
+    
+    override func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {
+        askedToCalculateDistance = true
+    }
+    
 }

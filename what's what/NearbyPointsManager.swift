@@ -21,7 +21,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationDataDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -36,6 +36,8 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
     var fetchingError: NSError?
     var parsingError: NSError?
     unowned var managerDelegate: NearbyPointsManagerDelegate
+    
+    var elevationDataManager: ElevationDataManager?
     
     var lowerDistanceLimit: CLLocationDistance! = 0
     var upperDistanceLimit: CLLocationDistance! = 100000
@@ -82,9 +84,9 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
     
     func determineIfEachPointIsInLineOfSight() {
         println("nearbyPoints when fetching line of sight data is \(nearbyPoints)")
-        if nearbyPoints != nil {
+        if nearbyPoints != nil {            
             for nearbyPoint in nearbyPoints! {
-                getElevationProfileDataForPoint(nearbyPoint)
+                self.elevationDataManager!.getElevationForPoint(nearbyPoint)
             }
         } else {
             println("trying to determineIfEachPointIsInLineOfSight. nearbyPoints is nil.")
@@ -92,10 +94,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
         }
     }
     
-    func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
-        
-        nearbyPoint.distanceFromCurrentLocation = currentLocation?.distanceFromLocation(nearbyPoint.location)
-        let elevationData = MockNearbyPointElevationData()
+    func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {
         
         if elevationData.elevation == 32678 {
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
@@ -106,21 +105,24 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
                     break
                 }
             }
-        } else {
-            nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevationData.elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
-            if elevationData.inLineOfSight == true {
-                
-                if let viewController = managerDelegate as? NearbyPointsViewController {
-                    nearbyPoint.labelTapDelegate = viewController
-                }
-                
-                nearbyPoint.label = UIButton()
-                nearbyPoint.angleToHorizon = elevationData.angleToHorizon
-                calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
-                
-                managerDelegate.foundNearbyPointInLineOfSight(nearbyPoint)
-            }
+        } else if elevationData.inLineOfSight == true {
+            
+            calculateDistanceFromCurrentLocation(nearbyPoint)
+            calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+            
+            updateElevationAndAngleToHorizonForPoint(nearbyPoint, elevation: elevationData.elevation, angleToHorizon: elevationData.angleToHorizon)
+            
+            nearbyPoint.label = UIButton()
+            let viewController = managerDelegate as! NearbyPointsViewController
+            nearbyPoint.labelTapDelegate = viewController
+            
+            managerDelegate.foundNearbyPointInLineOfSight(nearbyPoint)
         }
+    }
+    
+    func updateElevationAndAngleToHorizonForPoint(nearbyPoint: NearbyPoint, elevation: Double, angleToHorizon: Double) {
+        nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
+        nearbyPoint.angleToHorizon = angleToHorizon
     }
     
     func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {

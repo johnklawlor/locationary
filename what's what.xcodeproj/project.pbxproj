@@ -44,6 +44,10 @@
 		13C9BFD61AE5B111005EF8D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135237611ABA20A000D33887 /* AppDelegate.swift */; };
 		13CAEAF71B1CD0E900D30B6E /* MockNearbyPointElevationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */; };
 		13CAEAF81B1CD3FC00D30B6E /* MockNearbyPointElevationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */; };
+		13CAEAFA1B1D486300D30B6E /* ElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */; };
+		13CAEAFB1B1D4D1E00D30B6E /* ElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */; };
+		13CAEAFD1B1DFB6C00D30B6E /* MockElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */; };
+		13CAEAFE1B1DFBA900D30B6E /* MockElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */; };
 		13DCD1F71AF44048009993C5 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F61AF44048009993C5 /* Communicator.swift */; };
 		13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F61AF44048009993C5 /* Communicator.swift */; };
 		13DCD1FA1AF440A3009993C5 /* CommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */; };
@@ -94,6 +98,8 @@
 		13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSessionManager.swift; sourceTree = "<group>"; };
 		13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointElevationData.swift; sourceTree = "<group>"; };
+		13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElevationDataManager.swift; sourceTree = "<group>"; };
+		13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockElevationDataManager.swift; sourceTree = "<group>"; };
 		13DCD1F61AF44048009993C5 /* Communicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
 		13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunicatorTests.swift; sourceTree = "<group>"; };
 		13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCommunicator.swift; sourceTree = "<group>"; };
@@ -145,6 +151,7 @@
 				13DCD1F61AF44048009993C5 /* Communicator.swift */,
 				13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */,
 				13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */,
+				13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */,
 				138B18321ACB6BB200D54ECE /* NearbyPoint.swift */,
 				13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */,
 				135237631ABA20A000D33887 /* NearbyPointsViewController.swift */,
@@ -176,6 +183,7 @@
 				1368BDF11AFBAF220094ECD6 /* MockCommunicatorTwo.swift */,
 				132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */,
 				13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */,
+				13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */,
 				13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */,
 				132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */,
 				136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */,
@@ -310,6 +318,7 @@
 				13DCD1F71AF44048009993C5 /* Communicator.swift in Sources */,
 				13CAEAF81B1CD3FC00D30B6E /* MockNearbyPointElevationData.swift in Sources */,
 				13A3B9721AC5FC2800FF0202 /* GeonamesCommunicator.swift in Sources */,
+				13CAEAFA1B1D486300D30B6E /* ElevationDataManager.swift in Sources */,
 				13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */,
 				13A3B9771AC6337900FF0202 /* NearbyPointsManager.swift in Sources */,
 				13A3B97F1AC6F5F300FF0202 /* GeoNamesJSONParser.swift in Sources */,
@@ -317,6 +326,7 @@
 				135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */,
 				135237621ABA20A000D33887 /* AppDelegate.swift in Sources */,
 				134357181AEBF3E000DBEBCF /* geonamesData.swift in Sources */,
+				13CAEAFE1B1DFBA900D30B6E /* MockElevationDataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +346,7 @@
 				13A3B9741AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift in Sources */,
 				13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */,
 				138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */,
+				13CAEAFD1B1DFB6C00D30B6E /* MockElevationDataManager.swift in Sources */,
 				13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */,
 				13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */,
 				13CAEAF71B1CD0E900D30B6E /* MockNearbyPointElevationData.swift in Sources */,
@@ -345,6 +356,7 @@
 				132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */,
 				13A3B9821AC70A2300FF0202 /* GeoNamesJSONParser.swift in Sources */,
 				132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */,
+				13CAEAFB1B1D4D1E00D30B6E /* ElevationDataManager.swift in Sources */,
 				139E8BA51ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift in Sources */,
 				136CCE331AF2BBE200C74B8F /* MockPoint.swift in Sources */,
 				139E8BA31ACC907D00C4C7E5 /* NearbyPointsViewController.swift in Sources */,
