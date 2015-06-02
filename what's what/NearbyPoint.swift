@@ -22,10 +22,6 @@ protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
-protocol CurrentLocationDelegate {
-    var currentLocation: CLLocation? { get }
-}
-
 class NearbyPoint: NSObject, Equatable, Printable {
     
     init(aName: String, aLocation: CLLocation!) {
@@ -50,8 +46,6 @@ class NearbyPoint: NSObject, Equatable, Printable {
         }
     }
     // TEST THIS!
-    
-    var currentLocationDelegate: CurrentLocationDelegate?
     
     func showName(sender: UIButton!) {
         labelTapDelegate?.didReceiveTapForNearbyPoint(self)

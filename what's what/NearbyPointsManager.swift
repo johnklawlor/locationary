@@ -21,7 +21,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, CurrentLocationDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -93,13 +93,19 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, CurrentLocati
     }
     
     func getElevationProfileDataForPoint(nearbyPoint: NearbyPoint) {
-
+        
         nearbyPoint.distanceFromCurrentLocation = currentLocation?.distanceFromLocation(nearbyPoint.location)
         let elevationData = MockNearbyPointElevationData()
         
         if elevationData.elevation == 32678 {
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
             // should we make a request to Geonames to get the elevation of the point and simply display it?
+            for (index, theNearbyPointToDelete) in enumerate(nearbyPoints!) {
+                if nearbyPoint == theNearbyPointToDelete {
+                    nearbyPoints!.removeAtIndex(index)
+                    break
+                }
+            }
         } else {
             nearbyPoint.location = CLLocation(coordinate: nearbyPoint.location.coordinate, altitude: elevationData.elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
             if elevationData.inLineOfSight == true {
