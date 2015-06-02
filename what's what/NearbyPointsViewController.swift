@@ -208,8 +208,10 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func prepareToDetermineLineOfSight() {
-        nearbyPointsManager.elevationDataManager = ElevationDataManager()
-        nearbyPointsManager.elevationDataManager?.dataDelegate = nearbyPointsManager
+        let elevationDataManager = ElevationDataManager()
+        elevationDataManager.dataDelegate = nearbyPointsManager
+        elevationDataManager.currentLocationDelegate = nearbyPointsManager
+        nearbyPointsManager.elevationDataManager = elevationDataManager
     }
     
     func fetchingFailedWithError(error: NSError) {

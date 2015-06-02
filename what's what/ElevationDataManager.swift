@@ -27,8 +27,16 @@ protocol ElevationDataDelegate: class {
 
 class ElevationDataManager {
     weak var dataDelegate: ElevationDataDelegate?
+    weak var currentLocationDelegate: CurrentLocationDelegate?
     
     func getElevationForPoint(nearbyPoint: NearbyPoint) {
         
+        if currentLocationDelegate != nil && dataDelegate != nil {
+            let nearbyPointElevationData = GDALWrapper.getElevationAtLatitude(currentLocationDelegate!.currentLocation!.coordinate.latitude, currentLongitude: currentLocationDelegate!.currentLocation!.coordinate.longitude, currentAltitude: currentLocationDelegate!.currentLocation!.altitude, nearbyPointLatitude: nearbyPoint.location.coordinate.latitude, nearbyPointLongitude: nearbyPoint.location.coordinate.longitude, distanceFromCurrentLocation: nearbyPoint.distanceFromCurrentLocation)
+            
+            let elevationData = ElevationData(anElevation: nearbyPointElevationData.elevation, anAngleToHorizon: nearbyPointElevationData.angleToHorizon, IsInLineOfSight: nearbyPointElevationData.inLineOfSight)
+            
+            dataDelegate!.processElevationProfileDataForPoint(nearbyPoint, elevationData: elevationData)
+        }
     }
 }

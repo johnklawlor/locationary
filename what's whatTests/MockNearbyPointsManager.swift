@@ -24,6 +24,7 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, Elevat
     var askedToCalculateDistance: Bool = false
     
     var nearbyPointToUpdate: NearbyPoint!
+    var elevationDataForPointToUpdate: ElevationData!
     
     override func receivedNearbyPointsJSON(json: String) {
         nearbyPointsJSON = json
@@ -53,6 +54,11 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, Elevat
     
     override func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {
         askedToCalculateDistance = true
+    }
+    
+    override func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {
+        elevationDataForPointToUpdate = elevationData
+        nearbyPointToUpdate = nearbyPoint
     }
     
 }

@@ -9,6 +9,10 @@
 import CoreLocation
 import UIKit
 
+protocol CurrentLocationDelegate: class {
+    var currentLocation: CLLocation? { get }
+}
+
 protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
@@ -21,7 +25,7 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationDataDelegate {
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationDataDelegate, CurrentLocationDelegate {
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation

@@ -26,4 +26,5 @@ class MockNearbyPointsViewController: NearbyPointsViewController {
     override func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
         informedOfSuccessfullyFindingNearbyPointInLineOfSight = true
     }
+    
 }
