@@ -14,7 +14,6 @@
 const double UPPER_LEFT_LONG = -124.850138888888893;
 const double UPPER_LEFT_LAT = 49.387361111111112;
 const double PIXEL_SIZE = 0.004166666666667;
-const double SAMPLE_POINTS = 10.0;
 
 double getXInPixelCoordinates(double nearbyPointLongitude) {
     return fabs((UPPER_LEFT_LONG - nearbyPointLongitude) / PIXEL_SIZE);
@@ -62,6 +61,9 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     
     nearbyPointElevationData.inLineOfSight = true;
     
+    int tempSamplePoints = distanceBetweenTwoPoints/1000;
+    double samplePoints = tempSamplePoints;
+    
     double currentPixelX = getXInPixelCoordinates(currentLongitude);
     double currentPixelY = getYInPixelCoordinates(currentLatitude);
     
@@ -75,7 +77,7 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     double b = (sumY - productX) / 2;
     
     
-    double increment = (nearbyPointPixelX - currentPixelX)/SAMPLE_POINTS;
+    double increment = (nearbyPointPixelX - currentPixelX)/samplePoints;
     
     
     double altitudeDifference = nearbyPointElevationData.elevation - currentAltitude;
@@ -87,8 +89,8 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     //    printf("angleToNearbyPoint: %f \n", angleToNearbyPoint);
     nearbyPointElevationData.angleToHorizon = angleToNearbyPoint * (180.0/M_PI);
     
-    double sampleDistance = distanceBetweenTwoPoints/SAMPLE_POINTS;
-    //    printf("sampleDistance: %f \n", sampleDistance);
+    double sampleDistance = distanceBetweenTwoPoints/samplePoints;
+//    printf("sampleDistance: %f \n", sampleDistance);
     int iteration = 1;
     
     double samplePointX;
@@ -116,6 +118,8 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
         }
         iteration += 1;
     }
+    
+    GDALClose(poDataset);
     
     return nearbyPointElevationData;
 }

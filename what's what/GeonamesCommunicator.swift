@@ -58,15 +58,20 @@ class GeonamesCommunicator: Communicator, CommunicatorDelegate {
     let dlat: Double = (1/110.54) * CommunicatorConstants.DistanceGeonamesPointsMustFallWithin
     var dlong: Double {
         if currentLocation != nil {
-            println("returning calculated dlong")
+//            println("returning calculated dlong")
             return CommunicatorConstants.DistanceGeonamesPointsMustFallWithin * (1/(111.32*cos(currentLocation!.coordinate.latitude*M_PI/180)))
         }
         return 0.063494
     }
-    var north: Double { println("north: \(currentLocation!.coordinate.latitude + dlat)"); return currentLocation!.coordinate.latitude + dlat}
-    var south: Double { println("south: \(currentLocation!.coordinate.latitude - dlat)"); return currentLocation!.coordinate.latitude - dlat }
-    var east: Double { println("east: \(currentLocation!.coordinate.longitude + dlong)"); return currentLocation!.coordinate.longitude + dlong }
-    var west: Double { println("west: \(currentLocation!.coordinate.longitude - dlong)"); return currentLocation!.coordinate.longitude - dlong }
+    var south: Double { return currentLocation!.coordinate.latitude - dlat }
+    var north: Double { return currentLocation!.coordinate.latitude + dlat}
+    var west: Double { return currentLocation!.coordinate.longitude - dlong }
+    var east: Double { return currentLocation!.coordinate.longitude + dlong }
+    
+//    hanover coordinates
+//    43.705238, -72.287822
+//    44.605238 42.805238 -73.527822 -71.047822
+//    0.90, 1.24
     
     override init() {
         super.init()

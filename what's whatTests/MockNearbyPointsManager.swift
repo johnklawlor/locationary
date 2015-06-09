@@ -19,9 +19,6 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, Elevat
     var askedToGetAltitudeJSONDataForEachPoint: Bool = false
     var askedToGetElevationProfileDataForPoint: Bool = false
     var didUpdateDistancesAndAnglesForPoint: Bool = false
-    var askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin: Bool = false
-    var askedToUpdateElevationAndAngleToHorizon: Bool = false
-    var askedToCalculateDistance: Bool = false
     
     var nearbyPointToUpdate: NearbyPoint!
     var elevationDataForPointToUpdate: ElevationData!
@@ -42,18 +39,6 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, Elevat
     
     override func determineIfEachPointIsInLineOfSight() {
         askedToDetermineIfEachPointIsInLineOfSight = true
-    }
-    
-    override func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
-        askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin = true
-    }
-    
-    override func updateElevationAndAngleToHorizonForPoint(nearbyPoint: NearbyPoint, elevation: Double, angleToHorizon: Double) {
-        askedToUpdateElevationAndAngleToHorizon = true
-    }
-    
-    override func calculateDistanceFromCurrentLocation(nearbyPoint: NearbyPoint) {
-        askedToCalculateDistance = true
     }
     
     override func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {

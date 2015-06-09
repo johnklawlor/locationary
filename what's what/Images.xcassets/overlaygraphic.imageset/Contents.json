@@ -3,15 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "overlaygraphic.png"
+      "filename" : "overlay_graphic_withTag_1x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "overlay_graphic_withTag_2x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "overlay_graphic_withTag_3x.png"
     }
   ],
   "info" : {

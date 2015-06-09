@@ -87,9 +87,12 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     }
     
     func determineIfEachPointIsInLineOfSight() {
-        println("nearbyPoints when fetching line of sight data is \(nearbyPoints)")
+        println("nearbyPoints count when fetching line of sight data is \(nearbyPoints?.count)")
         if nearbyPoints != nil {            
             for nearbyPoint in nearbyPoints! {
+
+                calculateDistanceFromCurrentLocation(nearbyPoint)
+
                 self.elevationDataManager!.getElevationForPoint(nearbyPoint)
             }
         } else {
@@ -111,12 +114,44 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             }
         } else if elevationData.inLineOfSight == true {
             
-            calculateDistanceFromCurrentLocation(nearbyPoint)
             calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
+            
+            println("elevation: \(elevationData.elevation)")
+            println("angleToHorizon: \(elevationData.angleToHorizon)")
             
             updateElevationAndAngleToHorizonForPoint(nearbyPoint, elevation: elevationData.elevation, angleToHorizon: elevationData.angleToHorizon)
             
-            nearbyPoint.label = UIButton()
+            let labelFrame = CGRectMake(50, 100, NearbyPointConstants.LabelFrameSize, NearbyPointConstants.LabelFrameSize)
+            let labelButton = UIButton()
+            labelButton.frame = labelFrame
+            nearbyPoint.label = labelButton
+            
+            // TEST
+
+            let rectangleSize = (1.0/pow(nearbyPoint.distanceFromCurrentLocation/1000.0, 0.5))*10.0 + 14
+            var theButtonImage = UIImage(named: "overlaygraphic.png")
+            let rectangle = CGRect(x: 0, y: 0, width: rectangleSize, height: rectangleSize)
+            UIGraphicsBeginImageContextWithOptions(rectangle.size, false, 0.0);
+            theButtonImage?.drawInRect(rectangle)
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            let buttonImage = newImage
+            
+            nearbyPoint.label.setImage(buttonImage, forState: UIControlState.Normal)
+            
+            let firstInitialLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: labelFrame.size))
+            let firstCharacterIndex = advance(nearbyPoint.name.startIndex,0)
+            let firstLetterOfNearbyPointName = String(nearbyPoint.name[firstCharacterIndex])
+            firstInitialLabel.text = firstLetterOfNearbyPointName
+            let fontSize = CGFloat(rectangleSize/2.0)
+            firstInitialLabel.font = UIFont(name: "Helvetica Neue", size: fontSize)
+            firstInitialLabel.textAlignment = .Center
+            firstInitialLabel.textColor = UIColor.whiteColor()
+            
+            nearbyPoint.label.addSubview(firstInitialLabel)
+            
+            // TEST
+            
             let viewController = managerDelegate as! NearbyPointsViewController
             nearbyPoint.labelTapDelegate = viewController
             

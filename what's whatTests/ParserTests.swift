@@ -104,12 +104,4 @@ class ParserTests: XCTestCase {
         let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
         XCTAssertEqual(nearbyPoints!.count, 1, "Parser should add only location with good lats and longs")
     }
-    
-    func testParsingGoogleMapsCommunicatorStringReturnsCorrectValues() {
-        let (elevationProfile, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromGoogleMapsCommunicator)
-        let elevationPoints = elevationProfile as! [CLLocation]
-        let expectedElevationPoints = CLLocation.locationArrayFromCoordinates(Coordinates.HoltsToKillington, altitudes: Altitudes.HoltsToKillington)
-        let areEqual = (elevationPoints == expectedElevationPoints)
-        XCTAssertTrue(areEqual, "Parser should correctly parse elevation JSON string")
-    }
 }

@@ -142,20 +142,20 @@ class NearbyPointsViewControllerTests: XCTestCase {
         XCTAssertTrue(mockViewController.createdNewNearbyPointsManager == true, "ViewController should create a new instance of NearbyPointsManager to get new Geonames data")
     }
     
-    func testUpdatingLocationToLessThan1000MetersFromOldLocationRecalculatesAngleAndDistanceInNearbyPointsWithAltitude() {
-        mockManager.currentLocation = testPoints.Holts.location
-        viewController.nearbyPointsManager = mockManager
-        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.NearHolts.location])
-        
-        let delegate = mockManager.elevationDataManager?.dataDelegate as? MockNearbyPointsManager
-        let currentLocationDelegate = mockManager.elevationDataManager?.currentLocationDelegate as? MockNearbyPointsManager
-        
-        XCTAssertEqual(mockManager, currentLocationDelegate!, "NearbyPointsManager should be ElevationDataManager's currentLocationDelegate")        
-        XCTAssertNotNil(mockManager.elevationDataManager, "NearbyPointsManager should have an ElevationDataManager")
-        XCTAssertEqual(mockManager, delegate!, "NearbyPointsManager should be ElevationDataManager's dataDelegate")
-        XCTAssertEqual(mockManager.currentLocation!, testPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
-        XCTAssertEqual(mockManager.askedToDetermineIfEachPointIsInLineOfSight, true, "ViewController should have called its nearbyPointsManager to update distances and angles for the new location")
-    }
+//    func testUpdatingLocationToLessThan1000MetersFromOldLocationRecalculatesAngleAndDistanceInNearbyPointsWithAltitude() {
+//        mockManager.currentLocation = testPoints.Holts.location
+//        viewController.nearbyPointsManager = mockManager
+//        viewController.locationManager(locationManager, didUpdateLocations: [testPoints.NearHolts.location])
+//        
+//        let delegate = mockManager.elevationDataManager?.dataDelegate as? MockNearbyPointsManager
+//        let currentLocationDelegate = mockManager.elevationDataManager?.currentLocationDelegate as? MockNearbyPointsManager
+//        
+//        XCTAssertEqual(mockManager, currentLocationDelegate!, "NearbyPointsManager should be ElevationDataManager's currentLocationDelegate")        
+//        XCTAssertNotNil(mockManager.elevationDataManager, "NearbyPointsManager should have an ElevationDataManager")
+//        XCTAssertEqual(mockManager, delegate!, "NearbyPointsManager should be ElevationDataManager's dataDelegate")
+//        XCTAssertEqual(mockManager.currentLocation!, testPoints.NearHolts.location, "ViewController with a nearbyPointsManager should update nearbyPointsManager's currentLocation when updated location is less than 1000 meters")
+//        XCTAssertEqual(mockManager.askedToDetermineIfEachPointIsInLineOfSight, true, "ViewController should have called its nearbyPointsManager to update distances and angles for the new location")
+//    }
 
     
     func testPassingNilToGetAngleInNewCoordinateSystemReturnsNil() {
@@ -223,6 +223,70 @@ class NearbyPointsViewControllerTests: XCTestCase {
         testPoints.Smarts.label = UIButton()
         viewController.foundNearbyPointInLineOfSight(testPoints.Smarts)
         XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [testPoints.Holts, testPoints.Smarts], "ViewController should append successfully retrieved NearbyPoint in line of sight of current location")
+    }
+    
+    func testResponseToTapOnNearbyPointLabelButton() {
+        testPoints.Holts.label = UIButton()
+        testPoints.Holts.label.frame = CGRect(x: 50, y: 50, width: 40, height: 40)
+        
+        viewController.didReceiveTapForNearbyPoint(testPoints.Holts)
+        
+        let nameLabel = viewController.nameLabel
+        
+        let testLabel = UILabel()
+        testLabel.text = "Holts Ledge"
+        testLabel.sizeToFit()
+        let testWidth = testLabel.frame.width
+        let testHeight = testLabel.frame.height
+        let x = (testPoints.Holts.label.frame.width - testWidth)/2
+        let frameNameLabelShouldBe = CGRect(x: x, y: -testHeight, width: testWidth, height: testHeight)
+        
+        XCTAssertTrue(nameLabel.text == "Holts Ledge", "ViewController's nameLabel's text should be the name of the NearbyPoint that was tapped")
+        XCTAssertEqual(nameLabel.frame, frameNameLabelShouldBe, "nameLabel's frame should be center and aligned along the bottom")
+        XCTAssertFalse(nameLabel.hidden, "The nameLabel should NOT be hidden")
+    }
+    
+    func testTappingOnPlaceOnScreenWhereThereIsNoPointHidesNameLabel() {
+        testPoints.Holts.label = UIButton()
+        testPoints.Holts.label.frame = CGRect(x: 50, y: 50, width: 40, height: 40)
+        
+        let tap = UITapGestureRecognizer()
+        viewController.didReceiveTapOnView(tap)
+        
+        let nameLabel = viewController.nameLabel
+        
+        XCTAssertTrue(nameLabel.hidden, "The nameLabel should be hidden when a user taps on something other than a point")
+    }
+    
+    func testThatADoubleTapExpandsNearbyPointsWithin50PixelSquare() {
+        var holtsLabel = UIButton()
+        holtsLabel.frame = CGRect(x: 49, y: 49, width: 40, height: 40)
+        testPoints.Holts.label = holtsLabel
+        var nearHoltsLabel = UIButton()
+        nearHoltsLabel.frame = CGRect(x: 50, y: 50, width: 40, height: 40)
+        testPoints.NearHolts.label = nearHoltsLabel
+        var winslowLabel = UIButton()
+        winslowLabel.frame = CGRect(x: 51, y: 51, width: 40, height: 40)
+        testPoints.Winslow.label = winslowLabel
+        
+        viewController.nearbyPointsInLineOfSight = [testPoints.Holts, testPoints.NearHolts, testPoints.Winslow]
+        
+        viewController.view.addSubview(holtsLabel)
+        viewController.view.addSubview(nearHoltsLabel)
+        viewController.view.addSubview(winslowLabel)
+        
+        let point = CGPoint(x: 50, y: 50)
+        var doubleTap = MockDoubleTap(point: point)
+        viewController.didReceiveDoubleTapOnView(doubleTap)
+        
+        XCTAssertEqual(holtsLabel.frame.origin, CGPoint(x: 34, y: 49), "A double tap should expand the nearbyPoints")
+    }
+    
+    func testThatALongPressResumeMotionManager() {
+        
+        mockViewController.didReceiveLongPressOnView(UILongPressGestureRecognizer())
+        
+        XCTAssertTrue(mockViewController.receivedLongPress, "The viewController's motionManager should be active")
     }
     
 }

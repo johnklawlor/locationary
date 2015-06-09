@@ -34,6 +34,7 @@ class ElevationDataManagerTests: XCTestCase {
     }
     
     func testElevationDataManagersHasCorrentCurrentLocation() {
+        mockManager.currentLocation = testPoints.GoosePond.location
         let currentLocation = elevationDataManager.currentLocationDelegate?.currentLocation
         
         XCTAssertEqual(currentLocation!, testPoints.GoosePond.location, "ElevationDataManager should have NearbyPointsManager's currentLocation")
@@ -67,6 +68,19 @@ class ElevationDataManagerTests: XCTestCase {
         testPoints.Killington.distanceFromCurrentLocation = testPoints.GoosePond.location.distanceFromLocation(testPoints.Killington.location)
         
         elevationDataManager.getElevationForPoint(testPoints.Killington)
+        
+        XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Winslow should be in the line of sight of the Dismal")
+    }
+    
+    func testElevationDataManagerReturnsProperLineOfSightDataForCliffStLookingAtWashington() {
+        
+        let currentLocation = testPoints.CliffSt
+        let nearbyPoint = testPoints.MountWashington
+        
+        mockManager.currentLocation = currentLocation.location
+        nearbyPoint.distanceFromCurrentLocation = currentLocation.location.distanceFromLocation(nearbyPoint.location)
+        
+        elevationDataManager.getElevationForPoint(nearbyPoint)
         
         XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Winslow should be in the line of sight of the Dismal")
     }

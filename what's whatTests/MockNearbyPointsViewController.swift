@@ -13,7 +13,8 @@ class MockNearbyPointsViewController: NearbyPointsViewController {
     
     var preparingForNearbyPoints: Bool! = false
     var createdNewNearbyPointsManager: Bool! = false
-    var informedOfSuccessfullyFindingNearbyPointInLineOfSight: Bool = false
+    var foundNearbyPoint: NearbyPoint!
+    var receivedLongPress: Bool = false
     
     override func prepareForNewPointsAtLocation(location: CLLocation!) {
         nearbyPointsManager = MockNearbyPointsManager(delegate: NearbyPointsViewController())
@@ -24,7 +25,11 @@ class MockNearbyPointsViewController: NearbyPointsViewController {
     }
     
     override func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
-        informedOfSuccessfullyFindingNearbyPointInLineOfSight = true
+        foundNearbyPoint = nearbyPoint
+    }
+    
+    override func didReceiveLongPressOnView(gesture: UILongPressGestureRecognizer) {
+        receivedLongPress = true
     }
     
 }

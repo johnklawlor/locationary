@@ -24,7 +24,9 @@ class NearbyPointsManagerTests: XCTestCase {
     var parserError = NSError(domain: "JSONError", code: 0, userInfo: nil)
     var point1, point2: NearbyPoint!
     var viewController = NearbyPointsViewController()
+
     var mockManager: MockNearbyPointsManager!
+    var mockManagerTwo: MockNearbyPointsManagerTwo!
     var mockElevationDataManager = MockElevationDataManager()
     
     var testPoints = TestPoints()
@@ -34,9 +36,12 @@ class NearbyPointsManagerTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         manager = NearbyPointsManager(delegate: viewController)
         mockManager = MockNearbyPointsManager(delegate: viewController)
+        mockManagerTwo = MockNearbyPointsManagerTwo(delegate: viewController)
+        
         manager.communicator = communicator
         communicator.geonamesCommunicatorDelegate = manager
         manager.parser = parser
+        
         viewController.locationManager = CLLocationManager()
         viewController.motionManager = CMMotionManager()
         
@@ -165,11 +170,13 @@ class NearbyPointsManagerTests: XCTestCase {
         XCTAssertEqual(manager.prefetchError!, ManagerConstants.Error_NearbyPointsIsNil, "If NearbyPoints is nil, calling determineLineOfSight should set prefetchError")
     }
     
-    func testCallingDeterminePointsInLineOfSightWithNonNilNearbyPointsCallsElevationDataManager() {
-        manager.nearbyPoints = [testPoints.Holts]
-        manager.elevationDataManager = mockElevationDataManager
-        manager.determineIfEachPointIsInLineOfSight()
+    func testCallingDeterminePointsInLineOfSightWithNonNilNearbyPointsCalculateDistanceFromCurrentLocationAndCallsElevationDataManager() {
+        mockManagerTwo.nearbyPoints = [testPoints.Holts]
+        mockManagerTwo.elevationDataManager = mockElevationDataManager
+        mockManagerTwo.determineIfEachPointIsInLineOfSight()
         
+        
+        XCTAssertTrue(mockManagerTwo.askedToCalculateDistance, "Manager should make call to update distance to currentLocation")
         XCTAssertTrue(mockElevationDataManager.askedToGetElevationData, "Call to determineIfEachPointIsInLineOfSight creates an ElevationDataManager")
     }
     
@@ -181,12 +188,14 @@ class NearbyPointsManagerTests: XCTestCase {
     }
     
     func testProcessingElevationDataUpdatesNearbyPointsDistanceAndElevationWhenInLineOfSight() {
-        mockManager.nearbyPoints = [testPoints.Holts]
+        mockManagerTwo.nearbyPoints = [testPoints.Holts]
         let elevationData = ElevationData(anElevation: 200, anAngleToHorizon: 0, IsInLineOfSight: true)
-        mockManager.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
-        XCTAssertTrue(mockManager.askedToCalculateDistance, "Manager should make call to update distance to currentLocation")
-        XCTAssertTrue(mockManager.askedToUpdateElevationAndAngleToHorizon, "Manager should make call to update elevation it received from ElevationDataManager")
-        XCTAssertTrue(mockManager.askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin, "Manager should make ")
+        testPoints.Holts.distanceFromCurrentLocation = 100
+        
+        mockManagerTwo.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
+        
+        XCTAssertTrue(mockManagerTwo.askedToUpdateElevationAndAngleToHorizon, "Manager should make call to update elevation it received from ElevationDataManager")
+        XCTAssertTrue(mockManagerTwo.askedToCalculateAbsoluteAngleWithCurrentLocationAsOrigin, "Manager should make ")
     }
     
     func testCallToUpdateElevationAndAngleToHorizonActuallyDoesSo() {
@@ -196,9 +205,10 @@ class NearbyPointsManagerTests: XCTestCase {
     }
     
     func testProcessingDataCreatesButtonAndSetsTapDelegateWhenInLineOfSight() {
-        mockManager.nearbyPoints = [testPoints.Holts]
+        testPoints.Holts.distanceFromCurrentLocation = 100.0
+        manager.nearbyPoints = [testPoints.Holts]
         let elevationData = ElevationData(anElevation: 200, anAngleToHorizon: 0, IsInLineOfSight: true)
-        mockManager.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
+        manager.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
         
         let button = testPoints.Holts.label as UIButton
         let delegate = testPoints.Holts.labelTapDelegate as! NearbyPointsViewController
@@ -209,11 +219,14 @@ class NearbyPointsManagerTests: XCTestCase {
     
     func testProcessingDataInformsTheDelegateOfTheNearbyPointsManagerOfSuccessfullyFindingAPointInLineOfSight() {
         var mockViewController = MockNearbyPointsViewController()
-        mockManager = MockNearbyPointsManager(delegate: mockViewController)
-        mockManager.nearbyPoints = [testPoints.Holts]
+        mockManagerTwo = MockNearbyPointsManagerTwo(delegate: mockViewController)
+        mockManagerTwo.nearbyPoints = [testPoints.Holts]
         let elevationData = ElevationData(anElevation: 200, anAngleToHorizon: 0, IsInLineOfSight: true)
-        mockManager.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
-        XCTAssertTrue(mockViewController.informedOfSuccessfullyFindingNearbyPointInLineOfSight, "NearbyPointsManager should inform its delegate when it successfully finds a NearbyPoint in line of sight")
+        testPoints.Holts.distanceFromCurrentLocation = 100
+        
+        mockManagerTwo.processElevationProfileDataForPoint(testPoints.Holts, elevationData: elevationData)
+        
+        XCTAssertEqual(mockViewController.foundNearbyPoint, testPoints.Holts, "NearbyPointsManager should inform its delegate when it successfully finds a NearbyPoint in line of sight")
     }
 
 }

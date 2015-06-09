@@ -40,7 +40,7 @@ class GeonamesJSONParser: Equatable {
                 return (nil, jsonEncodingError)
             }
             if let jsonDictionary = serialzedJSONDictionary {
-                println("jsonDictionary is \(jsonDictionary)")
+//                println("jsonDictionary is \(jsonDictionary)")
                 var pointsArray = [NearbyPoint]()
                 if let geonames = jsonDictionary.objectForKey("geonames") as? NSArray {
                     for aNearbyPoint in geonames {
@@ -59,25 +59,6 @@ class GeonamesJSONParser: Equatable {
                         }
                     }
                     return (pointsArray, nil)
-                }
-                else if let elevationPointsAlongLine = jsonDictionary.objectForKey("results") as? NSArray {
-                    var locationsBetweenPoints = [CLLocation]()
-                    println("jsonArray is \(elevationPointsAlongLine)")
-                    for elevationPoint in elevationPointsAlongLine {
-                        println("elevationPoint: \(elevationPoint.isKindOfClass(NSDictionary))")
-                        let elevationLong = elevationPoint.objectForKey("elevation") as! Double
-                        let elevation = floor(elevationLong / 0.000001) / 1000000
-                        println("elevation: \(elevation)")
-                        let location = elevationPoint.objectForKey("location") as! NSDictionary
-                        let latitude = location.objectForKey("lat") as! Double
-                        let longitude = location.objectForKey("lng") as! Double
-                        let date = NSDate(timeIntervalSince1970: 0)
-                        let elevationPointLocation = CLLocation(coordinate: CLLocationCoordinate2DMake(latitude, longitude), altitude: elevation, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: date)
-                        println("elevationPoint: \(elevationPointLocation)")
-                        locationsBetweenPoints.append(elevationPointLocation)
-                    }
-                    println("returning elevation profile: \(locationsBetweenPoints)")
-                    return (locationsBetweenPoints, nil)
                 }
             }
         }

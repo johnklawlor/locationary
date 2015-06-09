@@ -42,8 +42,8 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     var nearbyPointsManager: NearbyPointsManager!
     var nearbyPointsInLineOfSight: [NearbyPoint]?
     
-    var currentHeading: CLLocationDirection?
-    var currentZ: Double! = 0
+    var currentHeading: CLLocationDirection! = 0
+    var currentZ: CLLocationDirection! = 0
     
     var DeviceConstants: Constants!
     
@@ -54,7 +54,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var locationManager: CLLocationManager! {
         didSet {
-            println("location manager just set, view controller is \(self)")
+//            println("location manager just set, view controller is \(self)")
             // TEST THIS!!!!!!!!!!!!
             locationManager.delegate = self
             // TEST THIS!!!!!!!!!!!!
@@ -67,7 +67,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 locationManager.headingOrientation = CLDeviceOrientation.LandscapeLeft
                 locationManager.startUpdatingHeading()
             }
-            println("location manager at the end of didset \(locationManager)")
+//            println("location manager at the end of didset \(locationManager)")
         }
     }
     var motionManager: CMMotionManager! {
@@ -79,10 +79,23 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let swipeGesture = UISwipeGestureRecognizer(target: self, action: "updateDistanceLimitRadius")
-        self.view.addGestureRecognizer(swipeGesture)
+        // TEST
+        // can test these with view.gestures variable
+        var doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "didReceiveDoubleTapOnView:")
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        self.view.addGestureRecognizer(doubleTapRecognizer)
         
-        println("location manager is \(locationManager)")
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "didReceiveTapOnView:")
+        tapRecognizer.numberOfTapsRequired = 1
+        tapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
+        self.view.addGestureRecognizer(tapRecognizer)
+        
+        var longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "didReceiveLongPressOnView:")
+        self.view.addGestureRecognizer(longPressRecognizer)
+        
+        // TEST
+        
+//        println("location manager is \(locationManager)")
         locationManager.startUpdatingLocation()
         
         captureManager?.addVideoInput()
@@ -106,21 +119,31 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func motionHandler(motionData: CMAccelerometerData!, error: NSError!) {
         if self.nearbyPointsInLineOfSight != nil && self.nearbyPointsManager != nil && locationManager != nil && locationManager.heading != nil {
+            
             let zData = motionData.acceleration.z
+            let zDelta = abs(zData - self.currentZ)
+            let heading = self.locationManager.heading.trueHeading
+            let headingDelta = abs(heading - self.currentHeading!)
+            self.currentHeading = heading
+            
             if abs(zData - self.currentZ) > 0.01 {
                 self.currentZ = zData
                 if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading) {
-                    println("heading: \(deviceHeading)")
+//                    println("heading: \(deviceHeading)")
                     for nearbyPoint in self.nearbyPointsInLineOfSight! {
+//                        println("nearbyPoint: \(nearbyPoint)")
                         NSOperationQueue.mainQueue().addOperationWithBlock() {
                             let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
                             let phoneAngle = CGFloat(90 * zData)
                             let yDifference = labelAngle - phoneAngle
-                            let VFOV = CGFloat(self.DeviceConstants.VFOV/2)
-                            if yDifference > -1*VFOV && yDifference < VFOV {
-                                let multiplier = (yDifference+VFOV)/(VFOV*2)
-                                let yPosition = self.DeviceConstants.PhoneWidth - multiplier * self.DeviceConstants.PhoneWidth
-                                // let hfov: CGFloat = 28
+                            let VFOV = CGFloat(self.DeviceConstants.HFOV/2)
+                            if yDifference > (-1*VFOV)+10 && yDifference < (VFOV+10) {
+                                let yMultiplier = (yDifference+VFOV)/(VFOV*2)
+                                
+                                var fuzz = CGFloat(arc4random_uniform(3))
+                                fuzz -= 1
+                                
+                                let yPosition = (self.DeviceConstants.PhoneWidth - yMultiplier * self.DeviceConstants.PhoneWidth) + fuzz
                                 let hfov = CGFloat(self.DeviceConstants.HFOV/2)
                                 var xDifference = CGFloat(deviceHeading - nearbyPoint.angleToCurrentLocation)
                                 
@@ -134,17 +157,26 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                                 
                                 if xDifference > -hfov && xDifference < hfov {
                                     let xMultiplier = CGFloat((xDifference + hfov)/(hfov*2))
-                                    println("xMultiplier: \(xMultiplier)")
+//                                    println("xMultiplier: \(xMultiplier)")
+//                                    println("displaying nearbyPoint")
                                     let xPosition = xMultiplier * self.DeviceConstants.PhoneHeight
                                     nearbyPoint.label.hidden = false
-                                    UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
-                                        nearbyPoint.label.frame = CGRectMake(xPosition, yPosition, CGFloat(17), CGFloat(16))
-                                        }, completion: nil)
+                                    
+                                    let animationDuration = 0.5/(pow(zDelta+headingDelta, 0.5))
+                                    UIView.animateWithDuration(animationDuration,
+                                        delay: 0,
+                                        options: UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.AllowUserInteraction,
+                                        animations: {
+                                            nearbyPoint.label.frame = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: nearbyPoint.label.frame.size)
+                                        },
+                                        completion: nil)
                                 } else {
                                     nearbyPoint.label.hidden = true
+//                                    println("hiding nearbyPoint")
                                 }
                             } else {
                                 nearbyPoint.label.hidden = true
+//                                println("hiding nearbyPoint")
                             }
                         }
                     }
@@ -179,10 +211,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                             createNewNearbyPointsManager()
                             prepareForNewPointsAtLocation(location)
                             nearbyPointsManager.getGeonamesJSONData()
-                        } else {
-                            nearbyPointsManager.currentLocation = location
-                            prepareToDetermineLineOfSight()
-                            nearbyPointsManager.determineIfEachPointIsInLineOfSight()
                         }
                     } else {
                         prepareForNewPointsAtLocation(location)
@@ -219,7 +247,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func assembledNearbyPointsWithoutAltitude() {
-        println("assemebled points without altitude")
+        println("assembled points without altitude")
         
         if nearbyPointsManager != nil {
             prepareToDetermineLineOfSight()
@@ -246,17 +274,115 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     // TEST
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint) {
-        nearbyPointCurrentlyDisplayed = nearbyPoint
+        
+        if let nearbyPointDisplayed = nearbyPointCurrentlyDisplayed {
 
+            var labelToRemove = nameLabel
+            
+            UIView.animateWithDuration(0.25,
+                delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseInOut,
+                animations: {
+                    self.nameLabel.alpha = 0.0
+                },
+                completion: { [weak self] finished in
+                    labelToRemove.removeFromSuperview()
+                    labelToRemove = nil
+            })
+            
+            if nearbyPointCurrentlyDisplayed === nearbyPoint {
+                nearbyPointCurrentlyDisplayed = nil
+            } else {
+                makeNameLabelWithPoint(nearbyPoint)
+            }
+        
+        } else {
+            makeNameLabelWithPoint(nearbyPoint)
+        }
+        
+    }
+    
+    func makeNameLabelWithPoint(nearbyPoint: NearbyPoint) {
+        nameLabel = UILabel()
         nameLabel.text = nearbyPoint.name
         nameLabel.sizeToFit()
         let width = nameLabel.frame.width
         let height = nameLabel.frame.height
-        nameLabel.frame = CGRectMake(-width/2, -height, width, height)
-        nameLabel.hidden = false
-        nearbyPointCurrentlyDisplayed!.label.addSubview(nameLabel)
+        let x = (nearbyPoint.label.frame.width - width)/2
+        nameLabel.frame = CGRectMake(x, -height, width, height)
+        nameLabel.alpha = 0.0
+        nearbyPoint.label.addSubview(nameLabel)
         
+        UIView.animateWithDuration(0.25,
+            delay: 0.0,
+            options: UIViewAnimationOptions.CurveEaseInOut,
+            animations: {
+                self.nameLabel.alpha = 1.0
+            },
+            completion: nil)
+        
+        nearbyPointCurrentlyDisplayed = nearbyPoint
     }
+    
     // TEST
+    
+    
+    
+    func didReceiveTapOnView(gesture: UITapGestureRecognizer) {
+        nameLabel.hidden = true
+        nearbyPointCurrentlyDisplayed = nil
+    }
+    
+    func didReceiveDoubleTapOnView(gesture: UITapGestureRecognizer) {
+        let locationInView = gesture.locationInView(self.view)
+        var nearbyPointsToExpand = [UIView]()
+        
+        println("locationInView: \(locationInView)")
+        if nearbyPointsInLineOfSight != nil {
+            switch gesture.state {
+            case .Ended:
+                motionManager.stopAccelerometerUpdates()
+                for nearbyPoint in nearbyPointsInLineOfSight! {
+                    let labelButton = nearbyPoint.label
+                    println("labelButton frame's origin: \(labelButton.frame.origin)")
+                    let labelButtonX = labelButton.frame.origin.x
+                    let deltaX = labelButtonX - locationInView.x
+                    if abs(deltaX) < 50.0 {
+                        nearbyPointsToExpand.append(labelButton)
+                    }
+                }
+                
+                println("nearbyPointsToExpand: \(nearbyPointsToExpand.count)")
+                var numberOfPointsToExpand = nearbyPointsToExpand.count
+                
+                if numberOfPointsToExpand > 1 {
+                    nearbyPointsToExpand.sort({$0.frame.origin.x < $1.frame.origin.x})
+                    numberOfPointsToExpand -= 1
+                    for (index,pointToExpand) in enumerate(nearbyPointsToExpand) {
+                        var newX = CGFloat(Double(index)/Double(numberOfPointsToExpand) * 30.0) - 30.0/2.0
+                        if newX == 0 {
+                            pointToExpand.transform = CGAffineTransformMakeScale(0.1, 0.1)
+                            
+                            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.1, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: {
+                                pointToExpand.transform = CGAffineTransformIdentity
+                                }, completion: nil)
+                        } else {
+                            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.1, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: {
+                                pointToExpand.frame.origin = CGPoint(x: pointToExpand.frame.origin.x + newX, y: pointToExpand.frame.origin.y)
+                                }, completion: nil)
+                        }
+                    }
+                }
+            default: break
+            }
+        }
+    }
+    
+    func restartMotionManagerUpdates() {
+        motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue(), withHandler: motionHandler)
+    }
+    
+    func didReceiveLongPressOnView(gesture: UILongPressGestureRecognizer) {
+        restartMotionManagerUpdates()
+    }
 }
-

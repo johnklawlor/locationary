@@ -22,7 +22,15 @@ protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
+struct NearbyPointConstants {
+    static let LabelFrameSize: CGFloat = 40.0
+}
+
 class NearbyPoint: NSObject, Equatable, Printable {
+    
+    override var description: String {
+        return "\(name): \(location) \n \(distanceFromCurrentLocation), \(angleToCurrentLocation) from current location, and \(angleToHorizon) from horizon"
+    }
     
     init(aName: String, aLocation: CLLocation!) {
         name = aName
