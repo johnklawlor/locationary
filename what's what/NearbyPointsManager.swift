@@ -22,6 +22,7 @@ protocol NearbyPointsManagerDelegate: class {
 public struct ManagerConstants {
     static let Error_ReachedMaxConnectionAttempts = NSError(domain: "ManagerReachedMaximumAllowedConnectionAttempts", code: 1, userInfo: nil)
     static let Error_NearbyPointsIsNil = NSError(domain: "ManagerNearbyPointsIsNil-NothingToFetch", code: 2, userInfo: nil)
+    static let ElevationDataFilename = "us_150max_bounding_compressed_tiled"
 
 }
 
@@ -42,7 +43,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     unowned var managerDelegate: NearbyPointsManagerDelegate
     
     var elevationDataManager: ElevationDataManager?
-    
+        
     var lowerDistanceLimit: CLLocationDistance! = 0
     var upperDistanceLimit: CLLocationDistance! = 100000
     
@@ -88,6 +89,14 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     
     func determineIfEachPointIsInLineOfSight() {
         println("nearbyPoints count when fetching line of sight data is \(nearbyPoints?.count)")
+        
+        // TEST
+        
+        elevationDataManager?.gdalManager = GDALWrapper()
+        elevationDataManager?.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
+        
+        // TEST
+        
         if nearbyPoints != nil {            
             for nearbyPoint in nearbyPoints! {
 

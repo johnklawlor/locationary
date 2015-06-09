@@ -29,6 +29,8 @@ class ElevationDataManager {
     weak var dataDelegate: ElevationDataDelegate?
     weak var currentLocationDelegate: CurrentLocationDelegate?
     
+    var gdalManager: GDALWrapper?
+    
     func getElevationForPoint(nearbyPoint: NearbyPoint) {
         
         let currentLatitude = currentLocationDelegate!.currentLocation!.coordinate.latitude
@@ -39,13 +41,15 @@ class ElevationDataManager {
 //        println("distanceFromCurrentLocation: \(nearbyPoint.distanceFromCurrentLocation)")
         
         if currentLocationDelegate != nil && dataDelegate != nil {
-            let nearbyPointElevationData = GDALWrapper.getElevationAtLatitude(currentLatitude, currentLongitude: currentLongitude, currentAltitude: currentAltitude, nearbyPointLatitude: nearbyPoint.location.coordinate.latitude, nearbyPointLongitude: nearbyPoint.location.coordinate.longitude, distanceFromCurrentLocation: nearbyPoint.distanceFromCurrentLocation)
+            // TEST
+            if let nearbyPointElevationData = gdalManager?.elevationAtCurrentLatitude(currentLatitude, currentLongitude: currentLongitude, currentAltitude: currentAltitude, nearbyPointLatitude: nearbyPoint.location.coordinate.latitude, nearbyPointLongitude: nearbyPoint.location.coordinate.longitude, distanceFromCurrentLocation: nearbyPoint.distanceFromCurrentLocation) {
             
-            let elevationData = ElevationData(anElevation: nearbyPointElevationData.elevation, anAngleToHorizon: nearbyPointElevationData.angleToHorizon, IsInLineOfSight: nearbyPointElevationData.inLineOfSight)
+                let elevationData = ElevationData(anElevation: nearbyPointElevationData.elevation, anAngleToHorizon: nearbyPointElevationData.angleToHorizon, IsInLineOfSight: nearbyPointElevationData.inLineOfSight)
             
 //            println("elevationData: \(elevationData)")
             
             dataDelegate!.processElevationProfileDataForPoint(nearbyPoint, elevationData: elevationData)
+            }
         }
     }
 }

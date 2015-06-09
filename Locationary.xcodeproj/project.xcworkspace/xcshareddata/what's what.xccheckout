@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7C63A706-0FF7-4E2C-BE85-DBAD7AECD0AF</string>
+	<key>IDESourceControlProjectName</key>
+	<string>what's what</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D7E4EA0D25397ED06E987370649882E3D60ED1B2</key>
+		<string>https://gist.github.com/22eee94485bce5b3a6ea.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>what's what.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D7E4EA0D25397ED06E987370649882E3D60ED1B2</key>
+		<string>../../../../../../projects/gdal_scripts</string>
+	</dict>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D7E4EA0D25397ED06E987370649882E3D60ED1B2</string>
+			<key>IDESourceControlWCCName</key>
+			<string>gdal_scripts</string>
+		</dict>
+	</array>
+</dict>
+</plist>

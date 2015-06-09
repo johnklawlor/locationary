@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import what_s_what
+import Locationary
 import CoreLocation
 
 struct TestError {

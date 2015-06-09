@@ -8,18 +8,26 @@
 
 #import "GDALWrapper.h"
 
-@implementation GDALWrapper
+#import "ObjC+GDAL.h"
 
-+ (NearbyPointElevationData) getElevationAtLatitude: (double)currentLatitude currentLongitude: (double)currentLongitude currentAltitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceFromCurrentLocation: (double) distanceFromCurrentLocation {
+@implementation GDALWrapper {
+    ObjCGDAL *gdalGetter;
+}
+
+- (void) createGDALGetter {
+    gdalGetter = [[ObjCGDAL alloc] init];
+}
+
+- (void) openGDALFile:(NSString*) gdalFilename {
     
-    // we have to inspect the coordinates and open the proper DEM file
-    NSString *pathToDEMData = [[NSBundle mainBundle] pathForResource: @"us_150max_bounding" ofType: @"tif"];
+    [self createGDALGetter];
     
-    // i believe we want to make a call to the gdalLocating.h function here
+    [gdalGetter getGDALDataset: gdalFilename];
+}
+
+- (NearbyPointElevationData) elevationAtCurrentLatitude: (double)currentLatitude currentLongitude: (double)currentLongitude currentAltitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceFromCurrentLocation: (double) distanceBetweenTwoPoints {
     
-    const char *cPathToDEMData = [pathToDEMData cStringUsingEncoding:NSASCIIStringEncoding];
-    
-    return getNearbyPointElevationAndDetermineIfInLineOfSight(currentLatitude, currentLongitude, currentAltitude, nearbyPointLatitude, nearbyPointLongitude, distanceFromCurrentLocation, cPathToDEMData);
+    return [gdalGetter getElevationAtLatitude:currentLatitude longitude:currentLongitude altitude:currentAltitude nearbyPointLatitude:nearbyPointLatitude nearbyPointLongitude:nearbyPointLongitude distanceBetweenTwoPoints:distanceBetweenTwoPoints];
 }
 
 @end

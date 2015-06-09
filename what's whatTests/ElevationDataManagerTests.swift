@@ -26,6 +26,9 @@ class ElevationDataManagerTests: XCTestCase {
         elevationDataManager.dataDelegate = mockManager
         elevationDataManager.currentLocationDelegate = mockManager
         
+        elevationDataManager.gdalManager = GDALWrapper()
+        println("elevationFilename: \(ManagerConstants.ElevationDataFilename)")
+        elevationDataManager.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
     }
     
     override func tearDown() {
@@ -69,20 +72,19 @@ class ElevationDataManagerTests: XCTestCase {
         
         elevationDataManager.getElevationForPoint(testPoints.Killington)
         
-        XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Winslow should be in the line of sight of the Dismal")
+        XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Killington should not be in the line of sight of Goose Pond")
     }
     
     func testElevationDataManagerReturnsProperLineOfSightDataForCliffStLookingAtWashington() {
         
         let currentLocation = testPoints.CliffSt
         let nearbyPoint = testPoints.MountWashington
-        
         mockManager.currentLocation = currentLocation.location
         nearbyPoint.distanceFromCurrentLocation = currentLocation.location.distanceFromLocation(nearbyPoint.location)
         
         elevationDataManager.getElevationForPoint(nearbyPoint)
         
-        XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Winslow should be in the line of sight of the Dismal")
+        XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Washington should not be in the line of sight of Cliff St.")
     }
 
 }
