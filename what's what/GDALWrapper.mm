@@ -27,7 +27,7 @@
 
 - (NearbyPointElevationData) elevationAtCurrentLatitude: (double)currentLatitude currentLongitude: (double)currentLongitude currentAltitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceFromCurrentLocation: (double) distanceBetweenTwoPoints {
     
-    return [gdalGetter getElevationAtLatitude:currentLatitude longitude:currentLongitude altitude:currentAltitude nearbyPointLatitude:nearbyPointLatitude nearbyPointLongitude:nearbyPointLongitude distanceBetweenTwoPoints:distanceBetweenTwoPoints];
+    return [gdalGetter getElevationAtCurrentLatitude:currentLatitude currentLongitude:currentLongitude currentAltitude:currentAltitude nearbyPointLatitude:nearbyPointLatitude nearbyPointLongitude:nearbyPointLongitude distanceBetweenTwoPoints:distanceBetweenTwoPoints];
 }
 
 @end

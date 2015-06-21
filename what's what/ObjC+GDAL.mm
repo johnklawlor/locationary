@@ -23,7 +23,7 @@ GDALDataset* elevationDataset;
     elevationDataset = getGDALDataset(cPathToDEMData);
 }
 
-- (NearbyPointElevationData) getElevationAtLatitude: (double)currentLatitude longitude: (double)currentLongitude altitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceBetweenTwoPoints: (double) distanceBetweenTwoPoints {
+- (NearbyPointElevationData) getElevationAtCurrentLatitude: (double)currentLatitude currentLongitude: (double)currentLongitude currentAltitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceBetweenTwoPoints: (double) distanceBetweenTwoPoints {
     
     return getNearbyPointElevationAndDetermineIfInLineOfSight(currentLatitude, currentLongitude, currentAltitude, nearbyPointLatitude, nearbyPointLongitude, distanceBetweenTwoPoints, elevationDataset);
 }

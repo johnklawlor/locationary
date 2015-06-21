@@ -15,6 +15,6 @@
 
 - (void) getGDALDataset:(NSString*) gdalFilename;
 
-- (struct NearbyPointElevationData) getElevationAtLatitude: (double)currentLatitude longitude: (double)currentLongitude altitude: (double) currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceBetweenTwoPoints: (double) distanceBetweenTwoPoints;
+- (struct NearbyPointElevationData) getElevationAtCurrentLatitude: (double)currentLatitude currentLongitude: (double)currentLongitude currentAltitude: (double)currentAltitude nearbyPointLatitude: (double)nearbyPointLatitude nearbyPointLongitude: (double)nearbyPointLongitude distanceBetweenTwoPoints: (double) distanceBetweenTwoPoints;
 
 @end
