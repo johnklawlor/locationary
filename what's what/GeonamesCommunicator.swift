@@ -9,6 +9,11 @@
 import Foundation
 import CoreLocation
 
+struct GeonamesCommunicatorConstants {
+    static let DistanceGeonamesPointsMustFallWithin: Double = 100.0
+    static let MaxRows = 2000
+}
+
 func == (lhs: GeonamesJSONParser, rhs: GeonamesJSONParser) -> Bool {
     return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
@@ -19,6 +24,11 @@ protocol GeonamesCommunicatorDelegate {
 }
 
 class GeonamesCommunicator: Communicator, CommunicatorDelegate {
+    
+    var startRowCount: Int = 0
+    var startRow: Int {
+        return startRowCount * GeonamesCommunicatorConstants.MaxRows
+    }
 
     var geonamesCommunicatorDelegate: GeonamesCommunicatorDelegate? {
         didSet {
@@ -36,7 +46,8 @@ class GeonamesCommunicator: Communicator, CommunicatorDelegate {
 
     override var fetchingUrl: NSURL? {
         if currentLocation != nil {
-            return NSURL(string: "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=\(south.format())&north=\(north.format())&west=\(west.format())&east=\(east.format())&orderby=elevation&username=jkl234")
+            // non-production is api.geonames.org, change maxRows to 2000
+            return NSURL(string: "http://ws.geonames.net/searchJSON?q=&featureCode=MT&south=\(south.formatLocation())&north=\(north.formatLocation())&west=\(west.formatLocation())&east=\(east.formatLocation())&orderby=elevation&username=jkl234&maxRows=\(GeonamesCommunicatorConstants.MaxRows)&startRow=\(startRow)")
         } else {
             return nil
         }
@@ -55,11 +66,11 @@ class GeonamesCommunicator: Communicator, CommunicatorDelegate {
             }
         }
     }
-    let dlat: Double = (1/110.54) * CommunicatorConstants.DistanceGeonamesPointsMustFallWithin
+    let dlat: Double = (1/110.54) * GeonamesCommunicatorConstants.DistanceGeonamesPointsMustFallWithin
     var dlong: Double {
         if currentLocation != nil {
 //            println("returning calculated dlong")
-            return CommunicatorConstants.DistanceGeonamesPointsMustFallWithin * (1/(111.32*cos(currentLocation!.coordinate.latitude*M_PI/180)))
+            return GeonamesCommunicatorConstants.DistanceGeonamesPointsMustFallWithin * (1/(111.32*cos(currentLocation!.coordinate.latitude*M_PI/180)))
         }
         return 0.063494
     }
@@ -72,15 +83,10 @@ class GeonamesCommunicator: Communicator, CommunicatorDelegate {
 //    43.705238, -72.287822
 //    44.605238 42.805238 -73.527822 -71.047822
 //    0.90, 1.24
+//    http://ws.geonames.net/searchJSON?q=&featureCode=MT&south=44.605238&north=42.805238&west=-73.527822&east=-71.047822&orderby=elevation&username=jkl234&maxRows=2000&startRow=2000
     
     override init() {
         super.init()
     }
     
-}
-
-extension Double {
-    func format() -> String {
-        return NSString(format: "%0.6f", self) as String
-    }
 }

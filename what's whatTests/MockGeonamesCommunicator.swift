@@ -9,8 +9,8 @@
 import Foundation
 
 class MockGeonamesCommunicator: GeonamesCommunicator, CommunicatorDelegate {
-    var askedToFetchedJSON: Bool! = false
-    var askedToFetchAltitudeJSON: Bool! = false
+    var askedToFetchedJSON: Bool = false
+    var askedToFetchAltitudeJSON: Bool = false
     var receivedJSON: String!
     
     var fetchingError: NSError!

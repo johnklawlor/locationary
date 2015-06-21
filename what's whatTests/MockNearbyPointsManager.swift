@@ -37,7 +37,7 @@ class MockNearbyPointsManager: NearbyPointsManager, CommunicatorDelegate, Elevat
         askedToGetGeonamesJSONData = true
     }
     
-    override func determineIfEachPointIsInLineOfSight() {
+    override func determineIfEachRecentlyRetrievedPointIsInLineOfSight() {
         askedToDetermineIfEachPointIsInLineOfSight = true
     }
     

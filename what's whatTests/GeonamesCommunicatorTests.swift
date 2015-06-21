@@ -52,15 +52,27 @@ class GeonamesCommunicatorTests: XCTestCase {
         XCTAssertTrue(communicatorDelegate === communicator, "GeonamesCommunicator should be its own delegate to Communicator callbacks")
     }
     
-    func testManagerReturnsCorrectURL() {
-        XCTAssertEqual("\(NNCommunicator.fetchingUrl!)", "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.834792&north=44.644092&west=-73.265058&east=-70.778354&orderby=elevation&username=jkl234", "Communicator should return correct URL")
+    func testManagerReturnsCorrectURLForInitialRequest() {
+        XCTAssertEqual("\(NNCommunicator.fetchingUrl!)", "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.834792&north=44.644092&west=-73.265058&east=-70.778354&orderby=elevation&username=jkl234&maxRows=2000&startRow=0", "Communicator should return correct URL")
+    }
+    
+    func testManagerReturnsCorrectURLForSecondRequest() {
+        NNCommunicator.startRowCount = 1
+        XCTAssertEqual("\(NNCommunicator.fetchingUrl!)", "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.834792&north=44.644092&west=-73.265058&east=-70.778354&orderby=elevation&username=jkl234&maxRows=2000&startRow=2000", "Communicator should return correct URL")
+    }
+    
+    func testManagerReturnsCorrectURLForThirdRequest() {
+        NNCommunicator.startRowCount = 2
+        XCTAssertEqual("\(NNCommunicator.fetchingUrl!)", "http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.834792&north=44.644092&west=-73.265058&east=-70.778354&orderby=elevation&username=jkl234&maxRows=2000&startRow=4000", "Communicator should return correct URL")
     }
     
     func testFetchingJSONDataCreatesRequestAndLaunchesConnection() {
         communicator.fetchJSONData()
-        XCTAssertNotNil(communicator.fetchingRequest, "Communicator should have an altitude request")
-        XCTAssertNotNil(communicator.fetchingConnection, "Communicator should have an altitude connection")
-        communicator.cancelAndDiscardConnection()
+        dispatch_async(dispatch_get_main_queue()) {
+            XCTAssertNotNil(self.communicator.fetchingRequest, "Communicator should have an altitude request")
+            XCTAssertNotNil(self.communicator.fetchingConnection, "Communicator should have an altitude connection")
+            self.communicator.cancelAndDiscardConnection()
+        }
     }
     
     func testGeonamesCommunicatorInformsItsDelegateOfAnError() {

@@ -31,6 +31,8 @@ class NearbyPointsManagerTests: XCTestCase {
     
     var testPoints = TestPoints()
     
+    var mockPoints = [MockPoint]()
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -53,6 +55,9 @@ class NearbyPointsManagerTests: XCTestCase {
         let location2 = CLLocation(coordinate: CLLocationCoordinate2DMake(43.12563, -72.43231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
         let name2 = "Mount Cardigan"
         point2 = NearbyPoint(aName: name, aLocation: location2)
+        
+        mockManagerTwo.nearbyPoints = [NearbyPoint]()
+        mockPoints = [MockPoint(nearbyPoint: testPoints.Holts), MockPoint(nearbyPoint: testPoints.Winslow)]
     }
     
     override func tearDown() {
@@ -93,7 +98,7 @@ class NearbyPointsManagerTests: XCTestCase {
         manager.managerDelegate = managerDelegate 
         parser.parserPoints = [testPoints.Holts]
         manager.receivedNearbyPointsJSON("Valid JSON")
-        XCTAssertEqual(manager.nearbyPoints!, [testPoints.Holts], "Manager should set its nearbyPoints array after successfully parsing JSON")
+        XCTAssertEqual(manager.recentlyRetrievedNearbyPoints, [testPoints.Holts], "Manager should set its nearbyPoints array after successfully parsing JSON")
         XCTAssertTrue(managerDelegate.successfullyAssembledNearbyPointsArray == true, "Manager should notify its delegate of nearbyPoint array")
     }
     
@@ -114,18 +119,18 @@ class NearbyPointsManagerTests: XCTestCase {
         let angle2 = testPoints.Point2.angleToCurrentLocation
 
         
-        XCTAssertEqual(distance1.format(), "8401.083881", "Manager should have updated Point1's distanceToCurrentLocation")
-        XCTAssertEqual(distance2.format(), "20784.699292", "Manager should have updated Point2's distanceToCurrentLocation")
-        XCTAssertEqual(angle1.format(), "43.769368", "Manager should have updated Point1's distanceToCurrentLocation")
-        XCTAssertEqual(angle2.format(), "318.614398", "Manager should have updated Point2's distanceToCurrentLocation")
+        XCTAssertEqual(distance1.formatLocation(), "8401.083881", "Manager should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(distance2.formatLocation(), "20784.699292", "Manager should have updated Point2's distanceToCurrentLocation")
+        XCTAssertEqual(angle1.formatLocation(), "43.769368", "Manager should have updated Point1's distanceToCurrentLocation")
+        XCTAssertEqual(angle2.formatLocation(), "318.614398", "Manager should have updated Point2's distanceToCurrentLocation")
 
 //        manager.currentLocation = testPoints.NearHolts.location
 //        
 //        let horizonAngle1 = testPoints.Point1.angleToHorizon
 //        let horizonAngle2 = testPoints.Point2.angleToHorizon
 //        
-//        XCTAssertEqual(horizonAngle1.format(), "3.871676", "viewController should have updated Point1's distanceToCurrentLocation")
-//        XCTAssertEqual(horizonAngle2.format(), "0.398280", "viewController should have updated Point2's distanceToCurrentLocation")
+//        XCTAssertEqual(horizonAngle1.formatLocation(), "3.871676", "viewController should have updated Point1's distanceToCurrentLocation")
+//        XCTAssertEqual(horizonAngle2.formatLocation(), "0.398280", "viewController should have updated Point2's distanceToCurrentLocation")
     }
     
     func testManagerUpdatesAngleToCurrentLocationCorrectlyForUpperLeftQuadrant() {
@@ -134,7 +139,7 @@ class NearbyPointsManagerTests: XCTestCase {
         
         manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(testPoints.BreadLoaf)
         
-        XCTAssertEqual(testPoints.BreadLoaf.angleToCurrentLocation.format(), "166.344027", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
+        XCTAssertEqual(testPoints.BreadLoaf.angleToCurrentLocation.formatLocation(), "166.344027", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
     }
     
     func testManagerUpdatesAngleToCurrentLocationCorrectlyForLowerLeftQuadrant() {
@@ -143,7 +148,7 @@ class NearbyPointsManagerTests: XCTestCase {
         
         manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(testPoints.Killington)
         
-        XCTAssertEqual(testPoints.Killington.angleToCurrentLocation.format(), "208.962171", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
+        XCTAssertEqual(testPoints.Killington.angleToCurrentLocation.formatLocation(), "208.962171", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
     }
     
     func testManagerUpdatesAngleToCurrentLocationCorrectlyForLowerRightQuadrant() {
@@ -152,7 +157,7 @@ class NearbyPointsManagerTests: XCTestCase {
         
         manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(testPoints.Cardigan)
         
-        XCTAssertEqual(testPoints.Cardigan.angleToCurrentLocation.format(), "323.001083", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
+        XCTAssertEqual(testPoints.Cardigan.angleToCurrentLocation.formatLocation(), "323.001083", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
     }
     
     func testManagerUpdatesAngleToCurrentLocationCorrectlyForUpperRightQuadrant() {
@@ -161,23 +166,47 @@ class NearbyPointsManagerTests: XCTestCase {
         
         manager.calculateAbsoluteAngleWithCurrentLocationAsOrigin(testPoints.Washington)
         
-        XCTAssertEqual(testPoints.Washington.angleToCurrentLocation.format(), "32.639578", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
+        XCTAssertEqual(testPoints.Washington.angleToCurrentLocation.formatLocation(), "32.639578", "calculateAbsoluteAngleWithCurrentLocationAsOrigin should return correct value")
     }
     
     func testCallingDeterminePointsInLineOfSightWithNearbyPointsAsNilSetsPrefetchError() {
         manager.nearbyPoints = nil
-        manager.determineIfEachPointIsInLineOfSight()
+        manager.determineIfEachOfAllNearbyPointsIsInLineOfSight()
         XCTAssertEqual(manager.prefetchError!, ManagerConstants.Error_NearbyPointsIsNil, "If NearbyPoints is nil, calling determineLineOfSight should set prefetchError")
     }
     
     func testCallingDeterminePointsInLineOfSightWithNonNilNearbyPointsCalculateDistanceFromCurrentLocationAndCallsElevationDataManager() {
-        mockManagerTwo.nearbyPoints = [testPoints.Holts]
+        mockManagerTwo.recentlyRetrievedNearbyPoints = mockPoints
         mockManagerTwo.elevationDataManager = mockElevationDataManager
-        mockManagerTwo.determineIfEachPointIsInLineOfSight()
+        
+        mockManagerTwo.determineIfEachRecentlyRetrievedPointIsInLineOfSight()
         
         
         XCTAssertTrue(mockManagerTwo.askedToCalculateDistance, "Manager should make call to update distance to currentLocation")
-        XCTAssertTrue(mockElevationDataManager.askedToGetElevationData, "Call to determineIfEachPointIsInLineOfSight creates an ElevationDataManager")
+        XCTAssertTrue(mockPoints[0].askedToGetElevationData, "Call to determineIfEachPointIsInLineOfSight creates an ElevationDataManager")
+        XCTAssertTrue(mockPoints[1].askedToGetElevationData, "Call to determineIfEachPointIsInLineOfSight creates an ElevationDataManager")
+    }
+    
+    func testDeterminingLineOfSightWorksInMultithreadedEnvironment() {
+        
+        mockManagerTwo.nearbyPoints = [NearbyPoint]()
+        mockManagerTwo.recentlyRetrievedNearbyPoints = [testPoints.Holts, testPoints.Winslow]
+        mockManagerTwo.elevationDataManager = mockElevationDataManager
+        
+        let notMainQueue = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0)
+        dispatch_async(notMainQueue) {
+            self.mockManagerTwo.determineIfEachRecentlyRetrievedPointIsInLineOfSight()
+        }
+        dispatch_async(notMainQueue) {
+            self.mockManagerTwo.appendToRecentlyRetrievedNearbyPoints([self.testPoints.MooseNorth])
+        }
+        dispatch_async(notMainQueue) {
+            self.mockManagerTwo.determineIfEachRecentlyRetrievedPointIsInLineOfSight()
+        }
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            XCTAssertEqual(self.mockManagerTwo.nearbyPoints!, [self.testPoints.Holts, self.testPoints.Winslow, self.testPoints.MooseNorth], "nearbyPoints array should consist of three retrieved Nearby Point")
+        }
     }
     
     func testBadElevationDataRemovesPointFromNearbyPointsArray() {

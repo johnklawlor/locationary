@@ -32,6 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nearbyPointsManager.communicator = GeonamesCommunicator()
         nearbyPointsManager.communicator?.geonamesCommunicatorDelegate = nearbyPointsManager
         nearbyPointsManager.parser = GeonamesJSONParser()
+        // TEST
+        nearbyPointsManager.parser.geonamesCommunicatorProvider = nearbyPointsManager
+        // TEST
         nearbyPointsViewController.nearbyPointsManager = nearbyPointsManager
 
         let phoneHeight = CGFloat(UIScreen.mainScreen().bounds.width)
@@ -47,16 +50,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         println("captureDevice is \(captureDevice)")
         if let retrievedDevice = captureDevice {
-            let HFOV = retrievedDevice.activeFormat.videoFieldOfView
-            let VFOC = ((HFOV)/16.0)*9.0
+            
+            let theFieldOfVision = retrievedDevice.activeFormat.videoFieldOfView
+            let maxZoom = retrievedDevice.activeFormat.videoMaxZoomFactor
+            
+            nearbyPointsViewController.captureDevice = retrievedDevice
 
-            nearbyPointsViewController.DeviceConstants = Constants(hfov: HFOV, vfoc: VFOC, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
-            println("HFOV: \(nearbyPointsViewController.DeviceConstants.HFOV)")
-            println("VFOV: \(nearbyPointsViewController.DeviceConstants.VFOV)")
+            nearbyPointsViewController.DeviceConstants = Constants(theFieldOfVision: theFieldOfVision, maxZoom: maxZoom, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
+            println("fieldOfVision: \(nearbyPointsViewController.DeviceConstants.fieldOfVision)")
             println("Width: \(nearbyPointsViewController.DeviceConstants.PhoneWidth)")
             println("Height: \(nearbyPointsViewController.DeviceConstants.PhoneHeight)")
-        } else {
-            nearbyPointsViewController.DeviceConstants = Constants(hfov: 58.04, vfoc: 32.6475, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
         }
         
         self.navigationController = UINavigationController()

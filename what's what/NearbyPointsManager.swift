@@ -26,7 +26,13 @@ public struct ManagerConstants {
 
 }
 
-class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationDataDelegate, CurrentLocationDelegate {
+func with(queue: dispatch_queue_t, f: Void -> Void) {
+    dispatch_sync(queue, f)
+}
+
+class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationDataDelegate, CurrentLocationDelegate, GeonamesCommunicatorProvider {
+    private let recentlyRetrievedNearbyPointsQueue = dispatch_queue_create("recentlyRetrievedNearbyPointsQueue", nil)
+    
     var currentLocation: CLLocation? {
         didSet {
             communicator?.currentLocation = currentLocation
@@ -35,7 +41,13 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     var communicator: GeonamesCommunicator?
     var nearbyPointsJSON: String?
     var parser: GeonamesJSONParser!
-    var nearbyPoints: [NearbyPoint]?
+    
+    var nearbyPoints: [NearbyPoint]? = [NearbyPoint]()
+    var recentlyRetrievedNearbyPoints = [NearbyPoint]()
+    
+    func appendToRecentlyRetrievedNearbyPoints(nearbyPointsToAppend: [NearbyPoint]) {
+        recentlyRetrievedNearbyPoints += nearbyPointsToAppend
+    }
 
     var prefetchError: NSError?
     var fetchingError: NSError?
@@ -82,35 +94,53 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             }
         }
         if let receivedNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
-            nearbyPoints = receivedNearbyPointsArray
+            with(recentlyRetrievedNearbyPointsQueue, {
+                self.recentlyRetrievedNearbyPoints += receivedNearbyPointsArray
+            })
             managerDelegate.assembledNearbyPointsWithoutAltitude()
+        }
+        else {
+            println("inform delegate that there are no points around user!")
         }
     }
     
-    func determineIfEachPointIsInLineOfSight() {
-        println("nearbyPoints count when fetching line of sight data is \(nearbyPoints?.count)")
-        
-        // TEST
-        
-        elevationDataManager?.gdalManager = GDALWrapper()
-        elevationDataManager?.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
-        
-        // TEST
-        
-        if nearbyPoints != nil {            
-            for nearbyPoint in nearbyPoints! {
-
-                calculateDistanceFromCurrentLocation(nearbyPoint)
-
-                self.elevationDataManager!.getElevationForPoint(nearbyPoint)
+    func determineIfEachRecentlyRetrievedPointIsInLineOfSight() {
+//        println("recentlyRetrievedNearbyPoints count: \(recentlyRetrievedNearbyPoints.count)")
+        with(recentlyRetrievedNearbyPointsQueue, {
+            if !self.recentlyRetrievedNearbyPoints.isEmpty {
+                self.determineIfEachPointIsInLineOfSight(&self.recentlyRetrievedNearbyPoints)
+                
+                println("nearbyPoints array: \(self.nearbyPoints!.count)")
+                self.nearbyPoints! += self.recentlyRetrievedNearbyPoints
+                self.recentlyRetrievedNearbyPoints = [NearbyPoint]()
+                println("nearbyPoints count: \(self.nearbyPoints!.count)")
             }
+        })
+    }
+    
+    func determineIfEachOfAllNearbyPointsIsInLineOfSight() {
+        if nearbyPoints != nil {
+            determineIfEachPointIsInLineOfSight(&nearbyPoints!)
         } else {
             println("trying to determineIfEachPointIsInLineOfSight. nearbyPoints is nil.")
             prefetchError = ManagerConstants.Error_NearbyPointsIsNil
         }
     }
     
+    func determineIfEachPointIsInLineOfSight(inout someNearbyPoints: [NearbyPoint]) {
+        println("nearbyPoints count when fetching line of sight data is \(someNearbyPoints.count)")
+        
+        for nearbyPoint in someNearbyPoints {
+            calculateDistanceFromCurrentLocation(nearbyPoint)
+            self.elevationDataManager!.getElevationForPoint(nearbyPoint)
+        }
+    }
+    
     func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {
+        
+        if nearbyPoint.name == "Smarts Mountain" {
+            println("elevationData: \(elevationData)")
+        }
         
         if elevationData.elevation == 32678 {
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
@@ -137,7 +167,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             
             // TEST
 
-            let rectangleSize = (1.0/pow(nearbyPoint.distanceFromCurrentLocation/1000.0, 0.5))*10.0 + 14
+            let rectangleSize = (1.0/pow(nearbyPoint.distanceFromCurrentLocation/1000.0, 0.5))*10.0 + 22
             var theButtonImage = UIImage(named: "overlaygraphic.png")
             let rectangle = CGRect(x: 0, y: 0, width: rectangleSize, height: rectangleSize)
             UIGraphicsBeginImageContextWithOptions(rectangle.size, false, 0.0);
@@ -146,7 +176,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             UIGraphicsEndImageContext()
             let buttonImage = newImage
             
-            nearbyPoint.label.setImage(buttonImage, forState: UIControlState.Normal)
+            nearbyPoint.label.setImage(theButtonImage, forState: UIControlState.Normal)
             
             let firstInitialLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: labelFrame.size))
             let firstCharacterIndex = advance(nearbyPoint.name.startIndex,0)

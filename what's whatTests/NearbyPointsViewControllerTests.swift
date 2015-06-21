@@ -167,20 +167,20 @@ class NearbyPointsViewControllerTests: XCTestCase {
         var nearbyPoint = testPoints.Smarts
         nearbyPoint.label = UIButton(frame: CGRectMake(200, 200, 17, 16))
         
-        let testLabel = UILabel()
+        let testLabel = UITextView()
         testLabel.text = testPoints.Smarts.name
         testLabel.sizeToFit()
         let testWidth = testLabel.frame.width
         
         viewController.view.addSubview(nearbyPoint.label)
         viewController.nearbyPointsInLineOfSight = [nearbyPoint]
-        viewController.nameLabel = UILabel()
+        viewController.nameLabel = UITextView()
         viewController.didReceiveTapForNearbyPoint(nearbyPoint)
         let nameLabel = viewController.nameLabel
         XCTAssertEqual(nameLabel.text!, "Smarts Mountain", "View Controller updates nameLabel's text up receiving tap delegation call")
         XCTAssertEqual(nameLabel.frame.width, testWidth, "nameLabel should have proper width")
         
-        let newTestLabel = nearbyPoint.label.subviews.first as! UILabel
+        let newTestLabel = nearbyPoint.label.subviews.first as! UITextView
         XCTAssertEqual(newTestLabel, viewController.nameLabel, "nearbyPoint's label should have the text label added to its subviews")
         XCTAssertFalse(viewController.nameLabel.hidden, "The text label should not be hidden")
     }
@@ -202,7 +202,7 @@ class NearbyPointsViewControllerTests: XCTestCase {
         XCTAssertEqual(viewController, delegate, "ViewController should be location manager's delegate")
     }
     
-    func testViewControllerCallsNearbyPointManagerToDetermineIfPointsAreInLineOfSight() {
+    func testViewControllerCallsNearbyPointManagerToDetermineIfRecentlyRetrievedPointsAreInLineOfSight() {
         viewController.nearbyPointsManager = mockManager
         viewController.assembledNearbyPointsWithoutAltitude()
         
@@ -233,7 +233,7 @@ class NearbyPointsViewControllerTests: XCTestCase {
         
         let nameLabel = viewController.nameLabel
         
-        let testLabel = UILabel()
+        let testLabel = UITextView()
         testLabel.text = "Holts Ledge"
         testLabel.sizeToFit()
         let testWidth = testLabel.frame.width
@@ -287,6 +287,13 @@ class NearbyPointsViewControllerTests: XCTestCase {
         mockViewController.didReceiveLongPressOnView(UILongPressGestureRecognizer())
         
         XCTAssertTrue(mockViewController.receivedLongPress, "The viewController's motionManager should be active")
+    }
+    
+    func testPrepareForNewPointsAtLocationConfiguresItselfAndNearbyPointManagerCorrectly() {
+        viewController.prepareForNewPointsAtLocation(testPoints.Holts.location)
+        
+        XCTAssertEqual(viewController.nearbyPointsInLineOfSight!, [NearbyPoint](), "NearbyPointsInLineOfSight should be empty NearbyPoint array")
+        XCTAssertEqual(viewController.nearbyPointsManager.currentLocation!, testPoints.Holts.location, "ViewController should be NearbyPointsManager's current location")
     }
     
 }

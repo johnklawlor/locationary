@@ -7,18 +7,18 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>2344AE44-222F-49EF-8AB9-A18B8D5F7489</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Locationary</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>D7E4EA0D25397ED06E987370649882E3D60ED1B2</key>
 		<string>https://gist.github.com/22eee94485bce5b3a6ea.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Locationary.xcodeproj/project.xcworkspace</string>
+	<string>Locationary.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>D7E4EA0D25397ED06E987370649882E3D60ED1B2</key>
-		<string>../../../../../../projects/gdal_scripts</string>
+		<string>../../../../../../../../../../../../../../../../../../../../../projects/gdal_scripts</string>
 	</dict>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>

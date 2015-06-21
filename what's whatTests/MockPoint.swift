@@ -6,8 +6,12 @@
 //  Copyright (c) 2015 johnnylaw. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class MockPoint: NearbyPoint {
+    var askedToGetElevationData = false
     
+    init(nearbyPoint: NearbyPoint) {
+        super.init(aName: nearbyPoint.name, aLocation: nearbyPoint.location)
+    }
 }

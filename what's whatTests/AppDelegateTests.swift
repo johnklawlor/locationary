@@ -53,8 +53,7 @@ class AppDelegateTests: XCTestCase {
     }
     
     func testAppDelegateSetsViewControllersDeviceConstants() {
-        XCTAssertNotNil(viewController.DeviceConstants.HFOV, "HFOV should be set")
-        XCTAssertNotNil(viewController.DeviceConstants.VFOV, "VFOV should be set")
+        XCTAssertNotNil(viewController.DeviceConstants.fieldOfVision, "FieldOfVision should be set")
         XCTAssertNotNil(viewController.DeviceConstants.PhoneWidth, "PhoneWidth should be set")
         XCTAssertNotNil(viewController.DeviceConstants.PhoneHeight, "PhoneHeight should be set")
     }

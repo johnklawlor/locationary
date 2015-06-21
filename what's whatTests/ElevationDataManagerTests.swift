@@ -86,5 +86,17 @@ class ElevationDataManagerTests: XCTestCase {
         
         XCTAssertFalse(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Washington should not be in the line of sight of Cliff St.")
     }
+    
+    func testElevationDataManagerReturnsProperLineOfSightDataForMapleLookingAtSmarts() {
+        
+        let currentLocation = testPoints.MapleAndWilley
+        let nearbyPoint = testPoints.Smarts
+        mockManager.currentLocation = currentLocation.location
+        nearbyPoint.distanceFromCurrentLocation = currentLocation.location.distanceFromLocation(nearbyPoint.location)
+        
+        elevationDataManager.getElevationForPoint(nearbyPoint)
+        
+        XCTAssertTrue(mockManager.elevationDataForPointToUpdate.inLineOfSight, "Maple should see Smarts")
+    }
 
 }

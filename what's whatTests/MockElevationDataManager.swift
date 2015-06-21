@@ -10,10 +10,13 @@ import UIKit
 
 class MockElevationDataManager: ElevationDataManager {
     
-    var askedToGetElevationData: Bool = false
+    var numberOfTimesAskedToGetElevationData = 0
 
     override func getElevationForPoint(nearbyPoint: NearbyPoint) {
-        askedToGetElevationData = true
+        numberOfTimesAskedToGetElevationData += 1
+        if let mockPoint = nearbyPoint as? MockPoint {
+            mockPoint.askedToGetElevationData = true
+        }
     }
     
 }

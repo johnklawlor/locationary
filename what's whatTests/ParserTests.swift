@@ -12,6 +12,7 @@ import CoreLocation
 
 struct Strings {
     static let jsonFromCommunicator = "{\"totalResultsCount\":25,\"geonames\":[{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-72.03231\",\"fcodeName\":\"mountain\",\"toponymName\":\"Smarts Mountain\",\"fcl\":\"T\",\"name\":\"Smarts Mountain\",\"fcode\":\"MT\",\"geonameId\":5092739,\"lat\":\"43.82563\",\"adminName1\":\"New Hampshire\",\"population\":0},{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-71.9148\",\"fcodeName\":\"mountain\",\"toponymName\":\"Mount Cardigan\",\"fcl\":\"T\",\"name\":\"Mount Cardigan\",\"fcode\":\"MT\",\"geonameId\":5084213,\"lat\":\"43.64979\",\"adminName1\":\"New Hampshire\",\"population\":0}]}"
+    static let jsonFromCommunicatorWithMoreThan2000Points = "{\"totalResultsCount\":3500,\"geonames\":[{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-72.03231\",\"fcodeName\":\"mountain\",\"toponymName\":\"Smarts Mountain\",\"fcl\":\"T\",\"name\":\"Smarts Mountain\",\"fcode\":\"MT\",\"geonameId\":5092739,\"lat\":\"43.82563\",\"adminName1\":\"New Hampshire\",\"population\":0},{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-71.9148\",\"fcodeName\":\"mountain\",\"toponymName\":\"Mount Cardigan\",\"fcl\":\"T\",\"name\":\"Mount Cardigan\",\"fcode\":\"MT\",\"geonameId\":5084213,\"lat\":\"43.64979\",\"adminName1\":\"New Hampshire\",\"population\":0}]}"
     static let badLatitude = "{\"totalResultsCount\":25,\"geonames\":[{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-72.03231\",\"fcodeName\":\"mountain\",\"toponymName\":\"Smarts Mountain\",\"fcl\":\"T\",\"name\":\"Smarts Mountain\",\"fcode\":\"MT\",\"geonameId\":5092739,\"lat\":\"\",\"adminName1\":\"New Hampshire\",\"population\":0},{\"countryId\":\"6252001\",\"adminCode1\":\"NH\",\"countryName\":\"United States\",\"fclName\":\"mountain,hill,rock,... \",\"countryCode\":\"US\",\"lng\":\"-71.9148\",\"fcodeName\":\"mountain\",\"toponymName\":\"Mount Cardigan\",\"fcl\":\"T\",\"name\":\"Mount Cardigan\",\"fcode\":\"MT\",\"geonameId\":5084213,\"lat\":\"43.64979\",\"adminName1\":\"New Hampshire\",\"population\":0}]}"
     static let NotJson = "Not JSON"
     
@@ -49,10 +50,15 @@ func == (lhs: [CLLocation], rhs: [CLLocation]) -> Bool {
 class ParserTests: XCTestCase {
     
     var parser = GeonamesJSONParser()
+    var manager = NearbyPointsManager(delegate: NearbyPointsViewController())
+    var geonamesCommunicator = MockGeonamesCommunicator()
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+
+        manager.communicator = geonamesCommunicator
+        parser.geonamesCommunicatorProvider = manager
     }
     
     override func tearDown() {
@@ -103,5 +109,20 @@ class ParserTests: XCTestCase {
     func testBadLatitudeDoesNotAddPointToArray() {
         let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
         XCTAssertEqual(nearbyPoints!.count, 1, "Parser should add only location with good lats and longs")
+    }
+    
+    func testParserMakesSecondRequestIfFirstResponseReturnsMoreThan2000Points() {
+        parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicatorWithMoreThan2000Points)
+        let startRowsCount = geonamesCommunicator.startRowCount
+        XCTAssertEqual(startRowsCount, 1, "The GeonamesCommunicator's startRowCount should have been incremented by 1")
+        XCTAssertTrue(geonamesCommunicator.askedToFetchedJSON, "GeonamesCommunicator should have been asked to fetch JSON data")
+    }
+    
+    func testParserDoesNOTMakeRequestIfAlreadyRetrievedAllThePointsWithinBoundingBox() {
+        geonamesCommunicator.startRowCount = 1
+        parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicatorWithMoreThan2000Points)
+        let startRowsCount = geonamesCommunicator.startRowCount
+        XCTAssertEqual(startRowsCount, 1, "The GeonamesCommunicator's startRowCount should have been incremented by 1")
+        XCTAssertFalse(geonamesCommunicator.askedToFetchedJSON, "GeonamesCommunicator should NOT have been asked to fetch JSON data")
     }
 }

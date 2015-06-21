@@ -86,9 +86,25 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     int iteration = 1;
     
     double samplePointX;
-    int samplePointY;
+    double samplePointY;
     
-    for (samplePointX = currentPixelX+increment; abs((int)samplePointX - (int)nearbyPointPixelX) > 0; samplePointX += increment) {
+    samplePointX = currentPixelX+increment;
+    
+//    printf("samplePointX: %f \n", samplePointX);
+//    printf("nearbyPointX: %f \n", nearbyPointPixelX);
+//    printf("increment: %f \n", increment);
+    
+    for (samplePointX = currentPixelX+increment; 1 < 2; samplePointX += increment) {
+        if (currentPixelX < nearbyPointPixelX) {
+            if (samplePointX+increment > nearbyPointPixelX) {
+                break;
+            }
+        } else {
+            if (samplePointX+increment < nearbyPointPixelX) {
+                break;
+            }
+        }
+        
         samplePointY = a * samplePointX + b;
         
         if( GDALRasterIO( elevationBand, GF_Read, samplePointX, samplePointY, 1, 1, adfPixel, 1, 1, GDT_CFloat64, 0, 0) == CE_None ) {

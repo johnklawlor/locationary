@@ -22,7 +22,13 @@ struct ParserConstants {
     static let Error_JSONIsEmpty = NSError(domain: "Attempted to parse empty JSON string", code: 2, userInfo: nil)
 }
 
+protocol GeonamesCommunicatorProvider {
+    var communicator: GeonamesCommunicator? { get }
+}
+
 class GeonamesJSONParser: Equatable {
+    
+    var geonamesCommunicatorProvider: GeonamesCommunicatorProvider?
     
     init() {
         
@@ -40,8 +46,26 @@ class GeonamesJSONParser: Equatable {
                 return (nil, jsonEncodingError)
             }
             if let jsonDictionary = serialzedJSONDictionary {
-//                println("jsonDictionary is \(jsonDictionary)")
                 var pointsArray = [NearbyPoint]()
+                
+                if let totalResultsCount = jsonDictionary.objectForKey("totalResultsCount") as? NSInteger {
+                    if geonamesCommunicatorProvider != nil {
+                        if geonamesCommunicatorProvider!.communicator != nil {
+                            geonamesCommunicatorProvider!.communicator!.startRowCount += 1
+                        } else {
+                            println("communicator is nil")
+                        }
+                    } else {
+                        println("provider is nil")
+                    }
+                    let totalPointsRetrievedAlready = geonamesCommunicatorProvider!.communicator!.startRow
+                    if totalResultsCount > totalPointsRetrievedAlready {
+                        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                            self.geonamesCommunicatorProvider!.communicator!.fetchJSONData()
+                        }
+                    }
+                }
+
                 if let geonames = jsonDictionary.objectForKey("geonames") as? NSArray {
                     for aNearbyPoint in geonames {
                         let name = aNearbyPoint.objectForKey("name") as! String

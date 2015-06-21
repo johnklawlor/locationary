@@ -18,6 +18,10 @@ func == (lhs: NearbyPoint, rhs: NearbyPoint) -> Bool {
     return false
 }
 
+func convertToFeet(distanceInMeters: CLLocationDistance) -> Double {
+    return distanceInMeters * 3.2808399
+}
+
 protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
@@ -43,6 +47,10 @@ class NearbyPoint: NSObject, Equatable, Printable {
     var angleToCurrentLocation: Double!
     var angleToHorizon: Double!
     
+    var distanceFromCurrentLocationInMiles: Double {
+        return convertToFeet(distanceFromCurrentLocation)/5280
+    }
+    
     // TEST
     var labelTapDelegate: LabelTapDelegate?
     // TEST
@@ -57,5 +65,29 @@ class NearbyPoint: NSObject, Equatable, Printable {
     
     func showName(sender: UIButton!) {
         labelTapDelegate?.didReceiveTapForNearbyPoint(self)
+    }
+}
+
+extension CLLocation {
+    var altitudeInFeet: CLLocationDistance {
+        return convertToFeet(self.altitude)
+    }
+    
+    var formattedCoordinate: String {
+        return self.coordinate.latitude.formatLocation() + ", " + self.coordinate.longitude.formatLocation()
+    }
+}
+
+extension Double {
+    func formatLocation() -> String {
+        return NSString(format: "%0.6f", self) as String
+    }
+    
+    func formatFeet() -> String {
+        return NSString(format: "%0.0f", self) as String
+    }
+    
+    func formatMiles() -> String {
+        return NSString(format: "%0.1f", self) as String
     }
 }

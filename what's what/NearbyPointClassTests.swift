@@ -26,11 +26,12 @@ class TestPoints {
     var Killington = NearbyPoint(aName: "Killington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.604598, -72.819852), altitude: 1272, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     var Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     var Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    var MockHolts = MockPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    var GoosePond = MockPoint(aName: "Goose Pond", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(
+    var MockHolts = NearbyPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
+    var GoosePond = NearbyPoint(aName: "Goose Pond", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(
         43.736985, -72.105721), altitude: 280, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
-    var MountWashington = MockPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270490,-71.303460), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
-    var CliffSt = MockPoint(aName: "Cliff St", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.717368, -72.306219), altitude: 176, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var MountWashington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270490,-71.303460), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var CliffSt = NearbyPoint(aName: "Cliff St", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.717368, -72.306219), altitude: 176, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var MapleAndWilley = NearbyPoint(aName: "Maple And Willey", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.730667, -72.296084), altitude: 259, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
 }
 
 struct Altitudes {

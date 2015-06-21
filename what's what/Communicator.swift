@@ -11,7 +11,6 @@ import CoreLocation
 
 struct CommunicatorConstants {
     static let HTTPResponseError = "GeonamesCommunicatorErrorDoman"
-    static let DistanceGeonamesPointsMustFallWithin: Double = 100.0
     static let Error_NoURLToFetch = NSError(domain: "NoURLToFetch-CurrentLocationProbablyNotSet", code: 1, userInfo: nil)
 }
 
@@ -31,8 +30,11 @@ class Communicator: NSObject, NSURLConnectionDataDelegate {
     var fetchingConnection: NSURLConnection?
     var receivedData: NSMutableData?
     
+    var connectionQueue = NSOperationQueue()
+    
     func fetchJSONData() {
         if let urlToFetch = fetchingUrl {
+            println("requesting at \(urlToFetch)")
             fetchingRequest = NSURLRequest(URL: fetchingUrl!)
             launchConnectionForRequest(fetchingRequest!)
         } else {
@@ -43,7 +45,10 @@ class Communicator: NSObject, NSURLConnectionDataDelegate {
     func launchConnectionForRequest(request: NSURLRequest) {
         fetchingConnection?.cancel()
         println("launching connection")
-        fetchingConnection = NSURLConnection(request: request, delegate: self)
+//        fetchingConnection = NSURLConnection(request: request, delegate: self)
+        fetchingConnection = NSURLConnection(request: request, delegate: self, startImmediately: false)
+        fetchingConnection?.setDelegateQueue(connectionQueue)
+        fetchingConnection?.start()
     }
     
     func connection(connection: NSURLConnection, didFailWithError error: NSError) {
@@ -58,9 +63,9 @@ class Communicator: NSObject, NSURLConnectionDataDelegate {
         if let httpResponse = response as? NSHTTPURLResponse {
             if httpResponse.statusCode != 200 {
                 let error = NSError(domain: CommunicatorConstants.HTTPResponseError, code: httpResponse.statusCode, userInfo: nil)
-                communicatorDelegate?.fetchingFailedWithError(error)
+                self.communicatorDelegate?.fetchingFailedWithError(error)
             } else {
-                receivedData = NSMutableData()
+                self.receivedData = NSMutableData()
             }
         }
     }
@@ -74,7 +79,9 @@ class Communicator: NSObject, NSURLConnectionDataDelegate {
         if receivedData != nil {
             println("passing json to delegate")
             let jsonString = NSString(data: receivedData!, encoding: NSUTF8StringEncoding)!
-            communicatorDelegate?.receivedJSON(jsonString as String)
+            NSOperationQueue.mainQueue().addOperationWithBlock() {
+                communicatorDelegate?.receivedJSON(jsonString as String)
+            }
         } else {
             println("response data is nil")
         }
