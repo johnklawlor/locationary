@@ -26,7 +26,7 @@ class ElevationDataManagerTests: XCTestCase {
         elevationDataManager.dataDelegate = mockManager
         elevationDataManager.currentLocationDelegate = mockManager
         
-        elevationDataManager.gdalManager = GDALWrapper()
+        elevationDataManager.gdalManager = TheGDALWrapper()
         println("elevationFilename: \(ManagerConstants.ElevationDataFilename)")
         elevationDataManager.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
     }

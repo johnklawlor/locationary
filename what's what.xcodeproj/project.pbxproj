@@ -13,8 +13,6 @@
 		131081181B3775A4002B904A /* libproj_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 131081161B3775A4002B904A /* libproj_phone.a */; };
 		1310811B1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
 		1310811C1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
-		131081201B37795F002B904A /* libgdal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1310811E1B37795F002B904A /* libgdal.a */; };
-		131081211B37795F002B904A /* libproj.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1310811F1B37795F002B904A /* libproj.a */; };
 		131081281B377B25002B904A /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 131081261B377B25002B904A /* gdalLocating.cpp */; };
 		131081291B377B25002B904A /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 131081261B377B25002B904A /* gdalLocating.cpp */; };
 		1310812B1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */; };
@@ -157,8 +155,6 @@
 		131081191B377619002B904A /* ObjC+GDAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ObjC+GDAL.h"; sourceTree = "<group>"; };
 		1310811A1B377619002B904A /* ObjC+GDAL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ObjC+GDAL.mm"; sourceTree = "<group>"; };
 		1310811D1B377656002B904A /* CNearbyPointElevationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNearbyPointElevationData.h; sourceTree = "<group>"; };
-		1310811E1B37795F002B904A /* libgdal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libgdal.a; sourceTree = "<group>"; };
-		1310811F1B37795F002B904A /* libproj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libproj.a; sourceTree = "<group>"; };
 		131081261B377B25002B904A /* gdalLocating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gdalLocating.cpp; sourceTree = "<group>"; };
 		131081271B377B25002B904A /* gdalLocating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdalLocating.h; sourceTree = "<group>"; };
 		1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsManagerTwo.swift; sourceTree = "<group>"; };
@@ -217,8 +213,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				131081201B37795F002B904A /* libgdal.a in Frameworks */,
-				131081211B37795F002B904A /* libproj.a in Frameworks */,
 				131081171B3775A4002B904A /* libgdal_phone.a in Frameworks */,
 				131081181B3775A4002B904A /* libproj_phone.a in Frameworks */,
 				131A70C81B1E324C00662FA8 /* libstdc++.dylib in Frameworks */,
@@ -329,8 +323,6 @@
 		135237531ABA209E00D33887 = {
 			isa = PBXGroup;
 			children = (
-				1310811E1B37795F002B904A /* libgdal.a */,
-				1310811F1B37795F002B904A /* libproj.a */,
 				131081151B3775A4002B904A /* libgdal_phone.a */,
 				131081161B3775A4002B904A /* libproj_phone.a */,
 				1345C4A71AEB08750041D182 /* currentLocation.gpx */,
@@ -664,6 +656,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -699,6 +692,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

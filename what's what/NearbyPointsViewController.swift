@@ -349,7 +349,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         // TEST
         
-        elevationDataManager.gdalManager = GDALWrapper()
+        elevationDataManager.gdalManager = TheGDALWrapper()
         elevationDataManager.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
         
         // TEST

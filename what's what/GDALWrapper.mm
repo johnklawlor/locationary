@@ -10,7 +10,7 @@
 
 #import "ObjC+GDAL.h"
 
-@implementation GDALWrapper {
+@implementation TheGDALWrapper {
     ObjCGDAL *gdalGetter;
 }
 

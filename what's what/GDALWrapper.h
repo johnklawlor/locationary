@@ -11,7 +11,7 @@
 
 #include "CNearbyPointElevationData.h"
 
-@interface GDALWrapper : NSObject
+@interface TheGDALWrapper : NSObject
 
 - (void) openGDALFile:(NSString*) gdalFilename;
 

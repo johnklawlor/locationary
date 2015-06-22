@@ -29,7 +29,7 @@ class ElevationDataManager {
     weak var dataDelegate: ElevationDataDelegate?
     weak var currentLocationDelegate: CurrentLocationDelegate?
     
-    var gdalManager: GDALWrapper?
+    var gdalManager: TheGDALWrapper?
     
     func getElevationForPoint(nearbyPoint: NearbyPoint) {
         
