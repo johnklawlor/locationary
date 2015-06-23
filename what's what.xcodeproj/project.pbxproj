@@ -19,6 +19,8 @@
 		1310812C1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */; };
 		1310812E1B377C5A002B904A /* MockDoubleTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812D1B377C5A002B904A /* MockDoubleTap.swift */; };
 		1310812F1B377C5A002B904A /* MockDoubleTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812D1B377C5A002B904A /* MockDoubleTap.swift */; };
+		131081351B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */; };
+		131081361B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */; };
 		131A704A1B1E273200662FA8 /* ElevationDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131A70491B1E273200662FA8 /* ElevationDataManagerTests.swift */; };
 		131A70BC1B1E320900662FA8 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70BB1B1E320900662FA8 /* libxml2.dylib */; };
 		131A70BE1B1E321F00662FA8 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70BD1B1E321F00662FA8 /* libc++.dylib */; };
@@ -159,6 +161,7 @@
 		131081271B377B25002B904A /* gdalLocating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdalLocating.h; sourceTree = "<group>"; };
 		1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsManagerTwo.swift; sourceTree = "<group>"; };
 		1310812D1B377C5A002B904A /* MockDoubleTap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDoubleTap.swift; sourceTree = "<group>"; };
+		131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = us_150max_bounding_compressed_tiled.tif; path = ../us_150max_bounding_compressed_tiled.tif; sourceTree = "<group>"; };
 		131A70491B1E273200662FA8 /* ElevationDataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElevationDataManagerTests.swift; sourceTree = "<group>"; };
 		131A70B01B1E2EF900662FA8 /* gdal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gdal-Bridging-Header.h"; sourceTree = "<group>"; };
 		131A70BB1B1E320900662FA8 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
@@ -326,6 +329,7 @@
 				131081151B3775A4002B904A /* libgdal_phone.a */,
 				131081161B3775A4002B904A /* libproj_phone.a */,
 				1345C4A71AEB08750041D182 /* currentLocation.gpx */,
+				131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */,
 				1352375E1ABA209F00D33887 /* what's what */,
 				135237741ABA20A100D33887 /* what's whatTests */,
 				1352375D1ABA209F00D33887 /* Products */,
@@ -506,6 +510,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1345C4A81AEB08750041D182 /* currentLocation.gpx in Resources */,
+				131081351B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */,
 				135237671ABA20A000D33887 /* Main.storyboard in Resources */,
 				1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */,
 				135237691ABA20A000D33887 /* Images.xcassets in Resources */,
@@ -516,6 +521,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				131081361B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,6 +18,7 @@ struct Constants {
     let MaxVideoZoom: CGFloat
     let PhoneWidth: CGFloat
     let PhoneHeight: CGFloat
+    let MarginForFieldOfVision: CGFloat = 20.0
     
     init(theFieldOfVision: Float, maxZoom: CGFloat, phoneWidth: CGFloat, phoneHeight: CGFloat) {
         fieldOfVision = CGFloat(theFieldOfVision)
@@ -35,7 +36,11 @@ struct DistanceConstants {
 }
 
 struct VideoConstants {
-    static let PreferredMaxVideoZoom: CGFloat = 4.0
+    static let PreferredMaxVideoZoom: CGFloat = 5.0
+}
+
+struct HeadingConstants {
+    static let YAxisCorrection: Double = 0.0
 }
 
 class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, NearbyPointsManagerDelegate, LabelTapDelegate, UIGestureRecognizerDelegate {
@@ -140,31 +145,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             }
         default: break
         }
-        
-//        switch gesture.state {
-//        case .Began:
-//            let coordinateOfPinch = gesture.locationInView(self.view)
-//        case .Changed:
-//            fallthrough
-//        case .Ended:
-//            let scale = gesture.scale > 1.0 ? gesture.scale : -gesture.scale
-//            println("scale: \(scale)")
-//            
-//            nearbyPointsInLineOfSight!.sort({$0.label.frame.origin.x < $1.label.frame.origin.x})
-//            
-//            let count = nearbyPointsInLineOfSight!.count/2
-//            
-//            for (index,point) in enumerate(nearbyPointsInLineOfSight!) {
-//                var newIndex = index - count
-//                if count % 2 == 0 && index >= 0 {
-//                    newIndex += 1
-//                }
-//                point.label.frame.origin = CGPoint(x: point.label.frame.origin.x + scale * CGFloat(newIndex), y: point.label.frame.origin.y)
-//            }
-//            
-//            gesture.scale = 1.0
-//        default: break
-//        }
     }
     
     override func viewDidLoad() {
@@ -215,52 +195,56 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             
             let zData = motionData.acceleration.z
             let zDelta = abs(zData - self.currentZ)
+            self.currentZ = zData
             let heading = self.locationManager.heading.trueHeading
             let headingDelta = abs(heading - self.currentHeading!)
             self.currentHeading = heading
             
             let yData = motionData.acceleration.y
-            let correction = yData * -67
+            let correction = yData * HeadingConstants.YAxisCorrection
             let correctedHeading = locationManager.heading.trueHeading - correction;
             
-            if abs(zData - self.currentZ) > 0.01 {
-                self.currentZ = zData
-                if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(correctedHeading) {
-                    for nearbyPoint in nearbyPointsInLineOfSight! {
-                        let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
-                        let phoneAngle = CGFloat(90 * zData)
-                        let yDifference = labelAngle - phoneAngle
-                        let fieldOfVisionHalved = CGFloat(self.DeviceConstants.fieldOfVision/2)
+            if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(correctedHeading) {
+                for nearbyPoint in nearbyPointsInLineOfSight! {
+                    let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
+                    let phoneAngle = CGFloat(90 * zData)
+                    let yDifference = labelAngle - phoneAngle
+                    let fieldOfVisionHalved = self.DeviceConstants.fieldOfVision/2.0
 
-                        let yMultiplier = (yDifference+fieldOfVisionHalved)/(fieldOfVisionHalved*2)
-                        
-                        var fuzz = CGFloat(arc4random_uniform(3))
-                        fuzz -= 1
-                        
-                        let yPosition = (self.DeviceConstants.PhoneWidth - yMultiplier * self.DeviceConstants.PhoneWidth) - (NearbyPointConstants.LabelFrameSize/2.0) + fuzz
-                        var xDifference = CGFloat(deviceHeading - nearbyPoint.angleToCurrentLocation)
-                        
-                        if abs(xDifference) > 308 {
-                            if xDifference < 0 {
-                                xDifference = CGFloat(deviceHeading + (360.0 - nearbyPoint.angleToCurrentLocation))
-                            } else {
-                                xDifference = CGFloat((deviceHeading - 360.0) - nearbyPoint.angleToCurrentLocation)
-                            }
-                        }
-                
-                        let xMultiplier = CGFloat((xDifference + fieldOfVisionHalved)/(fieldOfVisionHalved*2))
-                        let xPosition = xMultiplier * self.DeviceConstants.PhoneHeight
-                        nearbyPoint.label.hidden = false
-                        
-                        let animationDuration = 0.5/(pow(zDelta+headingDelta, 0.5))
-                        UIView.animateWithDuration(animationDuration,
-                            delay: 0,
-                            options: UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.AllowUserInteraction,
-                            animations: {
-                                nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
-                            },
-                            completion: nil)
+                    let yMultiplier = (yDifference+fieldOfVisionHalved)/(fieldOfVisionHalved*2)
+                    
+                    var fuzz = CGFloat(arc4random_uniform(3))
+                    fuzz -= 1
+                    
+                    let yPosition = (self.DeviceConstants.PhoneWidth - yMultiplier * self.DeviceConstants.PhoneWidth) - (NearbyPointConstants.LabelFrameSize/2.0) + fuzz
+                    var xDifference = CGFloat(deviceHeading - nearbyPoint.angleToCurrentLocation)
+                    
+                    let geographicalAngleOutsideFieldOfVision = 360.0-DeviceConstants.fieldOfVision
+                    if xDifference < -geographicalAngleOutsideFieldOfVision {
+                        xDifference += 360.0
+                    } else if xDifference > geographicalAngleOutsideFieldOfVision {
+                        xDifference -= 360.0
                     }
+                    
+                    if xDifference < -DeviceConstants.fieldOfVision - DeviceConstants.MarginForFieldOfVision || xDifference > DeviceConstants.fieldOfVision + DeviceConstants.MarginForFieldOfVision {
+                        nearbyPoint.label.hidden = true
+                        continue
+                    } else {
+                        nearbyPoint.label.hidden = false
+                    }
+            
+                    let xMultiplier = CGFloat((xDifference + fieldOfVisionHalved)/(fieldOfVisionHalved*2))
+                    let xPosition = xMultiplier * self.DeviceConstants.PhoneHeight
+                    nearbyPoint.label.hidden = false
+                    
+                    let animationDuration = 0.20+0.5/(pow(zDelta+headingDelta, 0.5))
+                    UIView.animateWithDuration(animationDuration,
+                        delay: 0,
+                        options: UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.AllowUserInteraction,
+                        animations: {
+                            nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
+                        },
+                        completion: nil)
                 }
             }
         }
@@ -457,14 +441,12 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         let locationInView = gesture.locationInView(self.view)
         var nearbyPointsToExpand = [UIView]()
         
-        println("locationInView: \(locationInView)")
         if nearbyPointsInLineOfSight != nil {
             switch gesture.state {
             case .Ended:
                 motionManager.stopAccelerometerUpdates()
                 for nearbyPoint in nearbyPointsInLineOfSight! {
                     let labelButton = nearbyPoint.label
-                    println("labelButton frame's origin: \(labelButton.frame.origin)")
                     let labelButtonX = labelButton.frame.origin.x
                     let deltaX = labelButtonX - locationInView.x
                     if abs(deltaX) < 50.0 {
@@ -472,7 +454,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                     }
                 }
                 
-                println("nearbyPointsToExpand: \(nearbyPointsToExpand.count)")
                 var numberOfPointsToExpand = nearbyPointsToExpand.count
                 
                 if numberOfPointsToExpand > 1 {
