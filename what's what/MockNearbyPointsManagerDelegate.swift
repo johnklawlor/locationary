@@ -14,6 +14,7 @@ class MockNearbyPointsManagerDelegate: NearbyPointsManagerDelegate {
     var successfullyAssembledNearbyPointsArray: Bool! = false
     var updatedNearbyPoints = [NearbyPoint]()
     var retrievedPoint: NearbyPoint?
+    var didCompleteFullRequest: Bool = false
     
     func fetchingFailedWithError(error: NSError) {
         failError = error

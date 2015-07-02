@@ -35,6 +35,7 @@ struct UIConstants {
     static let NameLabelEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     static let LabelFont = UIFont(name: "Helvetica Neue", size: 18.0)
     static let LabelColor = UIColor.whiteColor()
+    static let ProgressIndicatorLabelText = "Locating nearby points"
 }
 
 struct DistanceConstants {
@@ -54,6 +55,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var activityIndicatorView: UIView?
     var didCompleteFullRequest: Bool = false
+	var didResignDuringRequest: Bool = false
     
     var motionQueue = NSOperationQueue.mainQueue()
     
@@ -62,7 +64,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     var zoomFactor: CGFloat = 1.0
     
     var nearbyPointsManager: NearbyPointsManager!
-    var recentlyRetrievedFromLocation: CLLocation?
     var nearbyPointsInLineOfSight: [NearbyPoint]?
     var nearbyPointsToExpand = [NearbyPoint]()
     var locationOfPanGesture = CGPoint()
@@ -133,8 +134,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         self.view.layer.addSublayer(captureManager?.previewLayer)
         
         captureManager?.captureSession?.startRunning()
-        
-        progressBarDisplayer("Locating nearby points")
         
         // TEST
         nameLabel.hidden = true
@@ -247,25 +246,32 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             if let location = locations.last as? CLLocation {
                 if nearbyPointsManager != nil {
                     if let pointsManagerCurrentLocation = nearbyPointsManager.currentLocation {
-                        if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 ||
-                            !didCompleteFullRequest {
-                            prepareForNewPointsAtLocation(location)
-                            nearbyPointsManager.getGeonamesJSONData()
+                        if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 {
+                            println("new location greater than 1000 meters")
+							prepareForNewPointsAtLocation(location)
+							nearbyPointsManager.getGeonamesJSONData()
                         }
                         // TEST
                             
                         else {
-                            println("less than 1000 meters")
-                            if recentlyRetrievedFromLocation == nil ||
-                                location.timestamp.timeIntervalSinceDate(recentlyRetrievedFromLocation!.timestamp) > 30.0 {
-                                recentlyRetrievedFromLocation = location
-                                removeCurrentNearbyPointsOnScreen()
-                                nearbyPointsManager.determineIfEachOfAllNearbyPointsIsInLineOfSight()
-                            }
+							println("less than 1000 meters")
+							
+							if didResignDuringRequest {
+                                println("didResignDuringRequest")
+                                showProgressIndicator()
+								nearbyPointsManager.getGeonamesJSONData()
+							} else {
+                                println("superfluous location updates from phone's gps")
+								if location.timestamp.timeIntervalSinceDate(pointsManagerCurrentLocation.timestamp) > 30.0 {
+									removeCurrentNearbyPointsOnScreen()
+									nearbyPointsManager.determineIfEachOfAllNearbyPointsIsInLineOfSight()
+								}
+							}
                         }
 
                         // TEST
                     } else {
+                        println("first request")
                         prepareForNewPointsAtLocation(location)
                         nearbyPointsManager.getGeonamesJSONData()
                     }
@@ -299,9 +305,9 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func prepareForNewPointsAtLocation(location: CLLocation!) {
         
-        didCompleteFullRequest = false
+        showProgressIndicator()
         
-        recentlyRetrievedFromLocation = location
+        didCompleteFullRequest = false
         
         removeCurrentNearbyPointsOnScreen()
         
@@ -340,6 +346,8 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         } else{
             println("we lost the nearbyPoints manager")
         }
+        
+        removeProgressIndicator()
     }
     
     func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
@@ -362,8 +370,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         self.nearbyPointsInLineOfSight?.append(nearbyPoint)
         
         startMotionManagerUpdates()
-        
-        activityIndicatorView?.removeFromSuperview()
         
         // TEST
     }
@@ -575,8 +581,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 let xDelta = 2.0 * (locationInView.x - locationOfPanGesture.x)
                 locationOfPanGesture = locationInView
                 
-                println("\(xDelta)")
-                
                 if numberOfPointsToExpand > 1 {
                     numberOfPointsToExpand -= 1
                     
@@ -651,22 +655,29 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         MKMapItem.openMapsWithItems(mapItems, launchOptions: options)
     }
     
-    func progressBarDisplayer(message: String ) {
-        var label = UILabel(frame: CGRect(x: 50, y: 0, width: 200, height: 50))
-        label.text = message
-        label.textColor = UIConstants.LabelColor
-        activityIndicatorView = UIView(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
-        activityIndicatorView!.center = CGPoint(x: DeviceConstants.PhoneHeight/2.0, y: DeviceConstants.PhoneWidth/2.0 - DeviceConstants.PhoneWidth/20.0)
-        activityIndicatorView!.layer.cornerRadius = 15
-        activityIndicatorView!.backgroundColor = UIConstants.LabelBackgroundColor
-        
-        var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-        activityIndicator.startAnimating()
-        activityIndicatorView!.addSubview(activityIndicator)
-        
-        activityIndicatorView!.addSubview(label)
-        view.addSubview(activityIndicatorView!)
+    func removeProgressIndicator() {
+        activityIndicatorView?.removeFromSuperview()
+        activityIndicatorView = nil
+    }
+    
+    func showProgressIndicator() {
+        if activityIndicatorView == nil {
+            var label = UILabel(frame: CGRect(x: 50, y: 0, width: 200, height: 50))
+            label.text = UIConstants.ProgressIndicatorLabelText
+            label.textColor = UIConstants.LabelColor
+            activityIndicatorView = UIView(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
+            activityIndicatorView!.center = CGPoint(x: DeviceConstants.PhoneHeight/2.0, y: DeviceConstants.PhoneWidth/2.0 - DeviceConstants.PhoneWidth/20.0)
+            activityIndicatorView!.layer.cornerRadius = 15
+            activityIndicatorView!.backgroundColor = UIConstants.LabelBackgroundColor
+            
+            var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+            activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+            activityIndicator.startAnimating()
+            activityIndicatorView!.addSubview(activityIndicator)
+            
+            activityIndicatorView!.addSubview(label)
+            view.addSubview(activityIndicatorView!)
+        }
     }
     
     func resetVideoZoomValues(){

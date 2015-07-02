@@ -83,7 +83,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let viewController = nearbyPointsViewController {
             
-            if nearbyPointsViewController?.nearbyPointsInLineOfSight != nil {
+            viewController.removeProgressIndicator()
+		
+            viewController.didResignDuringRequest = !viewController.didCompleteFullRequest
+            
+            if viewController.nearbyPointsInLineOfSight != nil {
                 viewController.nearbyPointsInLineOfSight! += viewController.nearbyPointsToExpand
                 viewController.nearbyPointsToExpand = [NearbyPoint]()
                 for nearbyPoint in viewController.nearbyPointsInLineOfSight! {
@@ -135,4 +139,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-

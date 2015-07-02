@@ -67,29 +67,29 @@ class ParserTests: XCTestCase {
     }
 
     func testParserReturnsNilIfPassedAnEmptyString() {
-        let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON("")
+        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON("")
         XCTAssertTrue(nearbyPoints == nil, "Parser buildAndReturnArrayFromJSON should return nil if passed an empty string")
     }
 
     func testParserReturnsErrorIfPassedAnEmptyString() {
-        let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON("")
+        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON("")
         XCTAssertNotNil(error, "Parser buildAndReturnArrayFromJSON should return error if passed an empty string")
     }
     
     func testParserReturnsErrorIfPassedNotJSONString() {
-        let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(Strings.NotJson)
+        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.NotJson)
         XCTAssertNotNil(error, "Parser should return error if not passed proper JSON")
     }
 
     func testParserReturnsDictionaryWithTwoObjects() {
-        let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
+        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
         XCTAssertNil(error, "Parser should not return an error if passed proper JSON")
         XCTAssertTrue(nearbyPoints != nil, "Parser should return two CLLocation objects in an array")
         XCTAssertEqual(nearbyPoints!.count, 2, "Parser should return two CLLocation objects in an array")
     }
     
     func testParserReturnsCorrectInformation() {
-        let (nearbyPointObjects, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
+        let (nearbyPointObjects, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
         let nearbyPoints = nearbyPointObjects as? [NearbyPoint]
         let firstReturned = nearbyPoints!.first!
         let firstLocation = CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
@@ -107,7 +107,7 @@ class ParserTests: XCTestCase {
     }
     
     func testBadLatitudeDoesNotAddPointToArray() {
-        let (nearbyPoints, error) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
+        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
         XCTAssertEqual(nearbyPoints!.count, 1, "Parser should add only location with good lats and longs")
     }
     

@@ -12,9 +12,10 @@ import CoreLocation
 class MockParser: GeonamesJSONParser {
     
     var parserError: NSError?
+    var parserTotalPoints: Int?
     var parserPoints: [AnyObject]?
     
-    override func buildAndReturnArrayFromJSON(json: String) -> ([AnyObject]?, NSError?) {
-        return (parserPoints, parserError)
+    override func buildAndReturnArrayFromJSON(json: String) -> ([AnyObject]?, Int?, NSError?) {
+        return (parserPoints, parserTotalPoints, parserError)
     }
 }

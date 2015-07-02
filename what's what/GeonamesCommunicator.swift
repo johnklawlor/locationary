@@ -83,7 +83,7 @@ class GeonamesCommunicator: Communicator, CommunicatorDelegate {
 //    43.705238, -72.287822
 //    44.605238 42.805238 -73.527822 -71.047822
 //    0.90, 1.24
-//    http://api.geonames.org/searchJSON?q=&featureCode=MT&south=42.805238&north=44.605238&west=-73.527822&east=-71.047822&orderby=elevation&username=jkl234&maxRows=1000&startRow=0
+//    http://api.geonames.org/searchJSON?q=&featureClass=R&featureClass=H&featureClass=T&south=42.805238&north=44.605238&west=-73.527822&east=-71.047822&orderby=elevation&username=jkl234&maxRows=1000&startRow=0
     
     override init() {
         super.init()

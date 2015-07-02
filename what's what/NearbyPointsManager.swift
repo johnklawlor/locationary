@@ -17,6 +17,7 @@ protocol NearbyPointsManagerDelegate: class {
     func fetchingFailedWithError(error: NSError)
     func assembledNearbyPointsWithoutAltitude()
     func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint)
+    var didCompleteFullRequest: Bool { get set }
 }
 
 public struct ManagerConstants {
@@ -84,7 +85,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
         
         nearbyPointsJSON = json
         // if json is empty, attempt another request?
-        var (nearbyPointsArray, error) = parser.buildAndReturnArrayFromJSON(json)
+        var (nearbyPointsArray, totalResultsCount, error) = parser.buildAndReturnArrayFromJSON(json)
         
         // TEST
         if let actualError = error {
@@ -97,6 +98,21 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
         if let receivedNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
             with(recentlyRetrievedNearbyPointsQueue, {
                 self.recentlyRetrievedNearbyPoints += receivedNearbyPointsArray
+				if self.communicator != nil {
+					self.communicator!.startRowCount += 1
+					let pointsRetrievedAlready = self.communicator!.startRow
+
+					if totalResultsCount > pointsRetrievedAlready {
+						dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+							self.communicator!.fetchJSONData()
+						}
+					} else {
+						self.managerDelegate.didCompleteFullRequest = true
+                        println("didCompleteFullRequest")
+					}
+				} else {
+					println("communicator is nil while making seconary request")
+				}
             })
             managerDelegate.assembledNearbyPointsWithoutAltitude()
         }
@@ -140,6 +156,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {
         
         if elevationData.elevation == 32678 {
+            // theoretically, we should be able to throw this in the recentlRetrievedNearbyPointsQueue, and it will update the nearbyPoints array after determineIf has finished its for-loop
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
             // should we make a request to Geonames to get the elevation of the point and simply display it?
 //            for (index, theNearbyPointToDelete) in enumerate(nearbyPoints!) {
