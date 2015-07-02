@@ -26,8 +26,12 @@ protocol LabelTapDelegate {
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint)
 }
 
+protocol ScreenSizeDelegate{
+    var DeviceConstants: Constants! { get }
+}
+
 struct NearbyPointConstants {
-    static let LabelFrameSize: CGFloat = 40.0
+    static let LabelFrameSize: CGFloat = 60.0
 }
 
 class NearbyPoint: NSObject, Equatable, Printable {
@@ -53,18 +57,62 @@ class NearbyPoint: NSObject, Equatable, Printable {
     
     // TEST
     var labelTapDelegate: LabelTapDelegate?
+    
+    var screenSizeDelegate: ScreenSizeDelegate?
     // TEST
     
     // TEST THIS!
     var label: UIButton! {
         didSet {
-            label.addTarget(self, action: "showName:", forControlEvents: UIControlEvents.TouchUpInside)
+            label.addTarget(self, action: "showName:",
+                forControlEvents: UIControlEvents.TouchDown |
+                                    UIControlEvents.TouchDragEnter |
+                                    UIControlEvents.TouchDragExit |
+                                    UIControlEvents.TouchDragInside |
+                                    UIControlEvents.TouchDragOutside )
         }
     }
     // TEST THIS!
     
     func showName(sender: UIButton!) {
         labelTapDelegate?.didReceiveTapForNearbyPoint(self)
+    }
+    
+    func makeLabelButton() {
+        let labelFrame = CGRectMake(
+            screenSizeDelegate!.DeviceConstants.PhoneHeight/2.0,
+            0,
+            NearbyPointConstants.LabelFrameSize,
+            NearbyPointConstants.LabelFrameSize)
+        let labelButton = UIButton()
+        labelButton.frame = labelFrame
+        labelButton.layer.zPosition = CGFloat(1/distanceFromCurrentLocation)
+        self.label = labelButton
+        
+        // TEST
+        
+        let rectangleSize = (1500000/(100000+pow(distanceFromCurrentLocation,1.25))+20)
+        var theButtonImage = UIImage(named: "overlaygraphic.png")
+        let rectangle = CGRect(x: 0, y: 0, width: rectangleSize, height: rectangleSize)
+        UIGraphicsBeginImageContextWithOptions(rectangle.size, false, 0.0);
+        theButtonImage?.drawInRect(rectangle)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        let buttonImage = newImage
+        
+        self.label.setImage(buttonImage, forState: UIControlState.Normal)
+        
+        let firstInitialLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: labelFrame.size))
+        let firstCharacterIndex = advance(self.name.startIndex,0)
+        let firstLetterOfNearbyPointName = String(self.name[firstCharacterIndex])
+        firstInitialLabel.text = firstLetterOfNearbyPointName
+        let fontSize = CGFloat(rectangleSize/2.0)
+        firstInitialLabel.font = UIFont(name: "Helvetica Neue", size: fontSize)
+        firstInitialLabel.textAlignment = .Center
+        firstInitialLabel.textColor = UIColor.whiteColor()
+        firstInitialLabel.userInteractionEnabled = false
+        
+        self.label.addSubview(firstInitialLabel)
     }
 }
 

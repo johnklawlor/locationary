@@ -21,21 +21,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var navigationController: UINavigationController?
     
+    var nearbyPointsViewController: NearbyPointsViewController?
+    
     var captureDevice: AVCaptureDevice?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        var nearbyPointsViewController = NearbyPointsViewController()
-        nearbyPointsViewController.locationManager = CLLocationManager()
-        nearbyPointsViewController.motionManager = Motion.Manager
-        nearbyPointsViewController.captureManager = CaptureSessionManager()
-        var nearbyPointsManager = NearbyPointsManager(delegate: nearbyPointsViewController)
+        nearbyPointsViewController = NearbyPointsViewController()
+        nearbyPointsViewController?.locationManager = CLLocationManager()
+        nearbyPointsViewController?.motionManager = Motion.Manager
+        nearbyPointsViewController?.captureManager = CaptureSessionManager()
+        var nearbyPointsManager = NearbyPointsManager(delegate: nearbyPointsViewController!)
         nearbyPointsManager.communicator = GeonamesCommunicator()
         nearbyPointsManager.communicator?.geonamesCommunicatorDelegate = nearbyPointsManager
         nearbyPointsManager.parser = GeonamesJSONParser()
         // TEST
         nearbyPointsManager.parser.geonamesCommunicatorProvider = nearbyPointsManager
+        nearbyPointsManager.parser.locationManagerDelegate = nearbyPointsViewController
         // TEST
-        nearbyPointsViewController.nearbyPointsManager = nearbyPointsManager
+        nearbyPointsViewController?.nearbyPointsManager = nearbyPointsManager
 
         let phoneHeight = CGFloat(UIScreen.mainScreen().bounds.width)
         let phoneWidth = CGFloat(UIScreen.mainScreen().bounds.height)
@@ -54,17 +57,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let theFieldOfVision = retrievedDevice.activeFormat.videoFieldOfView
             let maxZoom = retrievedDevice.activeFormat.videoMaxZoomFactor
             
-            nearbyPointsViewController.captureDevice = retrievedDevice
+            nearbyPointsViewController?.captureDevice = retrievedDevice
 
-            nearbyPointsViewController.DeviceConstants = Constants(theFieldOfVision: theFieldOfVision, maxZoom: maxZoom, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
-            println("fieldOfVision: \(nearbyPointsViewController.DeviceConstants.fieldOfVision)")
-            println("Width: \(nearbyPointsViewController.DeviceConstants.PhoneWidth)")
-            println("Height: \(nearbyPointsViewController.DeviceConstants.PhoneHeight)")
+            nearbyPointsViewController?.DeviceConstants = Constants(theFieldOfVision: theFieldOfVision, maxZoom: maxZoom, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
+            println("fieldOfVision: \(nearbyPointsViewController?.DeviceConstants.fieldOfVision)")
+            println("Width: \(nearbyPointsViewController?.DeviceConstants.PhoneWidth)")
+            println("Height: \(nearbyPointsViewController?.DeviceConstants.PhoneHeight)")
         }
         
         self.navigationController = UINavigationController()
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.navigationController?.viewControllers = [nearbyPointsViewController]
+        self.navigationController?.viewControllers = [nearbyPointsViewController!]
 
         self.window?.rootViewController = self.navigationController
         self.window?.makeKeyAndVisible()
@@ -75,6 +78,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+        
+        println("resigning active")
+        
+        if let viewController = nearbyPointsViewController {
+            
+            if nearbyPointsViewController?.nearbyPointsInLineOfSight != nil {
+                viewController.nearbyPointsInLineOfSight! += viewController.nearbyPointsToExpand
+                viewController.nearbyPointsToExpand = [NearbyPoint]()
+                for nearbyPoint in viewController.nearbyPointsInLineOfSight! {
+                    nearbyPoint.label.hidden = true
+                }
+            }
+            
+            if let nameLabel = viewController.nameLabel {
+                nameLabel.hidden = true
+            }
+            
+            if viewController.motionManager != nil {
+                viewController.motionManager.stopAccelerometerUpdates()
+            }
+            // reset the video zoom values
+            viewController.resetVideoZoomValues()
+        }
+        
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
@@ -84,6 +111,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
+        if let viewController = nearbyPointsViewController {
+            if viewController.motionManager != nil && viewController.locationManager != nil {
+                if CLLocationManager.headingAvailable() {
+                    viewController.locationManager.startUpdatingHeading()
+                    viewController.motionManager.startAccelerometerUpdatesToQueue(
+                        NSOperationQueue.mainQueue(),
+                        withHandler: viewController.motionHandler)
+                }
+            }
+        }
+        
     }
 
     func applicationDidBecomeActive(application: UIApplication) {

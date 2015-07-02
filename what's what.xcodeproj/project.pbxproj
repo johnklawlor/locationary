@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13047C041ACEF37900BD13E8 /* MockHeading.swift */; };
 		131080BC1B370EDF002B904A /* MockPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136CCE321AF2BBE200C74B8F /* MockPoint.swift */; };
-		131081171B3775A4002B904A /* libgdal_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 131081151B3775A4002B904A /* libgdal_phone.a */; };
-		131081181B3775A4002B904A /* libproj_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 131081161B3775A4002B904A /* libproj_phone.a */; };
 		1310811B1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
 		1310811C1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
 		131081281B377B25002B904A /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 131081261B377B25002B904A /* gdalLocating.cpp */; };
@@ -32,6 +30,10 @@
 		131A70C91B1E33B000662FA8 /* ElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */; };
 		131A70CE1B1E351F00662FA8 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */; };
 		131A70D11B1E45B600662FA8 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */; };
+		1326E45B1B3BA20900998E79 /* libgdal_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326E4591B3BA20900998E79 /* libgdal_phone.a */; };
+		1326E45C1B3BA20900998E79 /* libproj_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326E45A1B3BA20900998E79 /* libproj_phone.a */; };
+		1326E45F1B3BA5B200998E79 /* libgdal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326E45D1B3BA5B200998E79 /* libgdal.a */; };
+		1326E4601B3BA5B200998E79 /* libproj.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326E45E1B3BA5B200998E79 /* libproj.a */; };
 		132F2C431AC762710071266F /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C421AC762700071266F /* ParserTests.swift */; };
 		132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */; };
 		132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */; };
@@ -152,8 +154,6 @@
 		131081121B377559002B904A /* rawdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rawdataset.h; path = "gdal-include/rawdataset.h"; sourceTree = "<group>"; };
 		131081131B377559002B904A /* thinplatespline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thinplatespline.h; path = "gdal-include/thinplatespline.h"; sourceTree = "<group>"; };
 		131081141B377559002B904A /* vrtdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vrtdataset.h; path = "gdal-include/vrtdataset.h"; sourceTree = "<group>"; };
-		131081151B3775A4002B904A /* libgdal_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal_phone.a; path = ../../../../projects/gdal_scripts/install_64/libgdal_phone.a; sourceTree = "<group>"; };
-		131081161B3775A4002B904A /* libproj_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj_phone.a; path = ../../../../projects/gdal_scripts/install_64/libproj_phone.a; sourceTree = "<group>"; };
 		131081191B377619002B904A /* ObjC+GDAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ObjC+GDAL.h"; sourceTree = "<group>"; };
 		1310811A1B377619002B904A /* ObjC+GDAL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ObjC+GDAL.mm"; sourceTree = "<group>"; };
 		1310811D1B377656002B904A /* CNearbyPointElevationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNearbyPointElevationData.h; sourceTree = "<group>"; };
@@ -173,6 +173,10 @@
 		131A70C71B1E324C00662FA8 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		131A70CC1B1E351E00662FA8 /* GDALWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDALWrapper.h; sourceTree = "<group>"; };
 		131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GDALWrapper.mm; sourceTree = "<group>"; };
+		1326E4591B3BA20900998E79 /* libgdal_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal_phone.a; path = ../../../../projects/gdal_scripts/install_64/libgdal_phone.a; sourceTree = "<group>"; };
+		1326E45A1B3BA20900998E79 /* libproj_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj_phone.a; path = ../../../../projects/gdal_scripts/install_64/libproj_phone.a; sourceTree = "<group>"; };
+		1326E45D1B3BA5B200998E79 /* libgdal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libgdal.a; sourceTree = "<group>"; };
+		1326E45E1B3BA5B200998E79 /* libproj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libproj.a; sourceTree = "<group>"; };
 		132F2C421AC762700071266F /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeonamesCommunicator.swift; sourceTree = "<group>"; };
 		132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockNearbyPointsManagerDelegate.swift; path = "../what's what/MockNearbyPointsManagerDelegate.swift"; sourceTree = "<group>"; };
@@ -216,8 +220,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				131081171B3775A4002B904A /* libgdal_phone.a in Frameworks */,
-				131081181B3775A4002B904A /* libproj_phone.a in Frameworks */,
+				1326E45B1B3BA20900998E79 /* libgdal_phone.a in Frameworks */,
+				1326E45C1B3BA20900998E79 /* libproj_phone.a in Frameworks */,
 				131A70C81B1E324C00662FA8 /* libstdc++.dylib in Frameworks */,
 				131A70C61B1E324300662FA8 /* libz.dylib in Frameworks */,
 				131A70C41B1E323B00662FA8 /* libiconv.dylib in Frameworks */,
@@ -232,6 +236,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1326E45F1B3BA5B200998E79 /* libgdal.a in Frameworks */,
+				1326E4601B3BA5B200998E79 /* libproj.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,8 +332,10 @@
 		135237531ABA209E00D33887 = {
 			isa = PBXGroup;
 			children = (
-				131081151B3775A4002B904A /* libgdal_phone.a */,
-				131081161B3775A4002B904A /* libproj_phone.a */,
+				1326E45D1B3BA5B200998E79 /* libgdal.a */,
+				1326E45E1B3BA5B200998E79 /* libproj.a */,
+				1326E4591B3BA20900998E79 /* libgdal_phone.a */,
+				1326E45A1B3BA20900998E79 /* libproj_phone.a */,
 				1345C4A71AEB08750041D182 /* currentLocation.gpx */,
 				131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */,
 				1352375E1ABA209F00D33887 /* what's what */,
@@ -719,7 +727,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/johnlawlor/projects/gdal_scripts/install_64,
-					/Users/johnlawlor/projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
@@ -744,7 +751,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/johnlawlor/projects/gdal_scripts/install_64,
-					/Users/johnlawlor/projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
@@ -770,7 +776,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/what's what",
+					/Users/johnlawlor/projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -793,7 +799,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/what's what",
+					/Users/johnlawlor/projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

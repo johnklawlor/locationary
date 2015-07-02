@@ -26,9 +26,14 @@ protocol GeonamesCommunicatorProvider {
     var communicator: GeonamesCommunicator? { get }
 }
 
+protocol LocationManagerDelegate {
+    var didCompleteFullRequest: Bool { get set }
+}
+
 class GeonamesJSONParser: Equatable {
     
     var geonamesCommunicatorProvider: GeonamesCommunicatorProvider?
+    var locationManagerDelegate: LocationManagerDelegate?
     
     init() {
         
@@ -63,6 +68,8 @@ class GeonamesJSONParser: Equatable {
                         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                             self.geonamesCommunicatorProvider!.communicator!.fetchJSONData()
                         }
+                    } else {
+                        locationManagerDelegate?.didCompleteFullRequest = true
                     }
                 }
 

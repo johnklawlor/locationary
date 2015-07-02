@@ -81,6 +81,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     
     func receivedNearbyPointsJSON(json: String) {
         println("received json")
+        
         nearbyPointsJSON = json
         // if json is empty, attempt another request?
         var (nearbyPointsArray, error) = parser.buildAndReturnArrayFromJSON(json)
@@ -138,60 +139,33 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     
     func processElevationProfileDataForPoint(nearbyPoint: NearbyPoint, elevationData: ElevationData) {
         
-        if nearbyPoint.name == "Smarts Mountain" {
-            println("elevationData: \(elevationData)")
-        }
-        
         if elevationData.elevation == 32678 {
             // should we try to get its elevation again? should we remove it from the nearbyPoints array?
             // should we make a request to Geonames to get the elevation of the point and simply display it?
-            for (index, theNearbyPointToDelete) in enumerate(nearbyPoints!) {
-                if nearbyPoint == theNearbyPointToDelete {
-                    nearbyPoints!.removeAtIndex(index)
-                    break
-                }
-            }
+//            for (index, theNearbyPointToDelete) in enumerate(nearbyPoints!) {
+//                if nearbyPoint == theNearbyPointToDelete {
+//                    // should we append to an array that keeps track of the indices of nearbyPoints that need to be removed, and then remove them after for loops have finished?
+//                    nearbyPoints!.removeAtIndex(index)
+//                    break
+//                }
+//            }
         } else if elevationData.inLineOfSight == true {
             
             calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
             
-            println("elevation: \(elevationData.elevation)")
-            println("angleToHorizon: \(elevationData.angleToHorizon)")
+            // we have to determine why one point had an angleToCurrentLocation of NaN
+            
+            println("angleToCurrentLocation for \(nearbyPoint.name): \(nearbyPoint.angleToCurrentLocation)")
             
             updateElevationAndAngleToHorizonForPoint(nearbyPoint, elevation: elevationData.elevation, angleToHorizon: elevationData.angleToHorizon)
+
+            let viewController = managerDelegate as! NearbyPointsViewController
+            nearbyPoint.screenSizeDelegate = viewController
             
-            let labelFrame = CGRectMake(50, 100, NearbyPointConstants.LabelFrameSize, NearbyPointConstants.LabelFrameSize)
-            let labelButton = UIButton()
-            labelButton.frame = labelFrame
-            nearbyPoint.label = labelButton
+            nearbyPoint.makeLabelButton()
             
             // TEST
 
-            let rectangleSize = (1.0/pow(nearbyPoint.distanceFromCurrentLocation/1000.0, 0.5))*10.0 + 22
-            var theButtonImage = UIImage(named: "overlaygraphic.png")
-            let rectangle = CGRect(x: 0, y: 0, width: rectangleSize, height: rectangleSize)
-            UIGraphicsBeginImageContextWithOptions(rectangle.size, false, 0.0);
-            theButtonImage?.drawInRect(rectangle)
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            let buttonImage = newImage
-            
-            nearbyPoint.label.setImage(theButtonImage, forState: UIControlState.Normal)
-            
-            let firstInitialLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: labelFrame.size))
-            let firstCharacterIndex = advance(nearbyPoint.name.startIndex,0)
-            let firstLetterOfNearbyPointName = String(nearbyPoint.name[firstCharacterIndex])
-            firstInitialLabel.text = firstLetterOfNearbyPointName
-            let fontSize = CGFloat(rectangleSize/2.0)
-            firstInitialLabel.font = UIFont(name: "Helvetica Neue", size: fontSize)
-            firstInitialLabel.textAlignment = .Center
-            firstInitialLabel.textColor = UIColor.whiteColor()
-            
-            nearbyPoint.label.addSubview(firstInitialLabel)
-            
-            // TEST
-            
-            let viewController = managerDelegate as! NearbyPointsViewController
             nearbyPoint.labelTapDelegate = viewController
             
             managerDelegate.foundNearbyPointInLineOfSight(nearbyPoint)
@@ -208,21 +182,26 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     }
     
     func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
+        let name = nearbyPoint.name
+        println("\(name)")
         let y = CLLocation(coordinate: CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: nearbyPoint.location.coordinate.longitude), altitude: nearbyPoint.location.altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
         let dy = y.distanceFromLocation(nearbyPoint.location)
-        // nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude ? : -(y.distanceFromLocation(nearbyPoint.location))
+
+        // correct for discrepencies when dy is erroneously larger than distanceFromCurrentLocation
+        var quotient = dy/nearbyPoint.distanceFromCurrentLocation
+        quotient = quotient > 1 ? 1 : quotient
         
         if nearbyPoint.location.coordinate.longitude < currentLocation!.coordinate.longitude {
             if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
-                nearbyPoint.angleToCurrentLocation = 180.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
+                nearbyPoint.angleToCurrentLocation = 180.0 - asin(quotient)*(180.0/M_PI)
             } else {
-                nearbyPoint.angleToCurrentLocation = 180.0 + asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
+                nearbyPoint.angleToCurrentLocation = 180.0 + asin(quotient)*(180.0/M_PI)
             }
         } else {
             if nearbyPoint.location.coordinate.latitude > currentLocation!.coordinate.latitude {
-                nearbyPoint.angleToCurrentLocation = asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180/M_PI)
+                nearbyPoint.angleToCurrentLocation = asin(quotient)*(180/M_PI)
             } else {
-                nearbyPoint.angleToCurrentLocation = 360.0 - asin(dy/nearbyPoint.distanceFromCurrentLocation)*(180.0/M_PI)
+                nearbyPoint.angleToCurrentLocation = 360.0 - asin(quotient)*(180.0/M_PI)
             }
         }
     }
