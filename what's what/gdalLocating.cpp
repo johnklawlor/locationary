@@ -71,14 +71,15 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     
     double increment = (nearbyPointPixelX - currentPixelX)/samplePoints;
     
+    double heightToSubtract = ((2/3)*pow(distanceBetweenTwoPoints/1000*1.60934,2)) * 0.304;
     
-    double altitudeDifference = nearbyPointElevationData.elevation - currentAltitude;
-    //    printf("nearbyPointElevation: %d \n", nearbyPointElevationAndLineOfSight.elevation);
-    //    printf("currentAltitude: %f \n", currentAltitude);
-    //    printf("o: %f \n", altitudeDifference);
-    //    printf("a: %f \n", distanceBetweenTwoPoints);
+    double altitudeDifference = nearbyPointElevationData.elevation - currentAltitude - heightToSubtract;
+    printf("nearbyPointElevation: %f \n", nearbyPointElevationData.elevation);
+    printf("currentAltitude: %f \n", currentAltitude);
+    printf("o: %f \n", altitudeDifference);
+    printf("a: %f \n", distanceBetweenTwoPoints);
     double angleToNearbyPoint = atan(altitudeDifference / distanceBetweenTwoPoints);
-    //    printf("angleToNearbyPoint: %f \n", angleToNearbyPoint);
+    printf("angleToNearbyPoint: %f \n", angleToNearbyPoint);
     nearbyPointElevationData.angleToHorizon = angleToNearbyPoint * (180.0/M_PI);
     
     double sampleDistance = 1000.0;

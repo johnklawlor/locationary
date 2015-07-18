@@ -228,8 +228,10 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             let distanceAway = nearbyPoint.distanceFromCurrentLocation
             let heightToSubtract = ((2/3)*pow(distanceAway/1000*1.60934,2)) * 0.304
             let nearbyPointAltitude = nearbyPoint.location.altitude
-            let height = nearbyPointAltitude - currentLocation!.altitude - heightToSubtract
-            let angle = atan(height/distanceAway)*(360.0/M_PI)
+            let height = nearbyPointAltitude - currentLocation!.altitude
+            let angle = atan(height/distanceAway)*(180.0/M_PI)
+            
+            println("\(nearbyPoint.name): \(distanceAway) \(nearbyPointAltitude) \(currentLocation!.altitude)")
             
             nearbyPoint.angleToHorizon = angle
         }

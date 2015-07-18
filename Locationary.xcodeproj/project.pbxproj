@@ -8,6 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13047C041ACEF37900BD13E8 /* MockHeading.swift */; };
+		131080BC1B370EDF002B904A /* MockPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136CCE321AF2BBE200C74B8F /* MockPoint.swift */; };
+		1310811B1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
+		1310811C1B377619002B904A /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1310811A1B377619002B904A /* ObjC+GDAL.mm */; };
+		131081281B377B25002B904A /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 131081261B377B25002B904A /* gdalLocating.cpp */; };
+		131081291B377B25002B904A /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 131081261B377B25002B904A /* gdalLocating.cpp */; };
+		1310812B1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */; };
+		1310812C1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */; };
+		1310812E1B377C5A002B904A /* MockDoubleTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812D1B377C5A002B904A /* MockDoubleTap.swift */; };
+		1310812F1B377C5A002B904A /* MockDoubleTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1310812D1B377C5A002B904A /* MockDoubleTap.swift */; };
+		131081351B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */; };
+		131081361B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */; };
 		131A704A1B1E273200662FA8 /* ElevationDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131A70491B1E273200662FA8 /* ElevationDataManagerTests.swift */; };
 		131A70BC1B1E320900662FA8 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70BB1B1E320900662FA8 /* libxml2.dylib */; };
 		131A70BE1B1E321F00662FA8 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70BD1B1E321F00662FA8 /* libc++.dylib */; };
@@ -17,8 +28,8 @@
 		131A70C61B1E324300662FA8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70C51B1E324300662FA8 /* libz.dylib */; };
 		131A70C81B1E324C00662FA8 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 131A70C71B1E324C00662FA8 /* libstdc++.dylib */; };
 		131A70C91B1E33B000662FA8 /* ElevationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */; };
-		131A70E31B1F3EF800662FA8 /* MockNearbyPointsManagerTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131A70E21B1F3EF800662FA8 /* MockNearbyPointsManagerTwo.swift */; };
-		131D83C31B2B5C9500020489 /* MockPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136CCE321AF2BBE200C74B8F /* MockPoint.swift */; };
+		131A70CE1B1E351F00662FA8 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */; };
+		131A70D11B1E45B600662FA8 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */; };
 		132F2C431AC762710071266F /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C421AC762700071266F /* ParserTests.swift */; };
 		132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */; };
 		132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */; };
@@ -28,10 +39,10 @@
 		135237671ABA20A000D33887 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 135237651ABA20A000D33887 /* Main.storyboard */; };
 		135237691ABA20A000D33887 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 135237681ABA20A000D33887 /* Images.xcassets */; };
 		1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1352376A1ABA20A000D33887 /* LaunchScreen.xib */; };
-		135254711B20CF3300DBEADA /* MockDoubleTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135254701B20CF3200DBEADA /* MockDoubleTap.swift */; };
 		1368BDF21AFBAF220094ECD6 /* MockCommunicatorTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1368BDF11AFBAF220094ECD6 /* MockCommunicatorTwo.swift */; };
 		136A0F101AE96EC000ED1D69 /* MockNearbyPointsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */; };
 		136CCE331AF2BBE200C74B8F /* MockPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136CCE321AF2BBE200C74B8F /* MockPoint.swift */; };
+		137080531B4813D800AB6863 /* LabelButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 137080521B4813D800AB6863 /* LabelButton.xib */; };
 		138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B182E1AC9C10100D54ECE /* MockParser.swift */; };
 		138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18321ACB6BB200D54ECE /* NearbyPoint.swift */; };
 		138B18361ACB758700D54ECE /* NearbyPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B18321ACB6BB200D54ECE /* NearbyPoint.swift */; };
@@ -49,17 +60,6 @@
 		13A3B9821AC70A2300FF0202 /* GeoNamesJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */; };
 		13A3B9841AC7102000FF0202 /* NNGeonamesCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */; };
 		13A3B9861AC7118000FF0202 /* FakeURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */; };
-		13C17FAC1B2E6BA9009954EB /* libgdal_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C17FAA1B2E6BA9009954EB /* libgdal_phone.a */; };
-		13C17FAD1B2E6BA9009954EB /* libproj_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C17FAB1B2E6BA9009954EB /* libproj_phone.a */; };
-		13C17FAF1B3115BB009954EB /* holts.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 13C17FAE1B3115BA009954EB /* holts.gpx */; };
-		13C32F021B2754E7008CCAB5 /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13C32EFC1B2754E7008CCAB5 /* gdalLocating.cpp */; };
-		13C32F031B2754E7008CCAB5 /* gdalLocating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13C32EFC1B2754E7008CCAB5 /* gdalLocating.cpp */; };
-		13C32F041B2754E7008CCAB5 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13C32EFF1B2754E7008CCAB5 /* GDALWrapper.mm */; };
-		13C32F051B2754E7008CCAB5 /* GDALWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13C32EFF1B2754E7008CCAB5 /* GDALWrapper.mm */; };
-		13C32F061B2754E7008CCAB5 /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13C32F011B2754E7008CCAB5 /* ObjC+GDAL.mm */; };
-		13C32F071B2754E7008CCAB5 /* ObjC+GDAL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13C32F011B2754E7008CCAB5 /* ObjC+GDAL.mm */; };
-		13C32F4C1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 13C32F4B1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif */; };
-		13C32F4D1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif in Resources */ = {isa = PBXBuildFile; fileRef = 13C32F4B1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif */; };
 		13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */; };
 		13C9BF9F1AE2CEF2005EF8D4 /* CaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */; };
 		13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */; };
@@ -73,6 +73,10 @@
 		13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F61AF44048009993C5 /* Communicator.swift */; };
 		13DCD1FA1AF440A3009993C5 /* CommunicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */; };
 		13DCD1FC1AF4468F009993C5 /* MockCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */; };
+		13E77B001B470DB500D876AE /* libgdal_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E77AFE1B470DB500D876AE /* libgdal_phone.a */; };
+		13E77B011B470DB500D876AE /* libproj_phone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E77AFF1B470DB500D876AE /* libproj_phone.a */; };
+		13E77B041B470DFC00D876AE /* libgdal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E77B021B470DFC00D876AE /* libgdal.a */; };
+		13E77B051B470DFC00D876AE /* libproj.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E77B031B470DFC00D876AE /* libproj.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +91,78 @@
 
 /* Begin PBXFileReference section */
 		13047C041ACEF37900BD13E8 /* MockHeading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHeading.swift; sourceTree = "<group>"; };
+		131080D51B377559002B904A /* cpl_atomic_ops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_atomic_ops.h; path = "gdal-include/cpl_atomic_ops.h"; sourceTree = "<group>"; };
+		131080D61B377559002B904A /* cpl_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_config.h; path = "gdal-include/cpl_config.h"; sourceTree = "<group>"; };
+		131080D71B377559002B904A /* cpl_conv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_conv.h; path = "gdal-include/cpl_conv.h"; sourceTree = "<group>"; };
+		131080D81B377559002B904A /* cpl_csv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_csv.h; path = "gdal-include/cpl_csv.h"; sourceTree = "<group>"; };
+		131080D91B377559002B904A /* cpl_error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_error.h; path = "gdal-include/cpl_error.h"; sourceTree = "<group>"; };
+		131080DA1B377559002B904A /* cpl_hash_set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_hash_set.h; path = "gdal-include/cpl_hash_set.h"; sourceTree = "<group>"; };
+		131080DB1B377559002B904A /* cpl_http.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_http.h; path = "gdal-include/cpl_http.h"; sourceTree = "<group>"; };
+		131080DC1B377559002B904A /* cpl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_list.h; path = "gdal-include/cpl_list.h"; sourceTree = "<group>"; };
+		131080DD1B377559002B904A /* cpl_minixml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minixml.h; path = "gdal-include/cpl_minixml.h"; sourceTree = "<group>"; };
+		131080DE1B377559002B904A /* cpl_minizip_ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_ioapi.h; path = "gdal-include/cpl_minizip_ioapi.h"; sourceTree = "<group>"; };
+		131080DF1B377559002B904A /* cpl_minizip_unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_unzip.h; path = "gdal-include/cpl_minizip_unzip.h"; sourceTree = "<group>"; };
+		131080E01B377559002B904A /* cpl_minizip_zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_zip.h; path = "gdal-include/cpl_minizip_zip.h"; sourceTree = "<group>"; };
+		131080E11B377559002B904A /* cpl_multiproc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_multiproc.h; path = "gdal-include/cpl_multiproc.h"; sourceTree = "<group>"; };
+		131080E21B377559002B904A /* cpl_odbc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_odbc.h; path = "gdal-include/cpl_odbc.h"; sourceTree = "<group>"; };
+		131080E31B377559002B904A /* cpl_port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_port.h; path = "gdal-include/cpl_port.h"; sourceTree = "<group>"; };
+		131080E41B377559002B904A /* cpl_progress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_progress.h; path = "gdal-include/cpl_progress.h"; sourceTree = "<group>"; };
+		131080E51B377559002B904A /* cpl_quad_tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_quad_tree.h; path = "gdal-include/cpl_quad_tree.h"; sourceTree = "<group>"; };
+		131080E61B377559002B904A /* cpl_spawn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_spawn.h; path = "gdal-include/cpl_spawn.h"; sourceTree = "<group>"; };
+		131080E71B377559002B904A /* cpl_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_string.h; path = "gdal-include/cpl_string.h"; sourceTree = "<group>"; };
+		131080E81B377559002B904A /* cpl_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_time.h; path = "gdal-include/cpl_time.h"; sourceTree = "<group>"; };
+		131080E91B377559002B904A /* cpl_virtualmem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_virtualmem.h; path = "gdal-include/cpl_virtualmem.h"; sourceTree = "<group>"; };
+		131080EA1B377559002B904A /* cpl_vsi_virtual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsi_virtual.h; path = "gdal-include/cpl_vsi_virtual.h"; sourceTree = "<group>"; };
+		131080EB1B377559002B904A /* cpl_vsi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsi.h; path = "gdal-include/cpl_vsi.h"; sourceTree = "<group>"; };
+		131080EC1B377559002B904A /* cpl_vsil_curl_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsil_curl_priv.h; path = "gdal-include/cpl_vsil_curl_priv.h"; sourceTree = "<group>"; };
+		131080ED1B377559002B904A /* cpl_win32ce_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_win32ce_api.h; path = "gdal-include/cpl_win32ce_api.h"; sourceTree = "<group>"; };
+		131080EE1B377559002B904A /* cpl_wince.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_wince.h; path = "gdal-include/cpl_wince.h"; sourceTree = "<group>"; };
+		131080EF1B377559002B904A /* cplkeywordparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cplkeywordparser.h; path = "gdal-include/cplkeywordparser.h"; sourceTree = "<group>"; };
+		131080F01B377559002B904A /* gdal_alg_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_alg_priv.h; path = "gdal-include/gdal_alg_priv.h"; sourceTree = "<group>"; };
+		131080F11B377559002B904A /* gdal_alg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_alg.h; path = "gdal-include/gdal_alg.h"; sourceTree = "<group>"; };
+		131080F21B377559002B904A /* gdal_csv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_csv.h; path = "gdal-include/gdal_csv.h"; sourceTree = "<group>"; };
+		131080F31B377559002B904A /* gdal_frmts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_frmts.h; path = "gdal-include/gdal_frmts.h"; sourceTree = "<group>"; };
+		131080F41B377559002B904A /* gdal_pam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_pam.h; path = "gdal-include/gdal_pam.h"; sourceTree = "<group>"; };
+		131080F51B377559002B904A /* gdal_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_priv.h; path = "gdal-include/gdal_priv.h"; sourceTree = "<group>"; };
+		131080F61B377559002B904A /* gdal_proxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_proxy.h; path = "gdal-include/gdal_proxy.h"; sourceTree = "<group>"; };
+		131080F71B377559002B904A /* gdal_rat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_rat.h; path = "gdal-include/gdal_rat.h"; sourceTree = "<group>"; };
+		131080F81B377559002B904A /* gdal_simplesurf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_simplesurf.h; path = "gdal-include/gdal_simplesurf.h"; sourceTree = "<group>"; };
+		131080F91B377559002B904A /* gdal_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_version.h; path = "gdal-include/gdal_version.h"; sourceTree = "<group>"; };
+		131080FA1B377559002B904A /* gdal_vrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_vrt.h; path = "gdal-include/gdal_vrt.h"; sourceTree = "<group>"; };
+		131080FB1B377559002B904A /* gdal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal.h; path = "gdal-include/gdal.h"; sourceTree = "<group>"; };
+		131080FC1B377559002B904A /* gdalexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalexif.h; path = "gdal-include/gdalexif.h"; sourceTree = "<group>"; };
+		131080FD1B377559002B904A /* gdalgeorefpamdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgeorefpamdataset.h; path = "gdal-include/gdalgeorefpamdataset.h"; sourceTree = "<group>"; };
+		131080FE1B377559002B904A /* gdalgrid_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgrid_priv.h; path = "gdal-include/gdalgrid_priv.h"; sourceTree = "<group>"; };
+		131080FF1B377559002B904A /* gdalgrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgrid.h; path = "gdal-include/gdalgrid.h"; sourceTree = "<group>"; };
+		131081001B377559002B904A /* gdaljp2abstractdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdaljp2abstractdataset.h; path = "gdal-include/gdaljp2abstractdataset.h"; sourceTree = "<group>"; };
+		131081011B377559002B904A /* gdaljp2metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdaljp2metadata.h; path = "gdal-include/gdaljp2metadata.h"; sourceTree = "<group>"; };
+		131081021B377559002B904A /* gdalwarper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalwarper.h; path = "gdal-include/gdalwarper.h"; sourceTree = "<group>"; };
+		131081031B377559002B904A /* gdalwarpkernel_opencl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalwarpkernel_opencl.h; path = "gdal-include/gdalwarpkernel_opencl.h"; sourceTree = "<group>"; };
+		131081041B377559002B904A /* gvgcpfit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gvgcpfit.h; path = "gdal-include/gvgcpfit.h"; sourceTree = "<group>"; };
+		131081051B377559002B904A /* memdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memdataset.h; path = "gdal-include/memdataset.h"; sourceTree = "<group>"; };
+		131081061B377559002B904A /* ogr_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_api.h; path = "gdal-include/ogr_api.h"; sourceTree = "<group>"; };
+		131081071B377559002B904A /* ogr_core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_core.h; path = "gdal-include/ogr_core.h"; sourceTree = "<group>"; };
+		131081081B377559002B904A /* ogr_feature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_feature.h; path = "gdal-include/ogr_feature.h"; sourceTree = "<group>"; };
+		131081091B377559002B904A /* ogr_featurestyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_featurestyle.h; path = "gdal-include/ogr_featurestyle.h"; sourceTree = "<group>"; };
+		1310810A1B377559002B904A /* ogr_geocoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_geocoding.h; path = "gdal-include/ogr_geocoding.h"; sourceTree = "<group>"; };
+		1310810B1B377559002B904A /* ogr_geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_geometry.h; path = "gdal-include/ogr_geometry.h"; sourceTree = "<group>"; };
+		1310810C1B377559002B904A /* ogr_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_p.h; path = "gdal-include/ogr_p.h"; sourceTree = "<group>"; };
+		1310810D1B377559002B904A /* ogr_spatialref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_spatialref.h; path = "gdal-include/ogr_spatialref.h"; sourceTree = "<group>"; };
+		1310810E1B377559002B904A /* ogr_srs_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_srs_api.h; path = "gdal-include/ogr_srs_api.h"; sourceTree = "<group>"; };
+		1310810F1B377559002B904A /* ogrsf_frmts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogrsf_frmts.h; path = "gdal-include/ogrsf_frmts.h"; sourceTree = "<group>"; };
+		131081101B377559002B904A /* org_proj4_Projections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = org_proj4_Projections.h; path = "gdal-include/org_proj4_Projections.h"; sourceTree = "<group>"; };
+		131081111B377559002B904A /* proj_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = proj_api.h; path = "gdal-include/proj_api.h"; sourceTree = "<group>"; };
+		131081121B377559002B904A /* rawdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rawdataset.h; path = "gdal-include/rawdataset.h"; sourceTree = "<group>"; };
+		131081131B377559002B904A /* thinplatespline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thinplatespline.h; path = "gdal-include/thinplatespline.h"; sourceTree = "<group>"; };
+		131081141B377559002B904A /* vrtdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vrtdataset.h; path = "gdal-include/vrtdataset.h"; sourceTree = "<group>"; };
+		131081191B377619002B904A /* ObjC+GDAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ObjC+GDAL.h"; sourceTree = "<group>"; };
+		1310811A1B377619002B904A /* ObjC+GDAL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ObjC+GDAL.mm"; sourceTree = "<group>"; };
+		1310811D1B377656002B904A /* CNearbyPointElevationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNearbyPointElevationData.h; sourceTree = "<group>"; };
+		131081261B377B25002B904A /* gdalLocating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gdalLocating.cpp; sourceTree = "<group>"; };
+		131081271B377B25002B904A /* gdalLocating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdalLocating.h; sourceTree = "<group>"; };
+		1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsManagerTwo.swift; sourceTree = "<group>"; };
+		1310812D1B377C5A002B904A /* MockDoubleTap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDoubleTap.swift; sourceTree = "<group>"; };
+		131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = us_150max_bounding_compressed_tiled.tif; path = ../us_150max_bounding_compressed_tiled.tif; sourceTree = "<group>"; };
 		131A70491B1E273200662FA8 /* ElevationDataManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElevationDataManagerTests.swift; sourceTree = "<group>"; };
 		131A70B01B1E2EF900662FA8 /* gdal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gdal-Bridging-Header.h"; sourceTree = "<group>"; };
 		131A70BB1B1E320900662FA8 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
@@ -96,7 +172,8 @@
 		131A70C31B1E323B00662FA8 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		131A70C51B1E324300662FA8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		131A70C71B1E324C00662FA8 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
-		131A70E21B1F3EF800662FA8 /* MockNearbyPointsManagerTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsManagerTwo.swift; sourceTree = "<group>"; };
+		131A70CC1B1E351E00662FA8 /* GDALWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDALWrapper.h; sourceTree = "<group>"; };
+		131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GDALWrapper.mm; sourceTree = "<group>"; };
 		132F2C421AC762700071266F /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockGeonamesCommunicator.swift; sourceTree = "<group>"; };
 		132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockNearbyPointsManagerDelegate.swift; path = "../what's what/MockNearbyPointsManagerDelegate.swift"; sourceTree = "<group>"; };
@@ -110,15 +187,13 @@
 		1352376B1ABA20A000D33887 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		135237711ABA20A100D33887 /* LocationaryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LocationaryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		135237761ABA20A100D33887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		135254701B20CF3200DBEADA /* MockDoubleTap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDoubleTap.swift; sourceTree = "<group>"; };
 		1368BDF11AFBAF220094ECD6 /* MockCommunicatorTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCommunicatorTwo.swift; sourceTree = "<group>"; };
 		136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointsViewController.swift; sourceTree = "<group>"; };
 		136CCE321AF2BBE200C74B8F /* MockPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockPoint.swift; sourceTree = "<group>"; };
+		137080521B4813D800AB6863 /* LabelButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelButton.xib; sourceTree = "<group>"; };
 		138B182E1AC9C10100D54ECE /* MockParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockParser.swift; sourceTree = "<group>"; };
 		138B18321ACB6BB200D54ECE /* NearbyPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyPoint.swift; sourceTree = "<group>"; };
 		138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NearbyPointClassTests.swift; path = "../what's what/NearbyPointClassTests.swift"; sourceTree = "<group>"; };
-		1397C0AD1B27B6AB00AC05BC /* Locationary copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Locationary copy-Info.plist"; path = "/Users/johnlawlor/Dropbox/John Files/iOS/what's what/Locationary copy-Info.plist"; sourceTree = "<absolute>"; };
-		1397C0D01B27B72200AC05BC /* Locationary copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Locationary copy2-Info.plist"; path = "/Users/johnlawlor/Dropbox/John Files/iOS/what's what/Locationary copy2-Info.plist"; sourceTree = "<absolute>"; };
 		139E8BA41ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NearbyPointsViewControllerTests.swift; path = "what's whatTests/NearbyPointsViewControllerTests.swift"; sourceTree = SOURCE_ROOT; };
 		13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeonamesCommunicator.swift; sourceTree = "<group>"; };
 		13A3B9731AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeonamesCommunicatorTests.swift; sourceTree = "<group>"; };
@@ -128,81 +203,6 @@
 		13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoNamesJSONParser.swift; sourceTree = "<group>"; };
 		13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNGeonamesCommunicator.swift; sourceTree = "<group>"; };
 		13A3B9851AC7118000FF0202 /* FakeURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeURLResponse.swift; sourceTree = "<group>"; };
-		13C17FAA1B2E6BA9009954EB /* libgdal_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal_phone.a; path = ../../../../projects/gdal_scripts/install_64/libgdal_phone.a; sourceTree = "<group>"; };
-		13C17FAB1B2E6BA9009954EB /* libproj_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj_phone.a; path = ../../../../projects/gdal_scripts/install_64/libproj_phone.a; sourceTree = "<group>"; };
-		13C17FAE1B3115BA009954EB /* holts.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = holts.gpx; path = "what's what/holts.gpx"; sourceTree = "<group>"; };
-		13C32EFC1B2754E7008CCAB5 /* gdalLocating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gdalLocating.cpp; sourceTree = "<group>"; };
-		13C32EFD1B2754E7008CCAB5 /* gdalLocating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdalLocating.h; sourceTree = "<group>"; };
-		13C32EFE1B2754E7008CCAB5 /* GDALWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDALWrapper.h; sourceTree = "<group>"; };
-		13C32EFF1B2754E7008CCAB5 /* GDALWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GDALWrapper.mm; sourceTree = "<group>"; };
-		13C32F001B2754E7008CCAB5 /* ObjC+GDAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ObjC+GDAL.h"; sourceTree = "<group>"; };
-		13C32F011B2754E7008CCAB5 /* ObjC+GDAL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ObjC+GDAL.mm"; sourceTree = "<group>"; };
-		13C32F081B275512008CCAB5 /* CNearbyPointElevationData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNearbyPointElevationData.h; sourceTree = "<group>"; };
-		13C32F091B2755F2008CCAB5 /* cpl_atomic_ops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_atomic_ops.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_atomic_ops.h; sourceTree = "<group>"; };
-		13C32F0A1B2755F2008CCAB5 /* cpl_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_config.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_config.h; sourceTree = "<group>"; };
-		13C32F0B1B2755F2008CCAB5 /* cpl_conv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_conv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_conv.h; sourceTree = "<group>"; };
-		13C32F0C1B2755F2008CCAB5 /* cpl_csv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_csv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_csv.h; sourceTree = "<group>"; };
-		13C32F0D1B2755F2008CCAB5 /* cpl_error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_error.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_error.h; sourceTree = "<group>"; };
-		13C32F0E1B2755F2008CCAB5 /* cpl_hash_set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_hash_set.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_hash_set.h; sourceTree = "<group>"; };
-		13C32F0F1B2755F2008CCAB5 /* cpl_http.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_http.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_http.h; sourceTree = "<group>"; };
-		13C32F101B2755F2008CCAB5 /* cpl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_list.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_list.h; sourceTree = "<group>"; };
-		13C32F111B2755F2008CCAB5 /* cpl_minixml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minixml.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_minixml.h; sourceTree = "<group>"; };
-		13C32F121B2755F2008CCAB5 /* cpl_minizip_ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_ioapi.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_minizip_ioapi.h; sourceTree = "<group>"; };
-		13C32F131B2755F2008CCAB5 /* cpl_minizip_unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_unzip.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_minizip_unzip.h; sourceTree = "<group>"; };
-		13C32F141B2755F2008CCAB5 /* cpl_minizip_zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_minizip_zip.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_minizip_zip.h; sourceTree = "<group>"; };
-		13C32F151B2755F2008CCAB5 /* cpl_multiproc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_multiproc.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_multiproc.h; sourceTree = "<group>"; };
-		13C32F161B2755F2008CCAB5 /* cpl_odbc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_odbc.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_odbc.h; sourceTree = "<group>"; };
-		13C32F171B2755F2008CCAB5 /* cpl_port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_port.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_port.h; sourceTree = "<group>"; };
-		13C32F181B2755F2008CCAB5 /* cpl_progress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_progress.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_progress.h; sourceTree = "<group>"; };
-		13C32F191B2755F2008CCAB5 /* cpl_quad_tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_quad_tree.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_quad_tree.h; sourceTree = "<group>"; };
-		13C32F1A1B2755F2008CCAB5 /* cpl_spawn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_spawn.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_spawn.h; sourceTree = "<group>"; };
-		13C32F1B1B2755F2008CCAB5 /* cpl_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_string.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_string.h; sourceTree = "<group>"; };
-		13C32F1C1B2755F2008CCAB5 /* cpl_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_time.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_time.h; sourceTree = "<group>"; };
-		13C32F1D1B2755F2008CCAB5 /* cpl_virtualmem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_virtualmem.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_virtualmem.h; sourceTree = "<group>"; };
-		13C32F1E1B2755F2008CCAB5 /* cpl_vsi_virtual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsi_virtual.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_vsi_virtual.h; sourceTree = "<group>"; };
-		13C32F1F1B2755F2008CCAB5 /* cpl_vsi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsi.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_vsi.h; sourceTree = "<group>"; };
-		13C32F201B2755F2008CCAB5 /* cpl_vsil_curl_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_vsil_curl_priv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_vsil_curl_priv.h; sourceTree = "<group>"; };
-		13C32F211B2755F2008CCAB5 /* cpl_win32ce_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_win32ce_api.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_win32ce_api.h; sourceTree = "<group>"; };
-		13C32F221B2755F2008CCAB5 /* cpl_wince.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cpl_wince.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cpl_wince.h; sourceTree = "<group>"; };
-		13C32F231B2755F2008CCAB5 /* cplkeywordparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cplkeywordparser.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/cplkeywordparser.h; sourceTree = "<group>"; };
-		13C32F241B2755F2008CCAB5 /* gdal_alg_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_alg_priv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_alg_priv.h; sourceTree = "<group>"; };
-		13C32F251B2755F2008CCAB5 /* gdal_alg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_alg.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_alg.h; sourceTree = "<group>"; };
-		13C32F261B2755F2008CCAB5 /* gdal_csv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_csv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_csv.h; sourceTree = "<group>"; };
-		13C32F271B2755F2008CCAB5 /* gdal_frmts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_frmts.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_frmts.h; sourceTree = "<group>"; };
-		13C32F281B2755F2008CCAB5 /* gdal_pam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_pam.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_pam.h; sourceTree = "<group>"; };
-		13C32F291B2755F2008CCAB5 /* gdal_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_priv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_priv.h; sourceTree = "<group>"; };
-		13C32F2A1B2755F2008CCAB5 /* gdal_proxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_proxy.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_proxy.h; sourceTree = "<group>"; };
-		13C32F2B1B2755F2008CCAB5 /* gdal_rat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_rat.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_rat.h; sourceTree = "<group>"; };
-		13C32F2C1B2755F2008CCAB5 /* gdal_simplesurf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_simplesurf.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_simplesurf.h; sourceTree = "<group>"; };
-		13C32F2D1B2755F2008CCAB5 /* gdal_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_version.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_version.h; sourceTree = "<group>"; };
-		13C32F2E1B2755F2008CCAB5 /* gdal_vrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal_vrt.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal_vrt.h; sourceTree = "<group>"; };
-		13C32F2F1B2755F2008CCAB5 /* gdal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdal.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdal.h; sourceTree = "<group>"; };
-		13C32F301B2755F2008CCAB5 /* gdalexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalexif.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalexif.h; sourceTree = "<group>"; };
-		13C32F311B2755F2008CCAB5 /* gdalgeorefpamdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgeorefpamdataset.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalgeorefpamdataset.h; sourceTree = "<group>"; };
-		13C32F321B2755F2008CCAB5 /* gdalgrid_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgrid_priv.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalgrid_priv.h; sourceTree = "<group>"; };
-		13C32F331B2755F2008CCAB5 /* gdalgrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalgrid.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalgrid.h; sourceTree = "<group>"; };
-		13C32F341B2755F2008CCAB5 /* gdaljp2abstractdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdaljp2abstractdataset.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdaljp2abstractdataset.h; sourceTree = "<group>"; };
-		13C32F351B2755F2008CCAB5 /* gdaljp2metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdaljp2metadata.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdaljp2metadata.h; sourceTree = "<group>"; };
-		13C32F361B2755F2008CCAB5 /* gdalwarper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalwarper.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalwarper.h; sourceTree = "<group>"; };
-		13C32F371B2755F2008CCAB5 /* gdalwarpkernel_opencl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gdalwarpkernel_opencl.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gdalwarpkernel_opencl.h; sourceTree = "<group>"; };
-		13C32F381B2755F2008CCAB5 /* gvgcpfit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gvgcpfit.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/gvgcpfit.h; sourceTree = "<group>"; };
-		13C32F391B2755F2008CCAB5 /* memdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memdataset.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/memdataset.h; sourceTree = "<group>"; };
-		13C32F3A1B2755F2008CCAB5 /* ogr_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_api.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_api.h; sourceTree = "<group>"; };
-		13C32F3B1B2755F2008CCAB5 /* ogr_core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_core.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_core.h; sourceTree = "<group>"; };
-		13C32F3C1B2755F2008CCAB5 /* ogr_feature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_feature.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_feature.h; sourceTree = "<group>"; };
-		13C32F3D1B2755F2008CCAB5 /* ogr_featurestyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_featurestyle.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_featurestyle.h; sourceTree = "<group>"; };
-		13C32F3E1B2755F2008CCAB5 /* ogr_geocoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_geocoding.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_geocoding.h; sourceTree = "<group>"; };
-		13C32F3F1B2755F2008CCAB5 /* ogr_geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_geometry.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_geometry.h; sourceTree = "<group>"; };
-		13C32F401B2755F2008CCAB5 /* ogr_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_p.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_p.h; sourceTree = "<group>"; };
-		13C32F411B2755F2008CCAB5 /* ogr_spatialref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_spatialref.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_spatialref.h; sourceTree = "<group>"; };
-		13C32F421B2755F2008CCAB5 /* ogr_srs_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogr_srs_api.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogr_srs_api.h; sourceTree = "<group>"; };
-		13C32F431B2755F2008CCAB5 /* ogrsf_frmts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogrsf_frmts.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/ogrsf_frmts.h; sourceTree = "<group>"; };
-		13C32F441B2755F2008CCAB5 /* org_proj4_Projections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = org_proj4_Projections.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/org_proj4_Projections.h; sourceTree = "<group>"; };
-		13C32F451B2755F2008CCAB5 /* proj_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = proj_api.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/proj_api.h; sourceTree = "<group>"; };
-		13C32F461B2755F2008CCAB5 /* rawdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rawdataset.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/rawdataset.h; sourceTree = "<group>"; };
-		13C32F471B2755F2008CCAB5 /* thinplatespline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thinplatespline.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/thinplatespline.h; sourceTree = "<group>"; };
-		13C32F481B2755F2008CCAB5 /* vrtdataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vrtdataset.h; path = ../../../../../projects/gdal_scripts/install_64/arm64/iphoneos8.3.sdk/include/vrtdataset.h; sourceTree = "<group>"; };
-		13C32F4B1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = us_150max_bounding_compressed_tiled.tif; path = ../../../../projects/gdal_elevation_data/e150/max/us_150max_bounding_compressed_tiled.tif; sourceTree = "<group>"; };
 		13C9BF9D1AE2C932005EF8D4 /* CaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSessionManager.swift; sourceTree = "<group>"; };
 		13C9BFD41AE5AE96005EF8D4 /* AppDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
 		13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockNearbyPointElevationData.swift; sourceTree = "<group>"; };
@@ -211,6 +211,10 @@
 		13DCD1F61AF44048009993C5 /* Communicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
 		13DCD1F91AF440A3009993C5 /* CommunicatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunicatorTests.swift; sourceTree = "<group>"; };
 		13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCommunicator.swift; sourceTree = "<group>"; };
+		13E77AFE1B470DB500D876AE /* libgdal_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal_phone.a; path = ../../../../projects/gdal_scripts/install_64/libgdal_phone.a; sourceTree = "<group>"; };
+		13E77AFF1B470DB500D876AE /* libproj_phone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj_phone.a; path = ../../../../projects/gdal_scripts/install_64/libproj_phone.a; sourceTree = "<group>"; };
+		13E77B021B470DFC00D876AE /* libgdal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgdal.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libgdal.a; sourceTree = "<group>"; };
+		13E77B031B470DFC00D876AE /* libproj.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libproj.a; path = ../../../../projects/gdal_scripts/install_64/x86_64/iphonesimulator8.3.sdk/lib/libproj.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,8 +222,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13C17FAC1B2E6BA9009954EB /* libgdal_phone.a in Frameworks */,
-				13C17FAD1B2E6BA9009954EB /* libproj_phone.a in Frameworks */,
+				13E77B001B470DB500D876AE /* libgdal_phone.a in Frameworks */,
+				13E77B011B470DB500D876AE /* libproj_phone.a in Frameworks */,
 				131A70C81B1E324C00662FA8 /* libstdc++.dylib in Frameworks */,
 				131A70C61B1E324300662FA8 /* libz.dylib in Frameworks */,
 				131A70C41B1E323B00662FA8 /* libiconv.dylib in Frameworks */,
@@ -234,13 +238,86 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13E77B041B470DFC00D876AE /* libgdal.a in Frameworks */,
+				13E77B051B470DFC00D876AE /* libproj.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		131A70521B1E28E600662FA8 /* gdalLibraries */ = {
+		131081301B377DA7002B904A /* gdal-include */ = {
+			isa = PBXGroup;
+			children = (
+				131080D51B377559002B904A /* cpl_atomic_ops.h */,
+				131080D61B377559002B904A /* cpl_config.h */,
+				131080D71B377559002B904A /* cpl_conv.h */,
+				131080D81B377559002B904A /* cpl_csv.h */,
+				131080D91B377559002B904A /* cpl_error.h */,
+				131080DA1B377559002B904A /* cpl_hash_set.h */,
+				131080DB1B377559002B904A /* cpl_http.h */,
+				131080DC1B377559002B904A /* cpl_list.h */,
+				131080DD1B377559002B904A /* cpl_minixml.h */,
+				131080DE1B377559002B904A /* cpl_minizip_ioapi.h */,
+				131080DF1B377559002B904A /* cpl_minizip_unzip.h */,
+				131080E01B377559002B904A /* cpl_minizip_zip.h */,
+				131080E11B377559002B904A /* cpl_multiproc.h */,
+				131080E21B377559002B904A /* cpl_odbc.h */,
+				131080E31B377559002B904A /* cpl_port.h */,
+				131080E41B377559002B904A /* cpl_progress.h */,
+				131080E51B377559002B904A /* cpl_quad_tree.h */,
+				131080E61B377559002B904A /* cpl_spawn.h */,
+				131080E71B377559002B904A /* cpl_string.h */,
+				131080E81B377559002B904A /* cpl_time.h */,
+				131080E91B377559002B904A /* cpl_virtualmem.h */,
+				131080EA1B377559002B904A /* cpl_vsi_virtual.h */,
+				131080EB1B377559002B904A /* cpl_vsi.h */,
+				131080EC1B377559002B904A /* cpl_vsil_curl_priv.h */,
+				131080ED1B377559002B904A /* cpl_win32ce_api.h */,
+				131080EE1B377559002B904A /* cpl_wince.h */,
+				131080EF1B377559002B904A /* cplkeywordparser.h */,
+				131080F01B377559002B904A /* gdal_alg_priv.h */,
+				131080F11B377559002B904A /* gdal_alg.h */,
+				131080F21B377559002B904A /* gdal_csv.h */,
+				131080F31B377559002B904A /* gdal_frmts.h */,
+				131080F41B377559002B904A /* gdal_pam.h */,
+				131080F51B377559002B904A /* gdal_priv.h */,
+				131080F61B377559002B904A /* gdal_proxy.h */,
+				131080F71B377559002B904A /* gdal_rat.h */,
+				131080F81B377559002B904A /* gdal_simplesurf.h */,
+				131080F91B377559002B904A /* gdal_version.h */,
+				131080FA1B377559002B904A /* gdal_vrt.h */,
+				131080FB1B377559002B904A /* gdal.h */,
+				131080FC1B377559002B904A /* gdalexif.h */,
+				131080FD1B377559002B904A /* gdalgeorefpamdataset.h */,
+				131080FE1B377559002B904A /* gdalgrid_priv.h */,
+				131080FF1B377559002B904A /* gdalgrid.h */,
+				131081001B377559002B904A /* gdaljp2abstractdataset.h */,
+				131081011B377559002B904A /* gdaljp2metadata.h */,
+				131081021B377559002B904A /* gdalwarper.h */,
+				131081031B377559002B904A /* gdalwarpkernel_opencl.h */,
+				131081041B377559002B904A /* gvgcpfit.h */,
+				131081051B377559002B904A /* memdataset.h */,
+				131081061B377559002B904A /* ogr_api.h */,
+				131081071B377559002B904A /* ogr_core.h */,
+				131081081B377559002B904A /* ogr_feature.h */,
+				131081091B377559002B904A /* ogr_featurestyle.h */,
+				1310810A1B377559002B904A /* ogr_geocoding.h */,
+				1310810B1B377559002B904A /* ogr_geometry.h */,
+				1310810C1B377559002B904A /* ogr_p.h */,
+				1310810D1B377559002B904A /* ogr_spatialref.h */,
+				1310810E1B377559002B904A /* ogr_srs_api.h */,
+				1310810F1B377559002B904A /* ogrsf_frmts.h */,
+				131081101B377559002B904A /* org_proj4_Projections.h */,
+				131081111B377559002B904A /* proj_api.h */,
+				131081121B377559002B904A /* rawdataset.h */,
+				131081131B377559002B904A /* thinplatespline.h */,
+				131081141B377559002B904A /* vrtdataset.h */,
+			);
+			name = "gdal-include";
+			sourceTree = "<group>";
+		};
+		131A70521B1E28E600662FA8 /* gdal Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				131A70C71B1E324C00662FA8 /* libstdc++.dylib */,
@@ -251,93 +328,21 @@
 				131A70BD1B1E321F00662FA8 /* libc++.dylib */,
 				131A70BB1B1E320900662FA8 /* libxml2.dylib */,
 			);
-			name = gdalLibraries;
-			sourceTree = "<group>";
-		};
-		131A70651B1E292C00662FA8 /* gdal includes */ = {
-			isa = PBXGroup;
-			children = (
-				13C32F091B2755F2008CCAB5 /* cpl_atomic_ops.h */,
-				13C32F0A1B2755F2008CCAB5 /* cpl_config.h */,
-				13C32F0B1B2755F2008CCAB5 /* cpl_conv.h */,
-				13C32F0C1B2755F2008CCAB5 /* cpl_csv.h */,
-				13C32F0D1B2755F2008CCAB5 /* cpl_error.h */,
-				13C32F0E1B2755F2008CCAB5 /* cpl_hash_set.h */,
-				13C32F0F1B2755F2008CCAB5 /* cpl_http.h */,
-				13C32F101B2755F2008CCAB5 /* cpl_list.h */,
-				13C32F111B2755F2008CCAB5 /* cpl_minixml.h */,
-				13C32F121B2755F2008CCAB5 /* cpl_minizip_ioapi.h */,
-				13C32F131B2755F2008CCAB5 /* cpl_minizip_unzip.h */,
-				13C32F141B2755F2008CCAB5 /* cpl_minizip_zip.h */,
-				13C32F151B2755F2008CCAB5 /* cpl_multiproc.h */,
-				13C32F161B2755F2008CCAB5 /* cpl_odbc.h */,
-				13C32F171B2755F2008CCAB5 /* cpl_port.h */,
-				13C32F181B2755F2008CCAB5 /* cpl_progress.h */,
-				13C32F191B2755F2008CCAB5 /* cpl_quad_tree.h */,
-				13C32F1A1B2755F2008CCAB5 /* cpl_spawn.h */,
-				13C32F1B1B2755F2008CCAB5 /* cpl_string.h */,
-				13C32F1C1B2755F2008CCAB5 /* cpl_time.h */,
-				13C32F1D1B2755F2008CCAB5 /* cpl_virtualmem.h */,
-				13C32F1E1B2755F2008CCAB5 /* cpl_vsi_virtual.h */,
-				13C32F1F1B2755F2008CCAB5 /* cpl_vsi.h */,
-				13C32F201B2755F2008CCAB5 /* cpl_vsil_curl_priv.h */,
-				13C32F211B2755F2008CCAB5 /* cpl_win32ce_api.h */,
-				13C32F221B2755F2008CCAB5 /* cpl_wince.h */,
-				13C32F231B2755F2008CCAB5 /* cplkeywordparser.h */,
-				13C32F241B2755F2008CCAB5 /* gdal_alg_priv.h */,
-				13C32F251B2755F2008CCAB5 /* gdal_alg.h */,
-				13C32F261B2755F2008CCAB5 /* gdal_csv.h */,
-				13C32F271B2755F2008CCAB5 /* gdal_frmts.h */,
-				13C32F281B2755F2008CCAB5 /* gdal_pam.h */,
-				13C32F291B2755F2008CCAB5 /* gdal_priv.h */,
-				13C32F2A1B2755F2008CCAB5 /* gdal_proxy.h */,
-				13C32F2B1B2755F2008CCAB5 /* gdal_rat.h */,
-				13C32F2C1B2755F2008CCAB5 /* gdal_simplesurf.h */,
-				13C32F2D1B2755F2008CCAB5 /* gdal_version.h */,
-				13C32F2E1B2755F2008CCAB5 /* gdal_vrt.h */,
-				13C32F2F1B2755F2008CCAB5 /* gdal.h */,
-				13C32F301B2755F2008CCAB5 /* gdalexif.h */,
-				13C32F311B2755F2008CCAB5 /* gdalgeorefpamdataset.h */,
-				13C32F321B2755F2008CCAB5 /* gdalgrid_priv.h */,
-				13C32F331B2755F2008CCAB5 /* gdalgrid.h */,
-				13C32F341B2755F2008CCAB5 /* gdaljp2abstractdataset.h */,
-				13C32F351B2755F2008CCAB5 /* gdaljp2metadata.h */,
-				13C32F361B2755F2008CCAB5 /* gdalwarper.h */,
-				13C32F371B2755F2008CCAB5 /* gdalwarpkernel_opencl.h */,
-				13C32F381B2755F2008CCAB5 /* gvgcpfit.h */,
-				13C32F391B2755F2008CCAB5 /* memdataset.h */,
-				13C32F3A1B2755F2008CCAB5 /* ogr_api.h */,
-				13C32F3B1B2755F2008CCAB5 /* ogr_core.h */,
-				13C32F3C1B2755F2008CCAB5 /* ogr_feature.h */,
-				13C32F3D1B2755F2008CCAB5 /* ogr_featurestyle.h */,
-				13C32F3E1B2755F2008CCAB5 /* ogr_geocoding.h */,
-				13C32F3F1B2755F2008CCAB5 /* ogr_geometry.h */,
-				13C32F401B2755F2008CCAB5 /* ogr_p.h */,
-				13C32F411B2755F2008CCAB5 /* ogr_spatialref.h */,
-				13C32F421B2755F2008CCAB5 /* ogr_srs_api.h */,
-				13C32F431B2755F2008CCAB5 /* ogrsf_frmts.h */,
-				13C32F441B2755F2008CCAB5 /* org_proj4_Projections.h */,
-				13C32F451B2755F2008CCAB5 /* proj_api.h */,
-				13C32F461B2755F2008CCAB5 /* rawdataset.h */,
-				13C32F471B2755F2008CCAB5 /* thinplatespline.h */,
-				13C32F481B2755F2008CCAB5 /* vrtdataset.h */,
-			);
-			name = "gdal includes";
+			name = "gdal Supporting Files";
 			sourceTree = "<group>";
 		};
 		135237531ABA209E00D33887 = {
 			isa = PBXGroup;
 			children = (
-				13C17FAA1B2E6BA9009954EB /* libgdal_phone.a */,
-				13C17FAB1B2E6BA9009954EB /* libproj_phone.a */,
-				13C32F4B1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif */,
+				13E77B021B470DFC00D876AE /* libgdal.a */,
+				13E77B031B470DFC00D876AE /* libproj.a */,
+				13E77AFE1B470DB500D876AE /* libgdal_phone.a */,
+				13E77AFF1B470DB500D876AE /* libproj_phone.a */,
 				1345C4A71AEB08750041D182 /* currentLocation.gpx */,
-				13C17FAE1B3115BA009954EB /* holts.gpx */,
+				131081341B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif */,
 				1352375E1ABA209F00D33887 /* what's what */,
 				135237741ABA20A100D33887 /* what's whatTests */,
 				1352375D1ABA209F00D33887 /* Products */,
-				1397C0AD1B27B6AB00AC05BC /* Locationary copy-Info.plist */,
-				1397C0D01B27B72200AC05BC /* Locationary copy2-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -359,22 +364,23 @@
 				13A3B9711AC5FC2800FF0202 /* GeonamesCommunicator.swift */,
 				13A3B97E1AC6F5F300FF0202 /* GeoNamesJSONParser.swift */,
 				13CAEAF91B1D486300D30B6E /* ElevationDataManager.swift */,
-				13C32F081B275512008CCAB5 /* CNearbyPointElevationData.h */,
-				13C32EFE1B2754E7008CCAB5 /* GDALWrapper.h */,
-				13C32EFF1B2754E7008CCAB5 /* GDALWrapper.mm */,
-				13C32F001B2754E7008CCAB5 /* ObjC+GDAL.h */,
-				13C32F011B2754E7008CCAB5 /* ObjC+GDAL.mm */,
-				13C32EFC1B2754E7008CCAB5 /* gdalLocating.cpp */,
-				13C32EFD1B2754E7008CCAB5 /* gdalLocating.h */,
+				1310811D1B377656002B904A /* CNearbyPointElevationData.h */,
+				131A70CC1B1E351E00662FA8 /* GDALWrapper.h */,
+				131A70CD1B1E351F00662FA8 /* GDALWrapper.mm */,
 				131A70B01B1E2EF900662FA8 /* gdal-Bridging-Header.h */,
+				131081261B377B25002B904A /* gdalLocating.cpp */,
+				131081271B377B25002B904A /* gdalLocating.h */,
+				131081191B377619002B904A /* ObjC+GDAL.h */,
+				1310811A1B377619002B904A /* ObjC+GDAL.mm */,
 				138B18321ACB6BB200D54ECE /* NearbyPoint.swift */,
+				137080521B4813D800AB6863 /* LabelButton.xib */,
 				13A3B9761AC6337900FF0202 /* NearbyPointsManager.swift */,
 				135237631ABA20A000D33887 /* NearbyPointsViewController.swift */,
 				135237651ABA20A000D33887 /* Main.storyboard */,
 				135237681ABA20A000D33887 /* Images.xcassets */,
 				1352376A1ABA20A000D33887 /* LaunchScreen.xib */,
-				131A70651B1E292C00662FA8 /* gdal includes */,
-				131A70521B1E28E600662FA8 /* gdalLibraries */,
+				131081301B377DA7002B904A /* gdal-include */,
+				131A70521B1E28E600662FA8 /* gdal Supporting Files */,
 				1352375F1ABA209F00D33887 /* Supporting Files */,
 			);
 			path = "what's what";
@@ -399,12 +405,12 @@
 				13A3B9831AC7102000FF0202 /* NNGeonamesCommunicator.swift */,
 				13DCD1FB1AF4468F009993C5 /* MockCommunicator.swift */,
 				1368BDF11AFBAF220094ECD6 /* MockCommunicatorTwo.swift */,
+				1310812D1B377C5A002B904A /* MockDoubleTap.swift */,
 				132F2C441AC8E6D80071266F /* MockGeonamesCommunicator.swift */,
-				13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */,
-				13047C041ACEF37900BD13E8 /* MockHeading.swift */,
 				13CAEAF61B1CD0E800D30B6E /* MockNearbyPointElevationData.swift */,
+				13CAEAFC1B1DFB6C00D30B6E /* MockElevationDataManager.swift */,
 				13A3B97B1AC638A100FF0202 /* MockNearbyPointsManager.swift */,
-				131A70E21B1F3EF800662FA8 /* MockNearbyPointsManagerTwo.swift */,
+				1310812A1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift */,
 				132F2C461AC901C50071266F /* MockNearbyPointsManagerDelegate.swift */,
 				136A0F0F1AE96EC000ED1D69 /* MockNearbyPointsViewController.swift */,
 				136CCE321AF2BBE200C74B8F /* MockPoint.swift */,
@@ -412,7 +418,7 @@
 				13A3B9781AC633AD00FF0202 /* NearbyPointsManagerTests.swift */,
 				138B18381ACB79B000D54ECE /* NearbyPointClassTests.swift */,
 				139E8BA41ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift */,
-				135254701B20CF3200DBEADA /* MockDoubleTap.swift */,
+				13047C041ACEF37900BD13E8 /* MockHeading.swift */,
 				132F2C421AC762700071266F /* ParserTests.swift */,
 				135237751ABA20A100D33887 /* Supporting Files */,
 			);
@@ -515,10 +521,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1345C4A81AEB08750041D182 /* currentLocation.gpx in Resources */,
-				13C32F4C1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif in Resources */,
+				131081351B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */,
 				135237671ABA20A000D33887 /* Main.storyboard in Resources */,
 				1352376C1ABA20A000D33887 /* LaunchScreen.xib in Resources */,
-				13C17FAF1B3115BB009954EB /* holts.gpx in Resources */,
+				137080531B4813D800AB6863 /* LabelButton.xib in Resources */,
 				135237691ABA20A000D33887 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -527,7 +533,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13C32F4D1B275691008CCAB5 /* us_150max_bounding_compressed_tiled.tif in Resources */,
+				131081361B3798CA002B904A /* us_150max_bounding_compressed_tiled.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,21 +544,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1310812B1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */,
 				13DCD1F71AF44048009993C5 /* Communicator.swift in Sources */,
 				13CAEAF81B1CD3FC00D30B6E /* MockNearbyPointElevationData.swift in Sources */,
 				13A3B9721AC5FC2800FF0202 /* GeonamesCommunicator.swift in Sources */,
 				13CAEAFA1B1D486300D30B6E /* ElevationDataManager.swift in Sources */,
-				13C32F041B2754E7008CCAB5 /* GDALWrapper.mm in Sources */,
 				13C9BF9E1AE2C933005EF8D4 /* CaptureSessionManager.swift in Sources */,
 				13A3B9771AC6337900FF0202 /* NearbyPointsManager.swift in Sources */,
-				13C32F061B2754E7008CCAB5 /* ObjC+GDAL.mm in Sources */,
 				13A3B97F1AC6F5F300FF0202 /* GeoNamesJSONParser.swift in Sources */,
+				1310811B1B377619002B904A /* ObjC+GDAL.mm in Sources */,
+				131080BC1B370EDF002B904A /* MockPoint.swift in Sources */,
 				138B18331ACB6BB300D54ECE /* NearbyPoint.swift in Sources */,
+				131A70CE1B1E351F00662FA8 /* GDALWrapper.mm in Sources */,
 				135237641ABA20A000D33887 /* NearbyPointsViewController.swift in Sources */,
 				135237621ABA20A000D33887 /* AppDelegate.swift in Sources */,
-				13C32F021B2754E7008CCAB5 /* gdalLocating.cpp in Sources */,
-				131D83C31B2B5C9500020489 /* MockPoint.swift in Sources */,
+				131081281B377B25002B904A /* gdalLocating.cpp in Sources */,
 				13CAEAFE1B1DFBA900D30B6E /* MockElevationDataManager.swift in Sources */,
+				1310812E1B377C5A002B904A /* MockDoubleTap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,31 +574,31 @@
 				13A3B97C1AC638A100FF0202 /* MockNearbyPointsManager.swift in Sources */,
 				13047C051ACEF37900BD13E8 /* MockHeading.swift in Sources */,
 				13A3B9861AC7118000FF0202 /* FakeURLResponse.swift in Sources */,
+				1310812C1B377BF7002B904A /* MockNearbyPointsManagerTwo.swift in Sources */,
 				13A3B9841AC7102000FF0202 /* NNGeonamesCommunicator.swift in Sources */,
 				131A704A1B1E273200662FA8 /* ElevationDataManagerTests.swift in Sources */,
 				13A3B9801AC707BA00FF0202 /* GeonamesCommunicator.swift in Sources */,
 				131A70C91B1E33B000662FA8 /* ElevationDataManager.swift in Sources */,
 				136A0F101AE96EC000ED1D69 /* MockNearbyPointsViewController.swift in Sources */,
-				13C32F051B2754E7008CCAB5 /* GDALWrapper.mm in Sources */,
+				1310811C1B377619002B904A /* ObjC+GDAL.mm in Sources */,
 				13A3B9741AC5FC8F00FF0202 /* GeonamesCommunicatorTests.swift in Sources */,
 				13A3B9811AC70A1200FF0202 /* NearbyPointsManager.swift in Sources */,
 				138B182F1AC9C10100D54ECE /* MockParser.swift in Sources */,
-				135254711B20CF3300DBEADA /* MockDoubleTap.swift in Sources */,
+				131A70D11B1E45B600662FA8 /* GDALWrapper.mm in Sources */,
 				13CAEAFD1B1DFB6C00D30B6E /* MockElevationDataManager.swift in Sources */,
 				13C9BFD51AE5AE9A005EF8D4 /* AppDelegateTests.swift in Sources */,
 				13DCD1F81AF4406E009993C5 /* Communicator.swift in Sources */,
 				13CAEAF71B1CD0E900D30B6E /* MockNearbyPointElevationData.swift in Sources */,
 				138B18361ACB758700D54ECE /* NearbyPoint.swift in Sources */,
+				1310812F1B377C5A002B904A /* MockDoubleTap.swift in Sources */,
 				13A3B9791AC633AD00FF0202 /* NearbyPointsManagerTests.swift in Sources */,
 				138B18391ACB79B000D54ECE /* NearbyPointClassTests.swift in Sources */,
 				132F2C451AC8E6D80071266F /* MockGeonamesCommunicator.swift in Sources */,
 				13A3B9821AC70A2300FF0202 /* GeoNamesJSONParser.swift in Sources */,
-				131A70E31B1F3EF800662FA8 /* MockNearbyPointsManagerTwo.swift in Sources */,
 				132F2C471AC901C50071266F /* MockNearbyPointsManagerDelegate.swift in Sources */,
 				139E8BA51ACD95F000C4C7E5 /* NearbyPointsViewControllerTests.swift in Sources */,
-				13C32F071B2754E7008CCAB5 /* ObjC+GDAL.mm in Sources */,
 				136CCE331AF2BBE200C74B8F /* MockPoint.swift in Sources */,
-				13C32F031B2754E7008CCAB5 /* gdalLocating.cpp in Sources */,
+				131081291B377B25002B904A /* gdalLocating.cpp in Sources */,
 				139E8BA31ACC907D00C4C7E5 /* NearbyPointsViewController.swift in Sources */,
 				132F2C431AC762710071266F /* ParserTests.swift in Sources */,
 				13C9BF9F1AE2CEF2005EF8D4 /* CaptureSessionManager.swift in Sources */,
@@ -666,6 +674,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -701,6 +710,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -710,17 +720,22 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/what's what/gdal-include",
+				);
 				INFOPLIST_FILE = "what's what/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/johnlawlor/projects/gdal_scripts/install_64,
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Locationary;
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -729,16 +744,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/what's what/gdal-include",
+				);
 				INFOPLIST_FILE = "what's what/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/johnlawlor/projects/gdal_scripts/install_64,
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Locationary;
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
@@ -758,10 +778,9 @@
 				);
 				INFOPLIST_FILE = "what's whatTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LocationaryTests;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Locationary.app/Locationary";
 			};
 			name = Debug;
 		};
@@ -777,10 +796,9 @@
 				);
 				INFOPLIST_FILE = "what's whatTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LocationaryTests;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "what's what/gdal-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Locationary.app/Locationary";
 			};
 			name = Release;
 		};

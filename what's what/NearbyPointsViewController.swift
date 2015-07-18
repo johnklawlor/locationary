@@ -31,6 +31,7 @@ struct Constants {
 }
 
 struct UIConstants {
+    static let MaxPointsOnScreen = 100
     static let LabelBackgroundColor = UIColor(red: 255, green: 250, blue: 217, alpha: 0.3)
     static let NameLabelEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     static let LabelFont = UIFont(name: "Helvetica Neue", size: 18.0)
@@ -65,6 +66,13 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var nearbyPointsManager: NearbyPointsManager!
     var nearbyPointsInLineOfSight: [NearbyPoint]?
+    var nearbyPointsSortedTallest100: [NearbyPoint]! {
+        if( nearbyPointsInLineOfSight?.count < UIConstants.MaxPointsOnScreen) {
+            return nearbyPointsInLineOfSight!.sorted({ $0.location.altitude > $1.location.altitude })
+        } else {
+            return Array(nearbyPointsInLineOfSight!.sorted({ $0.location.altitude > $1.location.altitude })[0...99])
+        }
+    }
     var nearbyPointsToExpand = [NearbyPoint]()
     var locationOfPanGesture = CGPoint()
     
@@ -163,7 +171,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             let correctedHeading = locationManager.heading.trueHeading - correction;
             
             if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(correctedHeading) {
-                for nearbyPoint in nearbyPointsInLineOfSight! {
+                for nearbyPoint in nearbyPointsSortedTallest100 {
                     let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
                     let phoneAngle = CGFloat(90 * zData)
                     let yDifference = labelAngle - phoneAngle
