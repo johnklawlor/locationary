@@ -91,7 +91,9 @@ class NearbyPoint: NSObject, Equatable, Printable {
         
         // TEST
         
-        let rectangleSize = (1500000/(100000+pow(distanceFromCurrentLocation,1.25))+20)
+        let altitude = self.location.altitude
+        let rectangleSize = pow(altitude,0.5)/4+20
+//        let rectangleSize = (1500000/(100000+pow(distanceFromCurrentLocation,1.25))+20)
         var theButtonImage = UIImage(named: "overlaygraphic.png")
         let rectangle = CGRect(x: 0, y: 0, width: rectangleSize, height: rectangleSize)
         UIGraphicsBeginImageContextWithOptions(rectangle.size, false, 0.0);
@@ -112,6 +114,7 @@ class NearbyPoint: NSObject, Equatable, Printable {
         firstInitialLabel.textColor = UIColor.whiteColor()
         firstInitialLabel.userInteractionEnabled = false
         
+        labelButton.hidden = true
         self.label.addSubview(firstInitialLabel)
     }
 }

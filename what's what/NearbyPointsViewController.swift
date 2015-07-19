@@ -13,6 +13,18 @@ import CoreMotion
 import AVFoundation
 import AddressBook
 
+struct Constraints {
+    var range: Double
+    var max: Double
+    var min: Double {
+        return max - range
+    }
+    
+    var rangeNotInUse: Double
+    var maxNotInUse: Double
+    var byDistance: Bool
+}
+
 struct Constants {
     var fieldOfVision: CGFloat
     let ConstantFieldOfVision: CGFloat
@@ -66,13 +78,10 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var nearbyPointsManager: NearbyPointsManager!
     var nearbyPointsInLineOfSight: [NearbyPoint]?
-    var nearbyPointsSortedTallest100: [NearbyPoint]! {
-        if( nearbyPointsInLineOfSight?.count < UIConstants.MaxPointsOnScreen) {
-            return nearbyPointsInLineOfSight!.sorted({ $0.location.altitude > $1.location.altitude })
-        } else {
-            return Array(nearbyPointsInLineOfSight!.sorted({ $0.location.altitude > $1.location.altitude })[0...99])
-        }
-    }
+    var distanceFarthestAway: CLLocationDistance = 5000
+    var tallest: CLLocationDistance = 0
+    var constraints: Constraints = Constraints(range: 5000, max: 100000, rangeNotInUse: 100, maxNotInUse: 1000, byDistance: true)
+    var nearbyPointsWithinSetLimits: [NearbyPoint]? = []
     var nearbyPointsToExpand = [NearbyPoint]()
     var locationOfPanGesture = CGPoint()
     
@@ -84,6 +93,12 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     // TEST!
     var nameLabel: UITextView! = UITextView()
     var nearbyPointCurrentlyDisplayed: NearbyPoint?
+    
+    var horizontalPanRecognizer = UIPanGestureRecognizer()
+    var verticalPanRecognizer = UIPanGestureRecognizer()
+    
+    var locationOfOneFingerPanGesture = CGPoint()
+    
     // TEST!
     
     var locationManager: CLLocationManager! {
@@ -129,9 +144,17 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         tapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
         self.view.addGestureRecognizer(tapRecognizer)
         
-        let panRecognizer = UIPanGestureRecognizer(target: self, action: "didReceivePanGestureOnView:")
-        panRecognizer.delegate = self
-        self.view.addGestureRecognizer(panRecognizer)
+        horizontalPanRecognizer = UIPanGestureRecognizer(target: self, action: "expandPointsWithPan:")
+        horizontalPanRecognizer.delegate = self
+        self.view.addGestureRecognizer(horizontalPanRecognizer)
+        
+        verticalPanRecognizer = UIPanGestureRecognizer(target: self, action: "changeDistanceOfPointsVisible:")
+        verticalPanRecognizer.delegate = self
+        self.view.addGestureRecognizer(verticalPanRecognizer)
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "returnPointsToMotionHandler")
+        longPressRecognizer.delegate = self
+        self.view.addGestureRecognizer(longPressRecognizer)
         
         // TEST
         
@@ -147,6 +170,144 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         nameLabel.hidden = true
         self.view.addSubview(nameLabel)
         // TEST
+    }
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let velocity = panGestureRecognizer.velocityInView(self.view)
+            
+            if gestureRecognizer === horizontalPanRecognizer {
+                return (fabs(velocity.y) < fabs(velocity.x))
+            } else if gestureRecognizer === verticalPanRecognizer {
+                return (fabs(velocity.y) > fabs(velocity.x))
+            } else {
+                return true
+            }
+        }
+        else {
+            return true
+        }
+    }
+    
+    func changeDistanceOfPointsVisible(gesture: UIPanGestureRecognizer){
+        
+        let locationInView = gesture.locationInView(self.view)
+        
+        switch(gesture.state) {
+        case .Began:
+            
+            returnPointsToMotionHandler()
+            
+            locationOfOneFingerPanGesture = locationInView
+            
+        case .Changed:
+            
+            println("panning, range is \(constraints.range) and count \(nearbyPointsWithinSetLimits!.count)")
+            
+            var newRange: Double
+            var newMax: Double
+            
+            if nearbyPointsWithinSetLimits!.count > 50 {
+                newRange = constraints.range * 0.5
+                if constraints.byDistance {
+                    if newRange < 50 {
+                        newRange = 50
+                    }
+                } else {
+                    if newRange < 10 {
+                        newRange = 10
+                    }
+                }
+            } else if nearbyPointsWithinSetLimits!.count < 25 {
+                newRange = constraints.range * 2
+                if constraints.byDistance {
+                    if newRange > 5000 {
+                        newRange = 5000
+                    }
+                } else {
+                    if newRange > 100 {
+                        newRange = 100
+                    }
+                }
+            } else {
+                newRange = constraints.range
+            }
+            
+            let deltaY = (locationInView.y - locationOfOneFingerPanGesture.y)/3.5
+            
+            if abs(deltaY) > 1.0 {
+                
+                locationOfOneFingerPanGesture = locationInView
+                
+                if constraints.byDistance {
+                    let tempNewMax = constraints.max - Double(deltaY) * 1000
+                    if tempNewMax < 5000 {
+                        newMax = 5000
+                    } else if tempNewMax > distanceFarthestAway {
+                        newMax = distanceFarthestAway
+                    } else {
+                        newMax = tempNewMax
+                    }
+                } else{
+                    let tempNewMax = constraints.max - Double(deltaY) * 30
+                    if tempNewMax < 100 {
+                        newMax = 100
+                    } else if tempNewMax > tallest {
+                        newMax = tallest
+                    } else {
+                        newMax = tempNewMax
+                    }
+                }
+                
+                if nearbyPointsInLineOfSight != nil {
+                    filterPointsInLineOfSightWithNewMax(newMax, AndNewRange: newRange, AndByDistance: constraints.byDistance)
+                }
+            }
+            motionManager.restartMotionManager(motionHandler)
+        default:
+            break
+        }
+        
+    }
+    
+    func filterPointsInLineOfSightWithNewMax(newMax: Double, AndNewRange newRange: Double, AndByDistance byDistance: Bool) {
+        let newMin = newMax - newRange
+        println("\(newMax), \(newMin), \(byDistance)")
+        motionManager.stopAccelerometerUpdates()
+        var pointsToRemove: [NearbyPoint]
+        
+        // when we change the range, we want to remove all the points in nearbyPointsWithinSetLimits that are less than the new min value
+        if newMax < constraints.max {
+            if constraints.byDistance {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation > newMax && $0.distanceFromCurrentLocation < self.constraints.max})
+            } else {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude > newMax && $0.location.altitude < self.constraints.max})
+            }
+        } else {
+            if constraints.byDistance {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation > self.constraints.min && $0.distanceFromCurrentLocation < newMin})
+            } else {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude > self.constraints.min && $0.location.altitude < newMin})
+            }
+        }
+        removePointsFromScreen(pointsToRemove)
+        if constraints.byDistance {
+            nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.distanceFromCurrentLocation > newMin && $0.distanceFromCurrentLocation < newMax})
+        } else {
+            nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.location.altitude > newMin && $0.location.altitude < newMax})
+        }
+        constraints.max = newMax
+        constraints.range = newRange
+        motionManager.restartMotionManager(motionHandler)
+    }
+    
+    func removePointsFromScreen(pointsToRemove: [NearbyPoint]) {
+        let shrunk = CGAffineTransformMakeScale(0.01, 0.01)
+        for point in pointsToRemove {
+            UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.BeginFromCurrentState, animations: { point.label.transform = shrunk }, completion: { [weak self] finished in point.label.hidden = true } )
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -171,7 +332,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             let correctedHeading = locationManager.heading.trueHeading - correction;
             
             if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(correctedHeading) {
-                for nearbyPoint in nearbyPointsSortedTallest100 {
+                for nearbyPoint in nearbyPointsWithinSetLimits! {
                     let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
                     let phoneAngle = CGFloat(90 * zData)
                     let yDifference = labelAngle - phoneAngle
@@ -193,12 +354,18 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                         xDifference -= 360.0
                     }
                     
+                    var returningToScreen: Bool = false
+                    
                     // if nearbyPoint is not within fieldOfVision * 2, hide it and continue!
                     if xDifference < -DeviceConstants.fieldOfVision - DeviceConstants.MarginForFieldOfVision || xDifference > DeviceConstants.fieldOfVision + DeviceConstants.MarginForFieldOfVision {
                         nearbyPoint.label.hidden = true
                         continue
                     } else {
-                        nearbyPoint.label.hidden = false
+                        if nearbyPoint.label.hidden == true {
+                            returningToScreen = true
+                        } else {
+                            nearbyPoint.label.hidden = false
+                        }
                     }
             
                     let xMultiplier = CGFloat((xDifference + fieldOfVisionHalved)/(fieldOfVisionHalved*2))
@@ -212,20 +379,33 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                     }
                     
                     let animationDuration = 0.5
-                    UIView.animateWithDuration(animationDuration,
-                        delay: 0,
-                        options: UIViewAnimationOptions.CurveEaseInOut |
-                            UIViewAnimationOptions.AllowUserInteraction |
-                            UIViewAnimationOptions.BeginFromCurrentState,
-                        animations: {
-                            nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
-                            
-                            var transform = CGFloat(signedHeadingDelta)/5.0
-                            let transformFuzz = CGFloat(arc4random_uniform(UInt32(transform*400.0)))/1000.0 - 0.20*transform
-                            transform += transformFuzz
-                            nearbyPoint.label.transform = CGAffineTransformMakeRotation(transform)
-                        },
-                        completion: nil)
+                    
+                    if returningToScreen {
+                        let shrunk = CGAffineTransformMakeScale(0.01, 0.01)
+                        nearbyPoint.label.transform = shrunk
+                        nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
+                        nearbyPoint.label.hidden = false
+                        UIView.animateWithDuration(1, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 20, options: UIViewAnimationOptions.CurveEaseInOut,animations: {
+                            nearbyPoint.label.transform = CGAffineTransformIdentity
+                            }, completion: nil )
+                    } else {
+                        
+                        UIView.animateWithDuration(animationDuration,
+                            delay: 0,
+                            options: UIViewAnimationOptions.CurveEaseInOut
+                                | UIViewAnimationOptions.AllowUserInteraction
+                                | UIViewAnimationOptions.BeginFromCurrentState,
+                            animations: {
+                                nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
+                                
+                                var transform = CGFloat(signedHeadingDelta)/5.0
+                                let transformFuzz = CGFloat(arc4random_uniform(UInt32(transform*400.0)))/1000.0 - 0.20*transform
+                                transform += transformFuzz
+                                nearbyPoint.label.transform = CGAffineTransformMakeRotation(transform)
+                            },
+                            completion: nil
+                        )
+                    }
                 }
             }
         }
@@ -377,6 +557,18 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         self.nearbyPointsInLineOfSight?.append(nearbyPoint)
         
+        if nearbyPoint.distanceFromCurrentLocation > distanceFarthestAway {
+            distanceFarthestAway = nearbyPoint.distanceFromCurrentLocation
+        }
+        if nearbyPoint.location.altitude > tallest {
+            tallest = nearbyPoint.location.altitude
+        }
+        
+        if nearbyPoint.distanceFromCurrentLocation > constraints.min && nearbyPoint.distanceFromCurrentLocation < constraints.max {
+            nearbyPointsWithinSetLimits?.append(nearbyPoint)
+            println("nPWSL: \(nearbyPointsWithinSetLimits!)")
+        }
+        
         startMotionManagerUpdates()
         
         // TEST
@@ -459,16 +651,43 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             if CGRectContainsPoint(labelFrameInMainView, coordinateOfTap) {
                 openMapsApp()
             } else {
-                returnPointsToMotionHandler()
+                toggleLimitType()
             }
         } else {
-            returnPointsToMotionHandler()
+            toggleLimitType()
+        }
+    }
+    
+    func toggleLimitType() {
+        let newMaxNotInUse = constraints.max
+        let newRangeNotInUse = constraints.range
+        let newMax = constraints.maxNotInUse
+        let newRange = constraints.rangeNotInUse
+        constraints = Constraints(range: newRange, max: newMax, rangeNotInUse: newRangeNotInUse, maxNotInUse: newMaxNotInUse, byDistance: !constraints.byDistance)
+        filterPointsForConstraintToggle()
+    }
+    
+    func filterPointsForConstraintToggle() {
+        returnPointsToMotionHandler()
+        if nearbyPointsInLineOfSight != nil {
+            var pointsToRemove = [NearbyPoint]()
+            if constraints.byDistance {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation < self.constraints.min || $0.distanceFromCurrentLocation > self.constraints.max})
+            } else {
+                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude < self.constraints.min || $0.location.altitude > self.constraints.max})
+            }
+            removePointsFromScreen(pointsToRemove)
+            if constraints.byDistance {
+                nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.distanceFromCurrentLocation > self.constraints.min && $0.distanceFromCurrentLocation < self.constraints.max})
+            } else {
+                nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.location.altitude > self.constraints.min && $0.location.altitude < self.constraints.max})
+            }
         }
     }
     
     func returnPointsToMotionHandler() {
-        if nearbyPointsInLineOfSight != nil {
-            nearbyPointsInLineOfSight! += nearbyPointsToExpand
+        if nearbyPointsWithinSetLimits != nil {
+            nearbyPointsWithinSetLimits! += nearbyPointsToExpand
             nearbyPointsToExpand = [NearbyPoint]()
             motionManager.restartMotionManager(motionHandler)
         }
@@ -509,50 +728,8 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         default: break
         }
     }
-
     
-    func didReceiveLongPressOnView(gesture: UILongPressGestureRecognizer) {
-        
-        let locationInView = gesture.locationInView(self.view)
-        var nearbyPointsToExpand = [UIView]()
-        
-        if nearbyPointsInLineOfSight != nil {
-            
-            for (index,nearbyPoint) in enumerate(nearbyPointsInLineOfSight!) {
-                let labelButton = nearbyPoint.label
-                let labelButtonX = labelButton.frame.origin.x
-                let deltaX = labelButtonX - locationInView.x
-                if abs(deltaX) < 50.0 {
-                    nearbyPointsToExpand.append(labelButton)
-                    nearbyPointsInLineOfSight?.removeAtIndex(index)
-                }
-            }
-            
-            var numberOfPointsToExpand = nearbyPointsToExpand.count
-            
-            if numberOfPointsToExpand > 1 {
-                nearbyPointsToExpand.sort({$0.frame.origin.x < $1.frame.origin.x})
-                numberOfPointsToExpand -= 1
-                let labelFrameSize = NearbyPointConstants.LabelFrameSize * CGFloat(numberOfPointsToExpand)
-                for (index,pointToExpand) in enumerate(nearbyPointsToExpand) {
-                    var newX = CGFloat(index)/CGFloat(numberOfPointsToExpand) * labelFrameSize - labelFrameSize/2.0
-                    if newX == 0 {
-                        pointToExpand.transform = CGAffineTransformMakeScale(0.1, 0.1)
-                        
-                        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.1, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: {
-                            pointToExpand.transform = CGAffineTransformIdentity
-                            }, completion: nil)
-                    } else {
-                        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.1, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: {
-                            pointToExpand.frame.origin = CGPoint(x: pointToExpand.frame.origin.x + newX, y: pointToExpand.frame.origin.y)
-                            }, completion: nil)
-                    }
-                }
-            }
-        }
-    }
-    
-    func didReceivePanGestureOnView(gesture: UIPanGestureRecognizer) {
+    func expandPointsWithPan(gesture: UIPanGestureRecognizer) {
         
         let locationInView = gesture.locationInView(self.view)
         
@@ -562,9 +739,9 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             var indexOfPointsToRemove = [Int]()
             locationOfPanGesture = locationInView
             
-            if nearbyPointsInLineOfSight != nil {
+            if nearbyPointsWithinSetLimits != nil {
                 
-                for (index,nearbyPoint) in enumerate(nearbyPointsInLineOfSight!) {
+                for (index,nearbyPoint) in enumerate(nearbyPointsWithinSetLimits!) {
                     let labelButton = nearbyPoint.label
                     let labelButtonX = labelButton.frame.origin.x
                     let deltaX = labelButtonX - locationInView.x
@@ -577,13 +754,13 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 nearbyPointsToExpand.sort({$0.label.frame.origin.x < $1.label.frame.origin.x})
                 
                 for index in indexOfPointsToRemove.reverse() {
-                    nearbyPointsInLineOfSight?.removeAtIndex(index)
+                    nearbyPointsWithinSetLimits?.removeAtIndex(index)
                 }
                 motionManager.restartMotionManager(motionHandler)
             }
             
         case .Changed:
-            if nearbyPointsInLineOfSight != nil {
+            if !nearbyPointsToExpand.isEmpty {
                 
                 var numberOfPointsToExpand = nearbyPointsToExpand.count
                 let xDelta = 2.0 * (locationInView.x - locationOfPanGesture.x)
@@ -609,7 +786,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         }
     }
 
-    
     func openMapsApp() {
         
         var mapItems = [MKMapItem]()
