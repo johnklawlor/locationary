@@ -1,0 +1,5 @@
+kyngchaos.com
+download gdal_complete
+echo 'export PATH=/Library/Frameworks/GDAL.framework/Programs:$PATH' >> ~/.bash_profile
+source ~/.bash_profile
+

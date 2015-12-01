@@ -1,10 +1,24 @@
 //
 //  ParserTests.swift
-//  what's what
+//  Locationary
 //
-//  Created by John Lawlor on 3/28/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Created by John Lawlor on 3/18/15.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import UIKit
 import XCTest
@@ -30,17 +44,17 @@ func == (lhs: [CLLocation], rhs: [CLLocation]) -> Bool {
     if lhs.count != rhs.count {
         return false
     }
-    for (index, lhsLocation) in enumerate(lhs) {
+    for (index, lhsLocation) in lhs.enumerate() {
         if abs(lhsLocation.coordinate.latitude - rhs[index].coordinate.latitude) > LocationEpsilon.Distance {
-            println("latitudes: \(lhsLocation.coordinate.latitude), \(rhs[index].coordinate.latitude)")
+            print("latitudes: \(lhsLocation.coordinate.latitude), \(rhs[index].coordinate.latitude)")
             return false
         }
         if abs(lhsLocation.coordinate.longitude - rhs[index].coordinate.longitude) > LocationEpsilon.Distance {
-            println("longitudes: \(lhsLocation.coordinate.longitude), \(rhs[index].coordinate.longitude)")
+            print("longitudes: \(lhsLocation.coordinate.longitude), \(rhs[index].coordinate.longitude)")
             return false
         }
         if abs(lhsLocation.altitude - rhs[index].altitude) > LocationEpsilon.Altitude {
-            println("altitudes: \(lhsLocation.altitude), \(rhs[index].altitude)")
+            print("altitudes: \(lhsLocation.altitude), \(rhs[index].altitude)")
             return false
         }
     }
@@ -67,29 +81,29 @@ class ParserTests: XCTestCase {
     }
 
     func testParserReturnsNilIfPassedAnEmptyString() {
-        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON("")
+        let (nearbyPoints, _, _) = parser.buildAndReturnArrayFromJSON("")
         XCTAssertTrue(nearbyPoints == nil, "Parser buildAndReturnArrayFromJSON should return nil if passed an empty string")
     }
 
     func testParserReturnsErrorIfPassedAnEmptyString() {
-        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON("")
+        let (_, _, error) = parser.buildAndReturnArrayFromJSON("")
         XCTAssertNotNil(error, "Parser buildAndReturnArrayFromJSON should return error if passed an empty string")
     }
     
     func testParserReturnsErrorIfPassedNotJSONString() {
-        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.NotJson)
+        let (_, _, error) = parser.buildAndReturnArrayFromJSON(Strings.NotJson)
         XCTAssertNotNil(error, "Parser should return error if not passed proper JSON")
     }
 
     func testParserReturnsDictionaryWithTwoObjects() {
-        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
+        let (nearbyPoints, _, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
         XCTAssertNil(error, "Parser should not return an error if passed proper JSON")
         XCTAssertTrue(nearbyPoints != nil, "Parser should return two CLLocation objects in an array")
         XCTAssertEqual(nearbyPoints!.count, 2, "Parser should return two CLLocation objects in an array")
     }
     
     func testParserReturnsCorrectInformation() {
-        let (nearbyPointObjects, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
+        let (nearbyPointObjects, _, _) = parser.buildAndReturnArrayFromJSON(Strings.jsonFromCommunicator)
         let nearbyPoints = nearbyPointObjects as? [NearbyPoint]
         let firstReturned = nearbyPoints!.first!
         let firstLocation = CLLocation(coordinate: CLLocationCoordinate2DMake(43.82563, -72.03231), altitude: -1000000, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0))
@@ -107,7 +121,7 @@ class ParserTests: XCTestCase {
     }
     
     func testBadLatitudeDoesNotAddPointToArray() {
-        let (nearbyPoints, numberPointsRetrieved, error) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
+        let (nearbyPoints, _, _) = parser.buildAndReturnArrayFromJSON(Strings.badLatitude)
         XCTAssertEqual(nearbyPoints!.count, 1, "Parser should add only location with good lats and longs")
     }
     

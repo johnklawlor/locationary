@@ -1,10 +1,24 @@
 //
 //  NearbyPointClassTests.swift
-//  what's what
+//  Locationary
 //
-//  Created by John Lawlor on 3/31/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Created by John Lawlor on 3/18/15.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import UIKit
 import XCTest
@@ -27,11 +41,15 @@ class TestPoints {
     var Cardigan = NearbyPoint(aName: "Mount Cardigan", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.649693, -71.914854), altitude: 935, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     var Washington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270582, -71.303299), altitude: 1908, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
     var MockHolts = NearbyPoint(aName: "Holts", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.772333, -72.107691), altitude: 641, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0)))
-    var GoosePond = NearbyPoint(aName: "Goose Pond", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(
-        43.736985, -72.105721), altitude: 280, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var GoosePond = NearbyPoint(aName: "Goose Pond", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.736985, -72.105721), altitude: 280, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
     var MountWashington = NearbyPoint(aName: "Mount Washington", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(44.270490,-71.303460), altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
     var CliffSt = NearbyPoint(aName: "Cliff St", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.717368, -72.306219), altitude: 176, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
-    var MapleAndWilley = NearbyPoint(aName: "Maple And Willey", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.730667, -72.296084), altitude: 259, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var MapleAndWilley = NearbyPoint(aName: "Maple And Willey", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.730680, -72.295978), altitude: 295, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var MountSupport = NearbyPoint(aName: "Mount Support", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.67563, -72.25592), altitude: 169, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Balch = NearbyPoint(aName: "Balch Hill", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.712570, -72.260920), altitude: 293, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Ascutney = NearbyPoint(aName: "Ascutney", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.444516, -72.453702), altitude: 956, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Gile = NearbyPoint(aName: "Gile", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(43.789053, -72.351619), altitude: 600, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
+    var Higley = NearbyPoint(aName: "Higley", aLocation: CLLocation(coordinate: CLLocationCoordinate2DMake(42.893690, -72.790650), altitude: 693, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: NSDate(timeIntervalSince1970: 0)))
 }
 
 struct Altitudes {

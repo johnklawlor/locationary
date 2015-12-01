@@ -1,10 +1,24 @@
 //
 //  AppDelegate.swift
-//  what's what
+//  Locationary
 //
 //  Created by John Lawlor on 3/18/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//    
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import UIKit
 import CoreMotion
@@ -26,11 +40,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var captureDevice: AVCaptureDevice?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        let defaultValue: NSNumber = 1
+        let appDefaults = ["units_of_distance": defaultValue]
+        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults)
+        
         nearbyPointsViewController = NearbyPointsViewController()
         nearbyPointsViewController?.locationManager = CLLocationManager()
         nearbyPointsViewController?.motionManager = Motion.Manager
         nearbyPointsViewController?.captureManager = CaptureSessionManager()
-        var nearbyPointsManager = NearbyPointsManager(delegate: nearbyPointsViewController!)
+        let nearbyPointsManager = NearbyPointsManager(delegate: nearbyPointsViewController!)
         nearbyPointsManager.communicator = GeonamesCommunicator()
         nearbyPointsManager.communicator?.geonamesCommunicatorDelegate = nearbyPointsManager
         nearbyPointsManager.parser = GeonamesJSONParser()
@@ -51,7 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        println("captureDevice is \(captureDevice)")
         if let retrievedDevice = captureDevice {
             
             let theFieldOfVision = retrievedDevice.activeFormat.videoFieldOfView
@@ -60,9 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             nearbyPointsViewController?.captureDevice = retrievedDevice
 
             nearbyPointsViewController?.DeviceConstants = Constants(theFieldOfVision: theFieldOfVision, maxZoom: maxZoom, phoneWidth: phoneWidth, phoneHeight: phoneHeight)
-            println("fieldOfVision: \(nearbyPointsViewController?.DeviceConstants.fieldOfVision)")
-            println("Width: \(nearbyPointsViewController?.DeviceConstants.PhoneWidth)")
-            println("Height: \(nearbyPointsViewController?.DeviceConstants.PhoneHeight)")
+        } else {
+            nearbyPointsViewController?.DeviceConstants = Constants(theFieldOfVision: 58.04, maxZoom: 4, phoneWidth: 375.0, phoneHeight: 667.0)
         }
         
         self.navigationController = UINavigationController()
@@ -78,8 +95,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-        
-        println("resigning active")
         
         if let viewController = nearbyPointsViewController {
             
@@ -119,6 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let viewController = nearbyPointsViewController {
             if viewController.motionManager != nil && viewController.locationManager != nil {
                 if CLLocationManager.headingAvailable() {
+                    viewController.units = NSUserDefaults.standardUserDefaults().integerForKey("units_of_distance")
                     viewController.locationManager.startUpdatingHeading()
                     viewController.motionManager.startAccelerometerUpdatesToQueue(
                         NSOperationQueue.mainQueue(),

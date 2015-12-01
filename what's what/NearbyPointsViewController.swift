@@ -1,10 +1,24 @@
 //
 //  ViewController.swift
-//  what's what
+//  Locationary
 //
 //  Created by John Lawlor on 3/18/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import UIKit
 import CoreLocation
@@ -13,16 +27,32 @@ import CoreMotion
 import AVFoundation
 import AddressBook
 
+enum FilterType {
+    case Distance
+    case Altitude
+}
+
 struct Constraints {
-    var range: Double
-    var max: Double
-    var min: Double {
-        return max - range
+    
+    init(){
+        max = 0
+        maxNotInUse = 0
+        filterType = .Distance
     }
     
-    var rangeNotInUse: Double
-    var maxNotInUse: Double
-    var byDistance: Bool
+    init(aMax: Int, aMaxNotInUse: Int, aFilterType: FilterType){
+        max = aMax
+        maxNotInUse = aMaxNotInUse
+        filterType = aFilterType
+    }
+    
+    var max: Int
+    var min: Int{
+        return max+numPossiblePointsOnScreen
+    }
+    var maxNotInUse: Int
+    var numPossiblePointsOnScreen: Int = 25
+    var filterType: FilterType
 }
 
 struct Constants {
@@ -76,11 +106,37 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     var captureDevice: AVCaptureDevice?
     var zoomFactor: CGFloat = 1.0
     
+    var units = NSUserDefaults.standardUserDefaults().integerForKey("units_of_distance")
+    
     var nearbyPointsManager: NearbyPointsManager!
-    var nearbyPointsInLineOfSight: [NearbyPoint]?
-    var distanceFarthestAway: CLLocationDistance = 5000
+    private let nearbyPointsQueue = dispatch_queue_create("nearbyPointsInLineOfSightQueue", nil)
+    var queuedNearbyPointsInLineOfSight: [NearbyPoint]?
+    var nearbyPointsInFieldOfVision: [NearbyPoint]?
+    var nearbyPointsInLineOfSight: [NearbyPoint]? {
+        get {
+            var nearbyPoints: [NearbyPoint]?
+            with(nearbyPointsQueue, f: { nearbyPoints = self.queuedNearbyPointsInLineOfSight })
+            return nearbyPoints
+        }
+        set {
+            with(nearbyPointsQueue, f: { self.queuedNearbyPointsInLineOfSight = newValue })
+        }
+    }
+    var nearbyPointsInFieldOfVisionSorted: [NearbyPoint]? {
+        if nearbyPointsInFieldOfVision != nil {
+            switch(constraints.filterType){
+            case .Distance:
+                return nearbyPointsInFieldOfVision!.sort({$0.distanceFromCurrentLocation>$1.distanceFromCurrentLocation})
+            case .Altitude:
+                return nearbyPointsInFieldOfVision!.sort({$0.location.altitude>$1.location.altitude})
+            }
+        } else {
+            return nil
+        }
+    }
+    var distanceFarthestAway: CLLocationDistance = 0
     var tallest: CLLocationDistance = 0
-    var constraints: Constraints = Constraints(range: 5000, max: 100000, rangeNotInUse: 100, maxNotInUse: 1000, byDistance: true)
+    var constraints = Constraints()
     var nearbyPointsWithinSetLimits: [NearbyPoint]? = []
     var nearbyPointsToExpand = [NearbyPoint]()
     var locationOfPanGesture = CGPoint()
@@ -103,7 +159,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     var locationManager: CLLocationManager! {
         didSet {
-//            println("location manager just set, view controller is \(self)")
             // TEST THIS!!!!!!!!!!!!
             locationManager.delegate = self
             // TEST THIS!!!!!!!!!!!!
@@ -116,7 +171,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 locationManager.headingOrientation = CLDeviceOrientation.LandscapeLeft
                 locationManager.startUpdatingHeading()
             }
-//            println("location manager at the end of didset \(locationManager)")
             locationManager.startUpdatingLocation()
         }
     }
@@ -139,7 +193,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         doubleTapRecognizer.delegate = self
         self.view.addGestureRecognizer(doubleTapRecognizer)
         
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "didReceiveTapOnView:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: "didReceiveTapOnView:")
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
         self.view.addGestureRecognizer(tapRecognizer)
@@ -152,7 +206,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         verticalPanRecognizer.delegate = self
         self.view.addGestureRecognizer(verticalPanRecognizer)
         
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "returnPointsToMotionHandler")
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "returnStaticPointsToMotionHandler")
         longPressRecognizer.delegate = self
         self.view.addGestureRecognizer(longPressRecognizer)
         
@@ -162,7 +216,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         captureManager?.addVideoPreviewLayer()
         captureManager?.setPreviewLayer(self.view.layer.bounds, bounds: self.view.bounds)
         
-        self.view.layer.addSublayer(captureManager?.previewLayer)
+        self.view.layer.addSublayer((captureManager?.previewLayer)!)
         
         captureManager?.captureSession?.startRunning()
         
@@ -197,115 +251,48 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         switch(gesture.state) {
         case .Began:
             
-            returnPointsToMotionHandler()
-            
+            returnStaticPointsToMotionHandler()
             locationOfOneFingerPanGesture = locationInView
             
         case .Changed:
             
-            println("panning, range is \(constraints.range) and count \(nearbyPointsWithinSetLimits!.count)")
-            
-            var newRange: Double
-            var newMax: Double
-            
-            if nearbyPointsWithinSetLimits!.count > 50 {
-                newRange = constraints.range * 0.5
-                if constraints.byDistance {
-                    if newRange < 50 {
-                        newRange = 50
-                    }
-                } else {
-                    if newRange < 10 {
-                        newRange = 10
-                    }
-                }
-            } else if nearbyPointsWithinSetLimits!.count < 25 {
-                newRange = constraints.range * 2
-                if constraints.byDistance {
-                    if newRange > 5000 {
-                        newRange = 5000
-                    }
-                } else {
-                    if newRange > 100 {
-                        newRange = 100
-                    }
-                }
-            } else {
-                newRange = constraints.range
-            }
+            var newMax: Int
             
             let deltaY = (locationInView.y - locationOfOneFingerPanGesture.y)/3.5
             
             if abs(deltaY) > 1.0 {
                 
+                let tempNewMax = constraints.max + Int((deltaY))
+                
+                if tempNewMax < 0 {
+                    newMax = 0
+                } else if tempNewMax > nearbyPointsInFieldOfVision!.count-constraints.numPossiblePointsOnScreen {
+                    newMax = nearbyPointsInFieldOfVision!.count-constraints.numPossiblePointsOnScreen
+                } else {
+                    newMax = tempNewMax
+                }
+                
+                if nearbyPointsInFieldOfVision != nil {
+                    removeAndFilterPointsForNewMax(newMax)
+                }
+                motionManager.restartMotionManager(motionHandler)
                 locationOfOneFingerPanGesture = locationInView
-                
-                if constraints.byDistance {
-                    let tempNewMax = constraints.max - Double(deltaY) * 1000
-                    if tempNewMax < 5000 {
-                        newMax = 5000
-                    } else if tempNewMax > distanceFarthestAway {
-                        newMax = distanceFarthestAway
-                    } else {
-                        newMax = tempNewMax
-                    }
-                } else{
-                    let tempNewMax = constraints.max - Double(deltaY) * 30
-                    if tempNewMax < 100 {
-                        newMax = 100
-                    } else if tempNewMax > tallest {
-                        newMax = tallest
-                    } else {
-                        newMax = tempNewMax
-                    }
-                }
-                
-                if nearbyPointsInLineOfSight != nil {
-                    filterPointsInLineOfSightWithNewMax(newMax, AndNewRange: newRange, AndByDistance: constraints.byDistance)
-                }
             }
-            motionManager.restartMotionManager(motionHandler)
+        case .Ended:
+            print("\(nearbyPointsInFieldOfVision)")
         default:
             break
         }
         
     }
     
-    func filterPointsInLineOfSightWithNewMax(newMax: Double, AndNewRange newRange: Double, AndByDistance byDistance: Bool) {
-        let newMin = newMax - newRange
-        println("\(newMax), \(newMin), \(byDistance)")
-        motionManager.stopAccelerometerUpdates()
-        var pointsToRemove: [NearbyPoint]
-        
-        // when we change the range, we want to remove all the points in nearbyPointsWithinSetLimits that are less than the new min value
-        if newMax < constraints.max {
-            if constraints.byDistance {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation > newMax && $0.distanceFromCurrentLocation < self.constraints.max})
-            } else {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude > newMax && $0.location.altitude < self.constraints.max})
-            }
-        } else {
-            if constraints.byDistance {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation > self.constraints.min && $0.distanceFromCurrentLocation < newMin})
-            } else {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude > self.constraints.min && $0.location.altitude < newMin})
-            }
-        }
-        removePointsFromScreen(pointsToRemove)
-        if constraints.byDistance {
-            nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.distanceFromCurrentLocation > newMin && $0.distanceFromCurrentLocation < newMax})
-        } else {
-            nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.location.altitude > newMin && $0.location.altitude < newMax})
-        }
-        constraints.max = newMax
-        constraints.range = newRange
-        motionManager.restartMotionManager(motionHandler)
-    }
-    
     func removePointsFromScreen(pointsToRemove: [NearbyPoint]) {
         let shrunk = CGAffineTransformMakeScale(0.01, 0.01)
         for point in pointsToRemove {
-            UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut | UIViewAnimationOptions.BeginFromCurrentState, animations: { point.label.transform = shrunk }, completion: { [weak self] finished in point.label.hidden = true } )
+            UIView.animateWithDuration(0.5, delay: 0.0,
+                options: [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.BeginFromCurrentState],
+                animations: { point.label.transform = shrunk },
+                completion: { finished in point.label.hidden = true } )
             
         }
     }
@@ -315,25 +302,29 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         // Dispose of any resources that can be recreated.
     }
     
-    func motionHandler(motionData: CMAccelerometerData!, error: NSError!) {
-        if nearbyPointsInLineOfSight != nil && nearbyPointsManager != nil && locationManager != nil && locationManager.heading != nil {
+    func motionHandler(motionData: CMAccelerometerData?, error: NSError?) {
+        if motionData != nil &&
+            nearbyPointsInLineOfSight != nil &&
+            nearbyPointsManager != nil &&
+            locationManager != nil &&
+            locationManager.heading != nil {
             
-            let zData = motionData.acceleration.z
-            let zDelta = abs(zData - self.currentZ)
+            let zData = motionData!.acceleration.z
             self.currentZ = zData
-            let heading = self.locationManager.heading.trueHeading
+            let heading = self.locationManager.heading!.trueHeading
             let signedHeadingDelta = self.currentHeading! - heading
-            let headingDelta = abs(signedHeadingDelta)
             self.currentHeading = heading
             
             // correct for heading error when phone is turned clockwise/counter-clockwise
-            let yData = motionData.acceleration.y
+            let yData = motionData!.acceleration.y
             let correction = yData * HeadingConstants.YAxisCorrection
-            let correctedHeading = locationManager.heading.trueHeading - correction;
+            let correctedHeading = locationManager.heading!.trueHeading - correction;
             
             if let deviceHeading = returnHeadingBasedInProperCoordinateSystem(correctedHeading) {
                 for nearbyPoint in nearbyPointsWithinSetLimits! {
-                    let labelAngle = CGFloat(nearbyPoint.angleToHorizon)
+
+                    // what's with this 4.0 here?
+                    let labelAngle = CGFloat(nearbyPoint.angleToHorizon*1.0)
                     let phoneAngle = CGFloat(90 * zData)
                     let yDifference = labelAngle - phoneAngle
                     let fieldOfVisionHalved = self.DeviceConstants.fieldOfVision/2.0
@@ -356,7 +347,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                     
                     var returningToScreen: Bool = false
                     
-                    // if nearbyPoint is not within fieldOfVision * 2, hide it and continue!
+                    // if nearbyPoint is not within fieldOfVision +/- margin, hide it and continue!
                     if xDifference < -DeviceConstants.fieldOfVision - DeviceConstants.MarginForFieldOfVision || xDifference > DeviceConstants.fieldOfVision + DeviceConstants.MarginForFieldOfVision {
                         nearbyPoint.label.hidden = true
                         continue
@@ -392,9 +383,9 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                         
                         UIView.animateWithDuration(animationDuration,
                             delay: 0,
-                            options: UIViewAnimationOptions.CurveEaseInOut
-                                | UIViewAnimationOptions.AllowUserInteraction
-                                | UIViewAnimationOptions.BeginFromCurrentState,
+                            options: [UIViewAnimationOptions.CurveEaseInOut,
+                                UIViewAnimationOptions.AllowUserInteraction,
+                                UIViewAnimationOptions.BeginFromCurrentState],
                             animations: {
                                 nearbyPoint.label.center = CGPoint(x: xPosition, y: yPosition)
                                 
@@ -424,48 +415,43 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         return nil
     }
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-        println("locationManager didFailWithError: \(error). Trying again...")
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        // what do you do when you guzzle down sweets?
     }
     
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations:[AnyObject]!) {
-        println("updating location")
-        if manager != nil {
-            if let location = locations.last as? CLLocation {
-                if nearbyPointsManager != nil {
-                    if let pointsManagerCurrentLocation = nearbyPointsManager.currentLocation {
-                        if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 {
-                            println("new location greater than 1000 meters")
-							prepareForNewPointsAtLocation(location)
-							nearbyPointsManager.getGeonamesJSONData()
-                        }
-                        // TEST
-                            
-                        else {
-							println("less than 1000 meters")
-							
-							if didResignDuringRequest {
-                                println("didResignDuringRequest")
-                                showProgressIndicator()
-								nearbyPointsManager.getGeonamesJSONData()
-							} else {
-                                println("superfluous location updates from phone's gps")
-								if location.timestamp.timeIntervalSinceDate(pointsManagerCurrentLocation.timestamp) > 30.0 {
-									removeCurrentNearbyPointsOnScreen()
-									nearbyPointsManager.determineIfEachOfAllNearbyPointsIsInLineOfSight()
-								}
-							}
-                        }
-
-                        // TEST
-                    } else {
-                        println("first request")
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if var location = locations.last {
+            if location.altitude == 0 {
+                location = CLLocation(coordinate: location.coordinate, altitude: 600, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: location.timestamp)
+            }
+            if nearbyPointsManager != nil {
+                if let pointsManagerCurrentLocation = nearbyPointsManager.currentLocation {
+                    if pointsManagerCurrentLocation.distanceFromLocation(location) > 1000 {
                         prepareForNewPointsAtLocation(location)
                         nearbyPointsManager.getGeonamesJSONData()
                     }
+                    // TEST
+                        
+                    else {
+                        
+                        if didResignDuringRequest {
+                            showProgressIndicator()
+                            nearbyPointsManager.getGeonamesJSONData()
+                        } else {
+                            if location.timestamp.timeIntervalSinceDate(pointsManagerCurrentLocation.timestamp) > 30.0 {
+                                removeCurrentNearbyPointsOnScreen()
+                                nearbyPointsManager.determineIfEachOfAllNearbyPointsIsInLineOfSight()
+                            }
+                        }
+                    }
+
+                    // TEST
                 } else {
-                    println("Something went wrong--nearbyPointsManager is nil")
+                    prepareForNewPointsAtLocation(location)
+                    nearbyPointsManager.getGeonamesJSONData()
                 }
+            } else {
+                // something went wrong--nearbyPointsManager is nil
             }
         }
     }
@@ -508,16 +494,18 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func prepareToDetermineLineOfSight() {
-        let elevationDataManager = ElevationDataManager()
-        elevationDataManager.dataDelegate = nearbyPointsManager
-        elevationDataManager.currentLocationDelegate = nearbyPointsManager
-        nearbyPointsManager.elevationDataManager = elevationDataManager
-        
-        // TEST
-        
-        elevationDataManager.gdalManager = TheGDALWrapper()
-        elevationDataManager.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
-        
+
+        if nearbyPointsManager.elevationDataManager == nil {
+            let elevationDataManager = ElevationDataManager()
+            elevationDataManager.dataDelegate = nearbyPointsManager
+            elevationDataManager.currentLocationDelegate = nearbyPointsManager
+            nearbyPointsManager.elevationDataManager = elevationDataManager
+            
+            // TEST
+            
+            elevationDataManager.gdalManager = TheGDALWrapper()
+            elevationDataManager.gdalManager?.openGDALFile(ManagerConstants.ElevationDataFilename)
+        }
         // TEST
     }
     
@@ -526,13 +514,11 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     }
     
     func assembledNearbyPointsWithoutAltitude() {
-        println("assembled points without altitude")
-        
         if nearbyPointsManager != nil {
             prepareToDetermineLineOfSight()
             nearbyPointsManager.determineIfEachRecentlyRetrievedPointIsInLineOfSight()
         } else{
-            println("we lost the nearbyPoints manager")
+            // we lost the nearbyPoints manager
         }
         
         removeProgressIndicator()
@@ -540,14 +526,14 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func foundNearbyPointInLineOfSight(nearbyPoint: NearbyPoint) {
         
-        println("added nearbyPoint: \(nearbyPoint)")
+        print("\(nearbyPoint.name), \(nearbyPoint.location.altitude),\(nearbyPoint.distanceFromCurrentLocation), \(nearbyPoint.angleToHorizon)")
         
         // TEST
         
         self.motionManager.stopAccelerometerUpdates()
         
         var newIndex = view.subviews.count
-        for (index, subview) in enumerate(view.subviews as! [UIView]) {
+        for (index, subview) in view.subviews.enumerate() {
             if nearbyPoint.label.layer.zPosition < subview.layer.zPosition {
                 newIndex = index
                 break
@@ -557,18 +543,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         
         self.nearbyPointsInLineOfSight?.append(nearbyPoint)
         
-        if nearbyPoint.distanceFromCurrentLocation > distanceFarthestAway {
-            distanceFarthestAway = nearbyPoint.distanceFromCurrentLocation
-        }
-        if nearbyPoint.location.altitude > tallest {
-            tallest = nearbyPoint.location.altitude
-        }
-        
-        if nearbyPoint.distanceFromCurrentLocation > constraints.min && nearbyPoint.distanceFromCurrentLocation < constraints.max {
-            nearbyPointsWithinSetLimits?.append(nearbyPoint)
-            println("nPWSL: \(nearbyPointsWithinSetLimits!)")
-        }
-        
         startMotionManagerUpdates()
         
         // TEST
@@ -577,7 +551,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     // TEST
     func didReceiveTapForNearbyPoint(nearbyPoint: NearbyPoint) {
         
-        if let nearbyPointDisplayed = nearbyPointCurrentlyDisplayed {
+        if let _ = nearbyPointCurrentlyDisplayed {
 
             var labelToRemove = nameLabel
             
@@ -587,7 +561,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 animations: {
                     self.nameLabel.alpha = 0.0
                 },
-                completion: { [weak self] finished in
+                completion: { finished in
                     labelToRemove.removeFromSuperview()
                     labelToRemove = nil
             })
@@ -601,12 +575,17 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         } else {
             makeNameLabelWithPoint(nearbyPoint)
         }
-        
     }
     
     func makeNameLabelWithPoint(nearbyPoint: NearbyPoint) {
+        
+        let (elevationString, distanceString) = nearbyPoint.formattedDistanceStringsForUnits(units)
+        
         nameLabel = UITextView()
-        nameLabel.text = nearbyPoint.name + "\n" + "elevation: \(nearbyPoint.location.altitudeInFeet.formatFeet()) feet" + "\n" + "distance: \(nearbyPoint.distanceFromCurrentLocationInMiles.formatMiles()) miles away" + "\n" + "location: \(nearbyPoint.location.formattedCoordinate)"
+        nameLabel.text = nearbyPoint.name + "\n" +
+            "elevation: \(elevationString)" + "\n" +
+            "distance: \(distanceString)" + "\n" +
+            "location: \(nearbyPoint.location.formattedCoordinate)"
         nameLabel.backgroundColor = UIConstants.LabelBackgroundColor
         nameLabel.textColor = UIConstants.LabelColor
         nameLabel.textAlignment = NSTextAlignment.Center
@@ -637,6 +616,44 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     func didReceiveTapOnView(gesture: UITapGestureRecognizer) {
         nameLabel.hidden = true
         nearbyPointCurrentlyDisplayed = nil
+        
+        let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading?.trueHeading)!
+        
+        print(heading)
+        
+        let leftFieldOfView = heading - Double(DeviceConstants.fieldOfVision/2.0)
+        let rightFieldOfView = heading + Double(DeviceConstants.fieldOfVision/2.0)
+        
+        print(leftFieldOfView)
+        print(rightFieldOfView)
+        
+        if nearbyPointsWithinSetLimits != nil {
+            removePointsFromScreen(nearbyPointsWithinSetLimits!)
+        }
+        nearbyPointsInFieldOfVision = []
+        
+        if nearbyPointsInLineOfSight != nil {
+            for nearbyPoint in nearbyPointsInLineOfSight! {
+                var angleToCurrentLocation = nearbyPoint.angleToCurrentLocation
+
+                if angleToCurrentLocation < Double(DeviceConstants.fieldOfVision/2.0) && leftFieldOfView < 0 {
+                    angleToCurrentLocation = angleToCurrentLocation + 360.0
+                } else if angleToCurrentLocation + Double(DeviceConstants.fieldOfVision/2.0) > 360.0 && rightFieldOfView > 0 {
+                    angleToCurrentLocation = angleToCurrentLocation - 360.0
+                }
+
+                if angleToCurrentLocation > leftFieldOfView && angleToCurrentLocation < rightFieldOfView {
+                    nearbyPointsInFieldOfVision?.append(nearbyPoint)
+                    removeAndFilterPointsForNewMax(0)
+                }
+            }
+            /*
+            if nearbyPointsInFieldOfVision?.isEmpty {
+                notifyUserOfNoPointsInFieldOfVision()
+            }
+            */
+        }
+        
     }
     
     func didReceiveDoubleTapOnView(gesture: UITapGestureRecognizer) {
@@ -658,34 +675,69 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         }
     }
     
-    func toggleLimitType() {
-        let newMaxNotInUse = constraints.max
-        let newRangeNotInUse = constraints.range
-        let newMax = constraints.maxNotInUse
-        let newRange = constraints.rangeNotInUse
-        constraints = Constraints(range: newRange, max: newMax, rangeNotInUse: newRangeNotInUse, maxNotInUse: newMaxNotInUse, byDistance: !constraints.byDistance)
-        filterPointsForConstraintToggle()
+    func toggleFilterType() -> FilterType {
+        switch(constraints.filterType){
+        case .Distance: return .Altitude
+        case .Altitude: return .Distance
+        }
     }
     
-    func filterPointsForConstraintToggle() {
-        returnPointsToMotionHandler()
-        if nearbyPointsInLineOfSight != nil {
-            var pointsToRemove = [NearbyPoint]()
-            if constraints.byDistance {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation < self.constraints.min || $0.distanceFromCurrentLocation > self.constraints.max})
+    func toggleLimitType() {
+        if nearbyPointsInLineOfSight?.count < constraints.numPossiblePointsOnScreen {
+            return
+        }
+        returnStaticPointsToMotionHandler()
+        let newMaxNotInUse = constraints.max
+        let newMax = constraints.maxNotInUse
+        constraints = Constraints(aMax: newMax, aMaxNotInUse: newMaxNotInUse, aFilterType: toggleFilterType())
+        var pointsToRemove = [NearbyPoint]()
+        switch(constraints.filterType){
+        case .Distance:
+            let farthest = nearbyPointsInFieldOfVisionSorted![constraints.max].distanceFromCurrentLocation
+            let closest = nearbyPointsInFieldOfVisionSorted![constraints.min].distanceFromCurrentLocation
+            pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.distanceFromCurrentLocation>farthest || $0.distanceFromCurrentLocation<closest})
+        case .Altitude:
+            let tallest = nearbyPointsInFieldOfVisionSorted![constraints.max].location.altitude
+            let shortest = nearbyPointsInFieldOfVisionSorted![constraints.min].location.altitude
+            pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude>tallest || $0.location.altitude<shortest})
+        }
+        
+        removePointsFromScreen(pointsToRemove)
+        nearbyPointsWithinSetLimits = filterNearbyPointsInFieldOfVision()
+    }
+    
+    func filterOutNearbyPointsNoLongerInSetLimits(newMax: Int) -> [NearbyPoint] {
+        if newMax > constraints.max {
+            return Array(nearbyPointsInFieldOfVisionSorted![constraints.max..<newMax])
+        } else {
+            return Array(nearbyPointsInFieldOfVisionSorted![newMax+constraints.numPossiblePointsOnScreen..<constraints.min])
+        }
+    }
+    
+    func filterNearbyPointsInFieldOfVision() -> [NearbyPoint] {
+        switch(constraints.filterType){
+        case .Distance:
+            return Array(nearbyPointsInFieldOfVisionSorted![constraints.max..<constraints.min])
+        case .Altitude:
+            return Array(nearbyPointsInFieldOfVisionSorted![constraints.max..<constraints.min])
+        }
+    }
+    
+    func removeAndFilterPointsForNewMax(newMax: Int) {
+        returnStaticPointsToMotionHandler()
+        if nearbyPointsInFieldOfVision != nil {
+            if nearbyPointsInFieldOfVision?.count < constraints.numPossiblePointsOnScreen {
+                nearbyPointsWithinSetLimits = nearbyPointsInFieldOfVision
             } else {
-                pointsToRemove = nearbyPointsWithinSetLimits!.filter({$0.location.altitude < self.constraints.min || $0.location.altitude > self.constraints.max})
-            }
-            removePointsFromScreen(pointsToRemove)
-            if constraints.byDistance {
-                nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.distanceFromCurrentLocation > self.constraints.min && $0.distanceFromCurrentLocation < self.constraints.max})
-            } else {
-                nearbyPointsWithinSetLimits = nearbyPointsInLineOfSight!.filter({$0.location.altitude > self.constraints.min && $0.location.altitude < self.constraints.max})
+                let pointsToRemove = filterOutNearbyPointsNoLongerInSetLimits(newMax)
+                constraints.max = newMax
+                removePointsFromScreen(pointsToRemove)
+                nearbyPointsWithinSetLimits = filterNearbyPointsInFieldOfVision()
             }
         }
     }
     
-    func returnPointsToMotionHandler() {
+    func returnStaticPointsToMotionHandler() {
         if nearbyPointsWithinSetLimits != nil {
             nearbyPointsWithinSetLimits! += nearbyPointsToExpand
             nearbyPointsToExpand = [NearbyPoint]()
@@ -703,16 +755,20 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         if scale < 1.0 {
             change *= VideoConstants.PreferredMaxVideoZoom
         }
-        var newScale = zoomFactor - change
+        let newScale = zoomFactor - change
         switch gesture.state {
         case .Changed:
             // we're checking if the new zoom value is greater than 1 and also less than the developer-determined VideoConstants.PreferredMaxVideoZoom and the phone's camera's DeviceConstants.MaxVideoZoom
             if newScale >= 1.0 &&
             newScale <= VideoConstants.PreferredMaxVideoZoom &&
             newScale <= DeviceConstants.MaxVideoZoom {
-                captureDevice?.lockForConfiguration(nil)
-                captureDevice?.rampToVideoZoomFactor(newScale, withRate: 4.0)
-                captureDevice?.unlockForConfiguration()
+                do {
+                    try captureDevice?.lockForConfiguration()
+                    captureDevice?.rampToVideoZoomFactor(newScale, withRate: 4.0)
+                    captureDevice?.unlockForConfiguration()
+                } catch {
+                    print("Could not ramp to video zoom factor")
+                }
                 
                 DeviceConstants.fieldOfVision = DeviceConstants.ConstantFieldOfVision / newScale
                 motionManager.restartMotionManager(motionHandler)
@@ -741,7 +797,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             
             if nearbyPointsWithinSetLimits != nil {
                 
-                for (index,nearbyPoint) in enumerate(nearbyPointsWithinSetLimits!) {
+                for (index,nearbyPoint) in nearbyPointsWithinSetLimits!.enumerate() {
                     let labelButton = nearbyPoint.label
                     let labelButtonX = labelButton.frame.origin.x
                     let deltaX = labelButtonX - locationInView.x
@@ -751,7 +807,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                     }
                 }
                 
-                nearbyPointsToExpand.sort({$0.label.frame.origin.x < $1.label.frame.origin.x})
+                nearbyPointsToExpand.sortInPlace({$0.label.frame.origin.x < $1.label.frame.origin.x})
                 
                 for index in indexOfPointsToRemove.reverse() {
                     nearbyPointsWithinSetLimits?.removeAtIndex(index)
@@ -769,7 +825,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
                 if numberOfPointsToExpand > 1 {
                     numberOfPointsToExpand -= 1
                     
-                    for (index,pointToExpand) in enumerate(nearbyPointsToExpand) {
+                    for (index,pointToExpand) in nearbyPointsToExpand.enumerate() {
                         let signedIndex = numberOfPointsToExpand % 2 == 0 ? CGFloat(index) - CGFloat(numberOfPointsToExpand)/2.0 + 0.5 : CGFloat(index) - CGFloat(numberOfPointsToExpand)/2.0
                         let changeInOrigin = CGFloat(signedIndex)/CGFloat(numberOfPointsToExpand) * xDelta
                         UIView.animateWithDuration(0.25,
@@ -793,26 +849,27 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
         let pointOpen = nearbyPointCurrentlyDisplayed!
         let regionDistance: CLLocationDistance = 20000
         let regionSpan = MKCoordinateRegionMakeWithDistance(pointOpen.location.coordinate, regionDistance, regionDistance)
-        println("\(regionSpan.span)")
-        var options = [
+        let options = [
             MKLaunchOptionsMapCenterKey: NSValue(MKCoordinate: regionSpan.center),
             MKLaunchOptionsMapSpanKey: NSValue(MKCoordinateSpan: regionSpan.span)
         ]
+ 
+        let (elevationString, distanceString) = pointOpen.formattedDistanceStringsForUnits(units)
         
         let addressDictionary = [kABPersonAddressStreetKey as String:
             "coordinates: \(pointOpen.location.formattedCoordinate) \n" +
-            "elevation: \(pointOpen.location.altitudeInFeet.formatFeet()) feet\n" +
-            "distance: \(pointOpen.distanceFromCurrentLocationInMiles.formatMiles()) miles away"]
+            "elevation: \(elevationString)\n" +
+            "distance: \(distanceString)"]
         let placemark = MKPlacemark(coordinate: pointOpen.location.coordinate, addressDictionary: addressDictionary)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = pointOpen.name
         mapItems.append(mapItem)
         
-        for point in nearbyPointsInLineOfSight! + nearbyPointsToExpand {
+        for point in nearbyPointsWithinSetLimits! + nearbyPointsToExpand {
             if point === pointOpen {
                 continue
             }
-            let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading.trueHeading)!
+            let heading = returnHeadingBasedInProperCoordinateSystem(locationManager.heading!.trueHeading)!
             var xDifference = CGFloat(heading - point.angleToCurrentLocation)
             
             // correct for cases such as when deviceHeading = 359 and angleToCurrentLocation = 1
@@ -824,10 +881,11 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             }
             if abs(xDifference) < DeviceConstants.fieldOfVision/2.0 + DeviceConstants.fieldOfVision/10.0 {
                 
+                let (elevationString, distanceString) = point.formattedDistanceStringsForUnits(units)
                 let addressDictionary = [kABPersonAddressStreetKey as String:
                     "coordinates: \(point.location.formattedCoordinate) \n" +
-                    "elevation: \(point.location.altitudeInFeet.formatFeet()) feet\n" +
-                    "distance: \(pointOpen.distanceFromCurrentLocationInMiles.formatMiles()) miles away"]
+                    "elevation: \(elevationString) \n" +
+                    "distance: \(distanceString)"]
                 let placemark = MKPlacemark(coordinate: point.location.coordinate, addressDictionary: addressDictionary)
                 let mapItem = MKMapItem(placemark: placemark)
                 mapItem.name = point.name
@@ -835,7 +893,6 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             }
         }
         
-        println("\(mapItems)")
         MKMapItem.openMapsWithItems(mapItems, launchOptions: options)
     }
     
@@ -846,7 +903,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func showProgressIndicator() {
         if activityIndicatorView == nil {
-            var label = UILabel(frame: CGRect(x: 50, y: 0, width: 200, height: 50))
+            let label = UILabel(frame: CGRect(x: 50, y: 0, width: 200, height: 50))
             label.text = UIConstants.ProgressIndicatorLabelText
             label.textColor = UIConstants.LabelColor
             activityIndicatorView = UIView(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
@@ -854,7 +911,7 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
             activityIndicatorView!.layer.cornerRadius = 15
             activityIndicatorView!.backgroundColor = UIConstants.LabelBackgroundColor
             
-            var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
             activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
             activityIndicator.startAnimating()
             activityIndicatorView!.addSubview(activityIndicator)
@@ -866,9 +923,13 @@ class NearbyPointsViewController: UIViewController, CLLocationManagerDelegate, N
     
     func resetVideoZoomValues(){
         DeviceConstants.fieldOfVision = DeviceConstants.ConstantFieldOfVision
-        captureDevice?.lockForConfiguration(nil)
-        captureDevice?.videoZoomFactor = 1.0
-        captureDevice?.unlockForConfiguration()
+        do {
+            try captureDevice?.lockForConfiguration()
+            captureDevice?.videoZoomFactor = 1.0
+            captureDevice?.unlockForConfiguration()
+        } catch {
+            print("Could not set video zoom factor")
+        }
     }
 
 }

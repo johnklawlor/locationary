@@ -1,19 +1,33 @@
 //
 //  gdalLocating.cpp
-//  gdal
+//  Locationary
 //
-//  Created by John Lawlor on 5/19/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Created by John Lawlor on 3/18/15.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gdalLocating.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h"
 
-const double UPPER_LEFT_LONG = -124.850138888888893;
-const double UPPER_LEFT_LAT = 49.387361111111112;
-const double PIXEL_SIZE = 0.004166666666667;
+const double UPPER_LEFT_LONG = -180.0001389;
+const double UPPER_LEFT_LAT = 71.3915278;
+const double PIXEL_SIZE = 0.008333333333333;
 
 double getXInPixelCoordinates(double nearbyPointLongitude) {
     return fabs((UPPER_LEFT_LONG - nearbyPointLongitude) / PIXEL_SIZE);
@@ -30,17 +44,15 @@ GDALDataset* getGDALDataset(const char *pathToDEMData) {
     return (GDALDataset *) GDALOpen(pathToDEMData, GA_ReadOnly);
 }
 
+double adjustForEarthCurvature(double distanceFromCurrentLocation) {
+    return distanceFromCurrentLocation/1000 * 0.1254658385 * 4;
+}
+
 NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (double currentLatitude, double currentLongitude, double currentAltitude, double nearbyPointLatitude, double nearbyPointLongitude, double distanceBetweenTwoPoints, GDALDataset* elevationDataset) {
     
     NearbyPointElevationData nearbyPointElevationData;
-    
-
-    
     GDALRasterBand  *elevationBand;
     elevationBand = elevationDataset->GetRasterBand(1);
-    
-    
-    
     double adfPixel[2];
     
     
@@ -66,42 +78,39 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
     double productX = sumX * a;
     double b = (sumY - productX) / 2;
     
-    const double samplePoints = distanceBetweenTwoPoints/1000.0;
-    
-    
+    double distanceAwayToStartCalculations = 2000;
+    double sampleDistance = 250.0;
+    const double samplePoints = distanceBetweenTwoPoints/sampleDistance;
     double increment = (nearbyPointPixelX - currentPixelX)/samplePoints;
     
-    double heightToSubtract = ((2/3)*pow(distanceBetweenTwoPoints/1000*1.60934,2)) * 0.304;
-    
+    double heightToSubtract = adjustForEarthCurvature(distanceBetweenTwoPoints);
     double altitudeDifference = nearbyPointElevationData.elevation - currentAltitude - heightToSubtract;
-    printf("nearbyPointElevation: %f \n", nearbyPointElevationData.elevation);
-    printf("currentAltitude: %f \n", currentAltitude);
-    printf("o: %f \n", altitudeDifference);
-    printf("a: %f \n", distanceBetweenTwoPoints);
     double angleToNearbyPoint = atan(altitudeDifference / distanceBetweenTwoPoints);
-    printf("angleToNearbyPoint: %f \n", angleToNearbyPoint);
     nearbyPointElevationData.angleToHorizon = angleToNearbyPoint * (180.0/M_PI);
+//    printf("nearbyPointElevation: %f \n", nearbyPointElevationData.elevation);
+//    printf("currentAltitude: %f \n", currentAltitude);
+//    printf("%f \n", altitudeDifference);
+//    printf("a: %f \n", distanceBetweenTwoPoints);
+//    printf("angleToNearbyPoint: %f \n", angleToNearbyPoint);
     
-    double sampleDistance = 1000.0;
-    //    printf("sampleDistance: %f \n", sampleDistance);
-    int iteration = 1;
+
+    double numShort = distanceAwayToStartCalculations/sampleDistance;
+    int iteration = int(numShort);
     
     double samplePointX;
     double samplePointY;
-    
-    samplePointX = currentPixelX+increment;
     
 //    printf("samplePointX: %f \n", samplePointX);
 //    printf("nearbyPointX: %f \n", nearbyPointPixelX);
 //    printf("increment: %f \n", increment);
     
-    for (samplePointX = currentPixelX+increment; 1 < 2; samplePointX += increment) {
+    for (samplePointX = currentPixelX + iteration*increment; 1 < 2; samplePointX += increment) {
         if (currentPixelX < nearbyPointPixelX) {
-            if (samplePointX+increment > nearbyPointPixelX) {
+            if (samplePointX + (numShort+1)*increment > nearbyPointPixelX) {
                 break;
             }
         } else {
-            if (samplePointX+increment < nearbyPointPixelX) {
+            if (samplePointX + (numShort+1)*increment < nearbyPointPixelX) {
                 break;
             }
         }
@@ -110,15 +119,18 @@ NearbyPointElevationData getNearbyPointElevationAndDetermineIfInLineOfSight (dou
         
         if( GDALRasterIO( elevationBand, GF_Read, samplePointX, samplePointY, 1, 1, adfPixel, 1, 1, GDT_CFloat64, 0, 0) == CE_None ) {
             double samplePointElevation = adfPixel[0];
-            double samplePointAltitudeDifference = samplePointElevation - currentAltitude;
-            double angleToSamplePoint = atan(samplePointAltitudeDifference / (sampleDistance * iteration));
+            double distanceToSamplePoint = sampleDistance * iteration;
+            heightToSubtract = 0;
+            //adjustForEarthCurvature(distanceToSamplePoint);
+            double samplePointAltitudeDifference = samplePointElevation - heightToSubtract - currentAltitude;
+            double angleToSamplePoint = atan(samplePointAltitudeDifference / (distanceToSamplePoint));
             
-            //            printf("iteration: %d ", iteration);
-            //            printf("sampleElevation: %f \n", samplePointElevation);
-            //            printf("altitudeDifference: %f \n", samplePointAltitudeDifference);
-            //            printf("sampleDistance * iteration: %f \n", sampleDistance * iteration);
-            //            printf("sampleCoordinates: %f, %f \n", UPPER_LEFT_LAT-samplePointY*PIXEL_SIZE, UPPER_LEFT_LONG+samplePointX*PIXEL_SIZE);
-            //            printf("angleToSamplePoint: %f \n", angleToSamplePoint);
+//            printf("iteration: %d \n", iteration);
+//            printf("sampleElevation: %f \n", samplePointElevation);
+//            printf("%f \n", samplePointAltitudeDifference);
+//            printf("sampleDistance * iteration: %f \n", sampleDistance * iteration);
+//            printf("sampleCoordinates: %f, %f \n", UPPER_LEFT_LAT-samplePointY*PIXEL_SIZE, UPPER_LEFT_LONG+samplePointX*PIXEL_SIZE);
+//            printf("angleToSamplePoint: %f \n", angleToSamplePoint);
             
             if( angleToSamplePoint > angleToNearbyPoint ){
                 nearbyPointElevationData.inLineOfSight = false;

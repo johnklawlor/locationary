@@ -1,10 +1,24 @@
 //
 //  NearbyPointsManager.swift
-//  what's what
+//  Locationary
 //
-//  Created by John Lawlor on 3/27/15.
-//  Copyright (c) 2015 johnnylaw. All rights reserved.
+//  Created by John Lawlor on 3/18/15.
+//  Copyright (c) 2015 John Lawlor. All rights reserved.
 //
+//  This file is part of Locationary.
+//
+//  Locationary is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Locationary is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import CoreLocation
 import UIKit
@@ -23,7 +37,7 @@ protocol NearbyPointsManagerDelegate: class {
 public struct ManagerConstants {
     static let Error_ReachedMaxConnectionAttempts = NSError(domain: "ManagerReachedMaximumAllowedConnectionAttempts", code: 1, userInfo: nil)
     static let Error_NearbyPointsIsNil = NSError(domain: "ManagerNearbyPointsIsNil-NothingToFetch", code: 2, userInfo: nil)
-    static let ElevationDataFilename = "us_150max_bounding_compressed_tiled"
+    static let ElevationDataFilename = "us_bounded_compressed_tiled"
 
 }
 
@@ -65,9 +79,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     }
     
     func getGeonamesJSONData() {
-        println("trying to get geonames")
         if communicator?.requestAttempts <= 3 {
-            println("getting geonames with communicator \(communicator)")
             communicator?.fetchJSONData()
         } else {
             managerDelegate.fetchingFailedWithError(ManagerConstants.Error_ReachedMaxConnectionAttempts)
@@ -77,18 +89,15 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     func fetchingNearbyPointsFailedWithError(error: NSError) {
         fetchingError = error
         // we should do something else here
-        println("error fetching: \(error)")
     }
     
     func receivedNearbyPointsJSON(json: String) {
-        println("received json")
-        
         nearbyPointsJSON = json
         // if json is empty, attempt another request?
-        var (nearbyPointsArray, totalResultsCount, error) = parser.buildAndReturnArrayFromJSON(json)
+        let (nearbyPointsArray, totalResultsCount, error) = parser.buildAndReturnArrayFromJSON(json)
         
         // TEST
-        if let actualError = error {
+        if error != nil {
             if communicator != nil {
                 communicator!.currentLocation = currentLocation
                 getGeonamesJSONData()
@@ -96,7 +105,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             }
         }
         if let receivedNearbyPointsArray = nearbyPointsArray as? [NearbyPoint] {
-            with(recentlyRetrievedNearbyPointsQueue, {
+            with(recentlyRetrievedNearbyPointsQueue, f: {
                 self.recentlyRetrievedNearbyPoints += receivedNearbyPointsArray
 				if self.communicator != nil {
 					self.communicator!.startRowCount += 1
@@ -108,29 +117,26 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
 						}
 					} else {
 						self.managerDelegate.didCompleteFullRequest = true
-                        println("didCompleteFullRequest")
 					}
 				} else {
-					println("communicator is nil while making seconary request")
+					// communicator is nil while making seconary request
 				}
             })
             managerDelegate.assembledNearbyPointsWithoutAltitude()
         }
         else {
-            println("inform delegate that there are no points around user!")
+            // inform delegate that there are no points around user!
         }
     }
     
     func determineIfEachRecentlyRetrievedPointIsInLineOfSight() {
-//        println("recentlyRetrievedNearbyPoints count: \(recentlyRetrievedNearbyPoints.count)")
-        with(recentlyRetrievedNearbyPointsQueue, {
+
+        with(recentlyRetrievedNearbyPointsQueue, f: {
             if !self.recentlyRetrievedNearbyPoints.isEmpty {
                 self.determineIfEachPointIsInLineOfSight(&self.recentlyRetrievedNearbyPoints)
                 
-                println("nearbyPoints array: \(self.nearbyPoints!.count)")
                 self.nearbyPoints! += self.recentlyRetrievedNearbyPoints
                 self.recentlyRetrievedNearbyPoints = [NearbyPoint]()
-                println("nearbyPoints count: \(self.nearbyPoints!.count)")
             }
         })
     }
@@ -139,14 +145,11 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
         if nearbyPoints != nil {
             determineIfEachPointIsInLineOfSight(&nearbyPoints!)
         } else {
-            println("trying to determineIfEachPointIsInLineOfSight. nearbyPoints is nil.")
             prefetchError = ManagerConstants.Error_NearbyPointsIsNil
         }
     }
     
     func determineIfEachPointIsInLineOfSight(inout someNearbyPoints: [NearbyPoint]) {
-        println("nearbyPoints count when fetching line of sight data is \(someNearbyPoints.count)")
-        
         for nearbyPoint in someNearbyPoints {
             calculateDistanceFromCurrentLocation(nearbyPoint)
             self.elevationDataManager!.getElevationForPoint(nearbyPoint)
@@ -171,8 +174,6 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint)
             
             // we have to determine why one point had an angleToCurrentLocation of NaN
-            
-            println("angleToCurrentLocation for \(nearbyPoint.name): \(nearbyPoint.angleToCurrentLocation)")
             
             updateElevationAndAngleToHorizonForPoint(nearbyPoint, elevation: elevationData.elevation, angleToHorizon: elevationData.angleToHorizon)
 
@@ -199,8 +200,7 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
     }
     
     func calculateAbsoluteAngleWithCurrentLocationAsOrigin(nearbyPoint: NearbyPoint) {
-        let name = nearbyPoint.name
-        println("\(name)")
+
         let y = CLLocation(coordinate: CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: nearbyPoint.location.coordinate.longitude), altitude: nearbyPoint.location.altitude, horizontalAccuracy: 10.0, verticalAccuracy: 10.0, timestamp: NSDate(timeIntervalSinceNow: 0))
         let dy = y.distanceFromLocation(nearbyPoint.location)
 
@@ -220,20 +220,6 @@ class NearbyPointsManager: NSObject, GeonamesCommunicatorDelegate, ElevationData
             } else {
                 nearbyPoint.angleToCurrentLocation = 360.0 - asin(quotient)*(180.0/M_PI)
             }
-        }
-    }
-    
-    func calculateAngleToHorizon(nearbyPoint: NearbyPoint) {
-        if currentLocation != nil {
-            let distanceAway = nearbyPoint.distanceFromCurrentLocation
-            let heightToSubtract = ((2/3)*pow(distanceAway/1000*1.60934,2)) * 0.304
-            let nearbyPointAltitude = nearbyPoint.location.altitude
-            let height = nearbyPointAltitude - currentLocation!.altitude
-            let angle = atan(height/distanceAway)*(180.0/M_PI)
-            
-            println("\(nearbyPoint.name): \(distanceAway) \(nearbyPointAltitude) \(currentLocation!.altitude)")
-            
-            nearbyPoint.angleToHorizon = angle
         }
     }
     
