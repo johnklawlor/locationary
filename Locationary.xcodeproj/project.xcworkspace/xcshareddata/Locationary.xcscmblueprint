@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "01CF09B750D1C1130E09C4678E52A63E0DCD0B91",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "01CF09B750D1C1130E09C4678E52A63E0DCD0B91" : 0,
+    "D7E4EA0D25397ED06E987370649882E3D60ED1B2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "2344AE44-222F-49EF-8AB9-A18B8D5F7489",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "01CF09B750D1C1130E09C4678E52A63E0DCD0B91" : "whatswhat\/",
+    "D7E4EA0D25397ED06E987370649882E3D60ED1B2" : "..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/projects\/gdal_scripts"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Locationary",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Locationary.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/johnklawlor\/locationary.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "01CF09B750D1C1130E09C4678E52A63E0DCD0B91"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/gist.github.com\/22eee94485bce5b3a6ea.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D7E4EA0D25397ED06E987370649882E3D60ED1B2"
+    }
+  ]
+}
